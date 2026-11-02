@@ -2,6 +2,12 @@
 
 A real-time decision-support system and analytics platform designed to detect, evaluate, and mitigate corporate reputational threats for Indian enterprises using **FinBERT Sentiment NLP** and the **AHP-TOPSIS Multi-Criteria Decision-Making (MCDM)** engine.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-2f81f7?style=for-the-badge&logo=github)](https://se23uari120.github.io/brand-risk-index/)
+[![Source Code](https://img.shields.io/badge/Repository-GitHub-161b22?style=for-the-badge&logo=github)](https://github.com/se23uari120/brand-risk-index)
+
+* **Live Public Website:** [https://se23uari120.github.io/brand-risk-index/](https://se23uari120.github.io/brand-risk-index/)
+* **GitHub Repository:** [https://github.com/se23uari120/brand-risk-index](https://github.com/se23uari120/brand-risk-index)
+
 ---
 
 ## Architecture Overview
