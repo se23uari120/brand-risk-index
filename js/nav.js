@@ -4,10 +4,13 @@
 
 const tabTitles = {
   overview: 'System Overview',
+  search:   'Company Search',
+  sources:  'Source Comparison',
   register: 'Risk Register',
   compare:  'Company Comparator',
   mcdm:     'MCDM Weight Matrix',
-  action:   'Action Engine'
+  action:   'Action Engine',
+  validation: 'Validation'
 };
 
 // Each tab's init function is registered here after the

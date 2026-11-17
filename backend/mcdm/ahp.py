@@ -92,10 +92,10 @@ class AHP:
 
         result = {
             "weights":     dict(zip(self.criteria_names, self.weights.tolist())),
-            "lambda_max":  round(self.lambda_max, 4),
-            "CI":          round(self.CI, 4),
-            "CR":          round(self.CR, 4),
-            "CR_acceptable": self.CR < 0.10,
+            "lambda_max":  round(float(self.lambda_max), 4),
+            "CI":          round(float(self.CI), 4),
+            "CR":          round(float(self.CR), 4),
+            "CR_acceptable": bool(self.CR < 0.10),
         }
 
         if not result["CR_acceptable"]:

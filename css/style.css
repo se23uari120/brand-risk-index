@@ -500,3 +500,31 @@ select.input-field option { background: var(--card); color: var(--text); }
 .chart-wrap { position: relative; width: 100%; }
 canvas { display: block; }
 
+
+/* ── Added: buttons, chips, meters for search / MCDM / validation ── */
+.btn-accent { background: var(--accent); border: none; color: #fff; border-radius: 4px; padding: 7px 14px;
+  font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn-accent:disabled { opacity: .55; cursor: default; }
+.btn-ghost { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 4px;
+  padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: inherit; }
+.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+.chip { display: inline-block; border: 1px solid var(--border); border-radius: 10px; padding: 1px 8px;
+  font-size: 11px; color: var(--muted); white-space: nowrap; }
+.chip-strong { color: var(--text); }
+.meter { position: relative; height: 10px; border-radius: 5px; overflow: hidden;
+  background: linear-gradient(90deg, rgba(35,134,54,.35) 0 40%, rgba(210,153,34,.35) 40% 70%, rgba(218,54,51,.35) 70% 100%); }
+.meter-ci { position: absolute; top: 0; bottom: 0; background: rgba(230,237,243,.35); }
+.meter-pt { position: absolute; top: -3px; width: 4px; height: 16px; margin-left: -2px; border-radius: 2px; background: var(--text); }
+.meter-scale { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 3px; }
+.hbar { height: 8px; border-radius: 4px; background: var(--accent); }
+.hbar-track { background: var(--border); border-radius: 4px; overflow: hidden; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 12px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; }
+.lbl-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.lbl-btns button { flex: 1; min-width: 80px; }
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 700px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+}

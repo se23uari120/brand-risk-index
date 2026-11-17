@@ -14,19 +14,27 @@ const COLORS = {
 
 const REACH_SCORE = { Viral: 100, High: 75, Medium: 50, Low: 25 };
 
+// AHP weights computed from the pairwise matrix (report Table IV).
+// Replaced with the live values from /api/mcdm/ahp when the backend is up.
+let AHP_W = [0.4658, 0.2771, 0.1611, 0.0960];
+const CRITERIA_LABELS = ['C1 Severity', 'C2 Reach', 'C3 Recoverability', 'C4 Criticality'];
+
+const clip = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+
 /**
- * Compute deterministic MCDM criteria scores (0–100) for a company.
- * C1 Severity        → risk index directly
- * C2 Reach           → reach score lookup
- * C3 Recoverability  → |sentiment| × 100
- * C4 Criticality     → level-based proxy
+ * MCDM criterion scores (0–100) for a company.
+ * Uses the values the engine computed (c.criteria) when available; otherwise
+ * applies the report Table III formulas to the stored sentiment and reach.
  */
 function getCriteriaScores(c) {
-  const c1 = c.risk;
-  const c2 = REACH_SCORE[c.reach] || 0;
-  const c3 = Math.abs(c.sentiment) * 100;
-  const c4Map = { Low: 20, Moderate: 60, Critical: 90 };
-  const c4 = c4Map[c.level] || 0;
+  if (Array.isArray(c.criteria) && c.criteria.every(v => typeof v === 'number')) {
+    const [c1, c2, c3, c4] = c.criteria;
+    return { c1, c2, c3, c4 };
+  }
+  const c1 = clip(Math.abs(Math.min(0, c.sentiment || 0)) * 100, 5, 100);
+  const c2 = REACH_SCORE[c.reach] || 25;
+  const c3 = clip(0.6 * c1 + 0.4 * c2, 10, 100);
+  const c4 = clip(0.8 * c1, 10, 100);
   return { c1, c2, c3, c4 };
 }
 

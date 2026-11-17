@@ -21,7 +21,7 @@
   <div class="sidebar-header">
     <div class="brand">Brand Risk Intelligence</div>
     <div class="title">AI + MCDM Risk Index</div>
-    <div class="subtitle">Indian Listed Entities · Q4 2025</div>
+    <div class="subtitle">Indian corporates · live news</div>
   </div>
 
   <nav id="sidebar-nav">
@@ -33,6 +33,18 @@
         <rect x="14" y="14" width="7" height="7" rx="1"/>
       </svg>
       Overview
+    </a>
+    <a data-tab="search">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/>
+      </svg>
+      Company Search
+    </a>
+    <a data-tab="sources">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h10M4 18h6" stroke-linecap="round"/><circle cx="18" cy="15" r="3"/>
+      </svg>
+      Source Comparison
     </a>
     <a data-tab="register">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -58,10 +70,16 @@
       </svg>
       Action Engine
     </a>
+    <a data-tab="validation">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/>
+      </svg>
+      Validation
+    </a>
   </nav>
 
   <div class="sidebar-footer">
-    <div><span class="status-dot"></span>System Live · 15 companies</div>
+    <div><span class="status-dot"></span><span id="sidebar-count">System Live · 15 companies</span></div>
     <div style="margin-top:4px;color:#8b949e">TOPSIS + AHP · FinBERT NLP</div>
   </div>
 </aside>
@@ -76,7 +94,8 @@
     <span class="page-title" id="topbar-title">System Overview</span>
     <div class="meta">
       <span class="topbar-badge badge-live">● LIVE</span>
-      <span>Last sync: 02 Nov 2026, 04:27 UTC</span>
+      <span id="live-sync-text">Last sync: 02 Nov 2026, 04:27 UTC</span>
+      <button id="live-refresh-btn" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:4px;padding:3px 9px;font-size:12px;cursor:pointer;font-weight:600">&#8635; Refresh live</button>
     </div>
   </div>
 
@@ -92,23 +111,23 @@
       <div class="grid-4" style="margin-bottom:20px">
         <div class="card" style="padding:16px">
           <div class="stat-label">Monitored Entities</div>
-          <div class="stat-value" style="margin-top:6px">150</div>
-          <div class="stat-delta">Across 18 sectors</div>
+          <div class="stat-value" style="margin-top:6px" id="kpi-entities">150</div>
+          <div class="stat-delta" id="kpi-entities-sub">Across 18 sectors</div>
         </div>
         <div class="card" style="padding:16px">
           <div class="stat-label">Active Signals</div>
-          <div class="stat-value" style="margin-top:6px">1,248</div>
-          <div class="stat-delta">+12% MoM ↑</div>
+          <div class="stat-value" style="margin-top:6px" id="kpi-signals">1,248</div>
+          <div class="stat-delta" id="kpi-signals-sub">+12% MoM ↑</div>
         </div>
         <div class="card" style="padding:16px">
           <div class="stat-label">High-Risk Crises</div>
-          <div class="stat-value" style="color:var(--critical);margin-top:6px">142</div>
+          <div class="stat-value" style="color:var(--critical);margin-top:6px" id="kpi-critical">142</div>
           <div class="stat-delta" style="color:var(--critical)">Requires immediate attention</div>
         </div>
         <div class="card" style="padding:16px">
-          <div class="stat-label">Compliance Index</div>
-          <div class="stat-value" style="color:var(--low);margin-top:6px">84<span style="font-size:16px;font-weight:400;color:var(--muted)">/100</span></div>
-          <div class="stat-delta">Regulatory posture stable</div>
+          <div class="stat-label">Average Risk Index</div>
+          <div class="stat-value" style="margin-top:6px" id="kpi-avg">–<span style="font-size:16px;font-weight:400;color:var(--muted)">/100</span></div>
+          <div class="stat-delta" id="kpi-avg-sub">Across monitored companies</div>
         </div>
       </div>
 
@@ -151,6 +170,60 @@
     <!-- ===================================================== -->
     <!--  TAB: RISK REGISTER                                    -->
     <!-- ===================================================== -->
+    <!-- ===================================================== -->
+    <!--  COMPANY SEARCH TAB — analyse any company live          -->
+    <!-- ===================================================== -->
+    <section class="tab-section" id="tab-search">
+      <div class="card" style="margin-bottom:16px;padding:14px 16px">
+        <form id="search-form" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="search-company" class="input-field" list="search-suggest" placeholder="Any company, e.g. Swiggy, Nykaa, HDFC Bank, HUL…" style="flex:2;min-width:220px" autocomplete="off" required minlength="2" />
+          <datalist id="search-suggest"></datalist>
+          <select id="search-sector" class="input-field" title="Sector sets the C4 criticality multiplier">
+            <option value="">Sector: auto-detect</option>
+          </select>
+          <select id="search-hours" class="input-field" title="News window">
+            <option value="24">Last 24 hours</option>
+            <option value="48" selected>Last 48 hours</option>
+            <option value="168">Last 7 days</option>
+            <option value="720">Last 30 days</option>
+            <option value="custom">Past dates…</option>
+          </select>
+          <span id="search-dates" style="display:none;gap:6px;align-items:center;font-size:12px;color:var(--muted)">
+            <input type="date" id="search-from" class="input-field" style="padding:6px 8px"> to
+            <input type="date" id="search-to" class="input-field" style="padding:6px 8px">
+          </span>
+          <input type="text" id="search-terms" class="input-field" placeholder="Extra aliases (optional, comma-separated)" style="flex:1;min-width:180px" />
+          <button type="submit" id="search-btn" class="btn-accent" style="padding:8px 16px">Analyse</button>
+        </form>
+        <div id="search-hint" style="margin-top:6px;font-size:11px;color:var(--muted)"></div>
+        <div id="search-recent" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;font-size:12px"></div>
+      </div>
+      <div id="search-result">
+        <div class="card" style="padding:28px;text-align:center;color:var(--muted);font-size:13px">
+          Search any company to get its Brand Image Risk Index: its news is fetched from 10 Indian outlets,
+          Moneycontrol and Google News, every headline is scored with FinBERT, and the four criteria are
+          combined with AHP-TOPSIS on the same scale as the monitored companies. Use "Past dates…" to
+          assess a past period (for example an incident).
+        </div>
+      </div>
+    </section>
+
+    <!--  SOURCE COMPARISON TAB — company × outlet              -->
+    <section class="tab-section" id="tab-sources">
+      <div class="card" style="margin-bottom:16px;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)">
+        Compare how each news source covers the monitored companies.
+        <label>Min articles per cell
+          <select id="srcm-min" class="input-field" style="font-size:12px;padding:4px 8px;margin-left:4px">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option>
+          </select></label>
+        <label>Outlets shown
+          <select id="srcm-cols" class="input-field" style="font-size:12px;padding:4px 8px;margin-left:4px">
+            <option value="8">Top 8</option><option value="12" selected>Top 12</option><option value="20">Top 20</option><option value="999">All</option>
+          </select></label>
+      </div>
+      <div id="sources-body"><div class="card" style="padding:24px;color:var(--muted)">Loading…</div></div>
+    </section>
+
     <section class="tab-section" id="tab-register">
 
       <!-- Filters bar -->
@@ -289,153 +362,118 @@
     <!-- ===================================================== -->
     <section class="tab-section" id="tab-mcdm">
 
-      <!-- Formula card -->
       <div class="card" style="margin-bottom:16px">
-        <div class="card-title">Risk Index Formula</div>
+        <div class="card-title">Brand Image Risk Index &mdash; how it is computed</div>
         <div class="formula-block">
-          Risk Index = &Sigma; w&#x1D456; &middot; c&#x1D456; &nbsp;=&nbsp; 0.35&middot;C1 + 0.28&middot;C2 + 0.22&middot;C3 + 0.15&middot;C4
+          Risk Index = D<sup>+</sup> / (D<sup>+</sup> + D<sup>&minus;</sup>) &times; 100
         </div>
-        <div style="font-size:12px;color:var(--muted);margin-top:10px">
-          where each criterion score c&#x1D456; is normalised [0,100] and w&#x1D456; is the AHP-derived priority weight.
+        <div style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6">
+          FinBERT scores every headline &rarr; four criteria C1&ndash;C4 (0&ndash;100) &rarr; weighted by AHP &rarr;
+          TOPSIS distance from a fixed lowest-risk baseline (D<sup>+</sup>) and a fixed maximum-crisis profile (D<sup>&minus;</sup>).
+          Bands (report Table V): <span style="color:var(--low)">Low &lt; 40</span> &middot;
+          <span style="color:var(--moderate)">Moderate 40&ndash;&lt;70</span> &middot;
+          <span style="color:var(--critical)">Critical &ge; 70</span>.
+          <span id="mcdm-weights-inline"></span>
         </div>
       </div>
 
-      <!-- AHP matrix + Weight table -->
       <div class="grid-2" style="margin-bottom:16px">
-
-        <!-- Pairwise comparison matrix -->
         <div class="card">
-          <div class="card-title">AHP Pairwise Comparison Matrix</div>
+          <div class="card-title">AHP Pairwise Comparison Matrix (Saaty 1&ndash;9)</div>
           <div style="overflow-x:auto">
             <table class="matrix-table">
               <thead>
-                <tr>
-                  <th>Criterion</th>
-                  <th>C1 Severity</th>
-                  <th>C2 Reach</th>
-                  <th>C3 Recoverability</th>
-                  <th>C4 Criticality</th>
-                </tr>
+                <tr><th>Criterion</th><th>C1 Severity</th><th>C2 Reach</th><th>C3 Recoverability</th><th>C4 Criticality</th></tr>
               </thead>
               <tbody>
-                <tr>
-                  <td style="font-weight:600;text-align:left;color:var(--muted)">C1 Severity</td>
-                  <td class="diag">1</td><td>2</td><td>3</td><td>4</td>
-                </tr>
-                <tr>
-                  <td style="font-weight:600;text-align:left;color:var(--muted)">C2 Reach</td>
-                  <td>1/2</td><td class="diag">1</td><td>2</td><td>3</td>
-                </tr>
-                <tr>
-                  <td style="font-weight:600;text-align:left;color:var(--muted)">C3 Recoverability</td>
-                  <td>1/3</td><td>1/2</td><td class="diag">1</td><td>2</td>
-                </tr>
-                <tr>
-                  <td style="font-weight:600;text-align:left;color:var(--muted)">C4 Criticality</td>
-                  <td>1/4</td><td>1/3</td><td>1/2</td><td class="diag">1</td>
-                </tr>
+                <tr><td style="font-weight:600;text-align:left;color:var(--muted)">C1 Severity</td><td class="diag">1</td><td>2</td><td>3</td><td>4</td></tr>
+                <tr><td style="font-weight:600;text-align:left;color:var(--muted)">C2 Reach</td><td>1/2</td><td class="diag">1</td><td>2</td><td>3</td></tr>
+                <tr><td style="font-weight:600;text-align:left;color:var(--muted)">C3 Recoverability</td><td>1/3</td><td>1/2</td><td class="diag">1</td><td>2</td></tr>
+                <tr><td style="font-weight:600;text-align:left;color:var(--muted)">C4 Criticality</td><td>1/4</td><td>1/3</td><td>1/2</td><td class="diag">1</td></tr>
               </tbody>
             </table>
           </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:10px">
-            Consistency Ratio (CR): 0.024 &lt; 0.10 &mdash; Acceptable
+          <div id="mcdm-consistency" style="font-size:12px;color:var(--muted);margin-top:10px">
+            &lambda;<sub>max</sub> = 4.031 &middot; CI = 0.0103 &middot; CR = 0.0115 &lt; 0.10 &mdash; consistent
           </div>
         </div>
 
-        <!-- AHP priority weights -->
         <div class="card">
-          <div class="card-title">AHP Priority Weights</div>
+          <div class="card-title">AHP Priority Weights (computed from the matrix)</div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Criterion</th>
-                <th>Description</th>
-                <th>AHP Weight</th>
-                <th>Impact Level</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span style="color:var(--accent);font-weight:600">C1</span></td>
-                <td>Severity of Crisis</td>
-                <td><strong>0.35</strong></td>
-                <td><span class="badge badge-critical">Highest</span></td>
-              </tr>
-              <tr>
-                <td><span style="color:var(--accent);font-weight:600">C2</span></td>
-                <td>Media Reach &amp; Virality</td>
-                <td><strong>0.28</strong></td>
-                <td><span class="badge badge-critical">High</span></td>
-              </tr>
-              <tr>
-                <td><span style="color:var(--accent);font-weight:600">C3</span></td>
-                <td>Brand Recoverability</td>
-                <td><strong>0.22</strong></td>
-                <td><span class="badge badge-moderate">Moderate</span></td>
-              </tr>
-              <tr>
-                <td><span style="color:var(--accent);font-weight:600">C4</span></td>
-                <td>Regulatory Criticality</td>
-                <td><strong>0.15</strong></td>
-                <td><span class="badge badge-moderate">Moderate</span></td>
-              </tr>
-              <tr style="cursor:default">
-                <td colspan="2" style="color:var(--muted);font-size:12px">Total</td>
-                <td><strong>1.00</strong></td>
-                <td></td>
-              </tr>
+            <thead><tr><th>Criterion</th><th>Meaning</th><th>Weight</th><th style="width:35%"></th></tr></thead>
+            <tbody id="mcdm-weight-rows">
+              <tr><td><b style="color:var(--accent)">C1</b></td><td>Severity</td><td><strong>0.4658</strong></td><td></td></tr>
+              <tr><td><b style="color:var(--accent)">C2</b></td><td>Reach</td><td><strong>0.2771</strong></td><td></td></tr>
+              <tr><td><b style="color:var(--accent)">C3</b></td><td>Recoverability</td><td><strong>0.1611</strong></td><td></td></tr>
+              <tr><td><b style="color:var(--accent)">C4</b></td><td>Criticality</td><td><strong>0.0960</strong></td><td></td></tr>
             </tbody>
           </table>
+          <div id="mcdm-weight-note" style="font-size:11px;color:var(--muted);margin-top:8px">
+            These are the weights the engine uses. README and config.py previously listed 0.35 / 0.28 / 0.22 / 0.15
+            (report Table IV); they now match the computed values.
+          </div>
         </div>
       </div>
 
-      <!-- TOPSIS steps -->
-      <div class="card">
-        <div class="card-title">TOPSIS Methodology &mdash; Step-by-Step</div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">Criterion definitions (report Table III, live mode)</div>
+        <table class="data-table" style="margin-top:6px">
+          <thead><tr><th style="width:150px">Criterion</th><th>How the code computes it</th></tr></thead>
+          <tbody>
+            <tr><td><b>s</b> (negative effective sentiment)</td><td>Recency-weighted mean of FinBERT negative intensity, max(0, &minus;score), over opinionated (non-neutral) headlines, with <span id="mcdm-prior">2</span> neutral pseudo-headlines added so one or two items cannot dominate. Weight w = 0.5<sup>age / <span id="mcdm-halflife">72</span>h</sup> (time decay).</td></tr>
+            <tr><td>C1 Severity</td><td>clip<sub>[5,100]</sub>(s &times; 100)</td></tr>
+            <tr><td>C2 Reach</td><td>Viral 100 / High 75 / Medium 50 / Low 25, from recency-weighted negative volume and the number of outlets carrying negative stories (Viral &ge; 15 or &ge; 8 outlets; High &ge; 6 or &ge; 4; Medium &ge; 2 or &ge; 2; else Low).</td></tr>
+            <tr><td>C3 Recoverability</td><td>clip<sub>[10,100]</sub>(0.6&middot;C1 + 0.4&middot;C2)</td></tr>
+            <tr><td>C4 Criticality</td><td>clip<sub>[10,100]</sub>(m<sub>k</sub> &middot; C1), sector multiplier m<sub>k</sub> from 0.65 (FMCG) to 1.15 (FinTech).</td></tr>
+          </tbody>
+        </table>
+        <div id="mcdm-sectors" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:11px"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">TOPSIS &mdash; step by step</div>
         <div>
-          <div class="topsis-step">
-            <div class="topsis-step-num">1</div>
-            <div class="topsis-step-body">
-              <div class="topsis-step-title">Decision Matrix Construction</div>
-              <div class="topsis-step-desc">Build matrix X (m&times;n) where m = companies and n = 4 MCDM criteria. Each cell x&#x1D43C;&#x2C7C; represents the performance of alternative i on criterion j, sourced from FinBERT sentiment scores, media monitoring APIs, and regulatory databases.</div>
-            </div>
-          </div>
-          <div class="topsis-step">
-            <div class="topsis-step-num">2</div>
-            <div class="topsis-step-body">
-              <div class="topsis-step-title">Normalised Decision Matrix</div>
-              <div class="topsis-step-desc">Each value is normalised: r&#x1D43C;&#x2C7C; = x&#x1D43C;&#x2C7C; / &radic;(&Sigma; x&#xB2;&#x1D43C;&#x2C7C;). This eliminates dimensional differences between criteria, ensuring fair comparison across severity, reach, recoverability, and criticality.</div>
-            </div>
-          </div>
-          <div class="topsis-step">
-            <div class="topsis-step-num">3</div>
-            <div class="topsis-step-body">
-              <div class="topsis-step-title">Weighted Normalised Matrix (AHP Integration)</div>
-              <div class="topsis-step-desc">Multiply each column by its AHP weight: v&#x1D43C;&#x2C7C; = w&#x2C7C; &middot; r&#x1D43C;&#x2C7C;. Weights derived via AHP pairwise comparisons: [0.35, 0.28, 0.22, 0.15]. This embeds expert judgment into the quantitative model.</div>
-            </div>
-          </div>
-          <div class="topsis-step">
-            <div class="topsis-step-num">4</div>
-            <div class="topsis-step-body">
-              <div class="topsis-step-title">Ideal Best &amp; Ideal Worst Solutions</div>
-              <div class="topsis-step-desc">A+ (ideal best) = {min values for cost criteria}; A&minus; (ideal worst) = {max values for cost criteria}. All 4 criteria are cost-type (higher value = greater brand risk). The ideal best corresponds to lowest risk exposure.</div>
-            </div>
-          </div>
-          <div class="topsis-step">
-            <div class="topsis-step-num">5</div>
-            <div class="topsis-step-body">
-              <div class="topsis-step-title">Euclidean Distance Computation</div>
-              <div class="topsis-step-desc">D+&#x1D43C; = &radic;(&Sigma;(v&#x1D43C;&#x2C7C; &minus; A+&#x2C7C;)&sup2;) &mdash; distance from ideal best. D&minus;&#x1D43C; = &radic;(&Sigma;(v&#x1D43C;&#x2C7C; &minus; A&minus;&#x2C7C;)&sup2;) &mdash; distance from ideal worst. Both are computed across all n=4 weighted criteria for each company.</div>
-            </div>
-          </div>
-          <div class="topsis-step">
-            <div class="topsis-step-num">6</div>
-            <div class="topsis-step-body">
-              <div class="topsis-step-title">Closeness Coefficient &amp; Final Risk Score</div>
-              <div class="topsis-step-desc">Risk Index CC&#x1D43C; = D+&#x1D43C; / (D+&#x1D43C; + D&minus;&#x1D43C;). Measures relative distance from safe baseline (A+) towards crisis state (A&minus;). Final Risk Index = CC&#x1D43C; &times; 100. Thresholds: Low [0&ndash;40], Moderate [41&ndash;70], Critical [71&ndash;100].</div>
-            </div>
-          </div>
+          <div class="topsis-step"><div class="topsis-step-num">1</div><div class="topsis-step-body">
+            <div class="topsis-step-title">Decision matrix</div>
+            <div class="topsis-step-desc">X (m &times; 4): one row per company, columns C1&ndash;C4 on a 0&ndash;100 scale, built from that company's FinBERT-scored headlines.</div>
+          </div></div>
+          <div class="topsis-step"><div class="topsis-step-num">2</div><div class="topsis-step-body">
+            <div class="topsis-step-title">Normalisation</div>
+            <div class="topsis-step-desc">The criteria already share a 0&ndash;100 scale, so r<sub>ij</sub> = x<sub>ij</sub> / 100. (Classic vector normalisation, x / &radic;&Sigma;x&sup2;, makes every score depend on which other companies are in the set; it is kept as the "relative" mode for comparison.)</div>
+          </div></div>
+          <div class="topsis-step"><div class="topsis-step-num">3</div><div class="topsis-step-body">
+            <div class="topsis-step-title">Weighting</div>
+            <div class="topsis-step-desc">v<sub>ij</sub> = w<sub>j</sub> &middot; r<sub>ij</sub> with the AHP weights <span class="mcdm-wlist">[0.4658, 0.2771, 0.1611, 0.0960]</span>.</div>
+          </div></div>
+          <div class="topsis-step"><div class="topsis-step-num">4</div><div class="topsis-step-body">
+            <div class="topsis-step-title">Ideal solutions</div>
+            <div class="topsis-step-desc">All criteria are cost-type. A<sup>+</sup> is the lowest-risk baseline (C1 5, C2 25, C3 13, C4 10 &mdash; the minimum the Table III formulas can produce) and A<sup>&minus;</sup> is maximum crisis exposure (100 on every criterion), as described in report Sec. IV-D. Because they are fixed, a searched company and the monitored companies share one scale.</div>
+          </div></div>
+          <div class="topsis-step"><div class="topsis-step-num">5</div><div class="topsis-step-body">
+            <div class="topsis-step-title">Distances</div>
+            <div class="topsis-step-desc">D<sup>+</sup> = &radic;&Sigma;(v<sub>ij</sub> &minus; A<sup>+</sup><sub>j</sub>)&sup2; (distance from the safe baseline) and D<sup>&minus;</sup> = &radic;&Sigma;(v<sub>ij</sub> &minus; A<sup>&minus;</sup><sub>j</sub>)&sup2; (distance from the crisis profile).</div>
+          </div></div>
+          <div class="topsis-step"><div class="topsis-step-num">6</div><div class="topsis-step-body">
+            <div class="topsis-step-title">Risk index, band and action</div>
+            <div class="topsis-step-desc">Risk Index = D<sup>+</sup> / (D<sup>+</sup> + D<sup>&minus;</sup>) &times; 100. Low &lt; 40 (background logging), Moderate 40&ndash;&lt;70 (assign analyst, SEBI check, draft statement), Critical &ge; 70 (executive crisis protocol, legal review, PR response). A 90% confidence range is computed by bootstrapping the headlines.</div>
+          </div></div>
         </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <div class="card-title">Expert (AHP) vs objective (CRITIC) weights</div>
+          <label style="font-size:12px;color:var(--muted)">AHP share in combined weights
+            <input type="range" id="mcdm-alpha" min="0" max="1" step="0.1" value="0.5" style="vertical-align:middle">
+            <span id="mcdm-alpha-val">0.5</span></label>
+        </div>
+        <div id="mcdm-critic" style="margin-top:8px;color:var(--muted);font-size:12px">Loading…</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sensitivity analysis &mdash; weights and ranking stability</div>
+        <div id="mcdm-sensitivity" style="margin-top:8px;color:var(--muted);font-size:12px">Loading…</div>
       </div>
     </section>
 
@@ -448,7 +486,7 @@
       <div class="grid-3" style="margin-bottom:20px">
         <div class="threshold-card">
           <div class="tc-level" style="color:var(--low)">Low Risk</div>
-          <div class="tc-range" style="color:var(--low)">0 – 40</div>
+          <div class="tc-range" style="color:var(--low)">&lt; 40</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Risk Index Range</div>
           <ul>
             <li>Background logging &amp; archival</li>
@@ -459,7 +497,7 @@
         </div>
         <div class="threshold-card">
           <div class="tc-level" style="color:var(--moderate)">Moderate Risk</div>
-          <div class="tc-range" style="color:var(--moderate)">41 – 70</div>
+          <div class="tc-range" style="color:var(--moderate)">40 – &lt; 70</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Risk Index Range</div>
           <ul>
             <li>Assign analyst within 24h</li>
@@ -470,7 +508,7 @@
         </div>
         <div class="threshold-card">
           <div class="tc-level" style="color:var(--critical)">Critical Risk</div>
-          <div class="tc-range" style="color:var(--critical)">71 – 100</div>
+          <div class="tc-range" style="color:var(--critical)">&ge; 70</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Risk Index Range</div>
           <ul>
             <li>Executive crisis protocol</li>
@@ -497,6 +535,46 @@
       </div>
     </section>
 
+
+    <!-- ===================================================== -->
+    <!--  TAB: VALIDATION — back-test, FinBERT accuracy        -->
+    <!-- ===================================================== -->
+    <section class="tab-section" id="tab-validation">
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <div>
+            <div class="card-title">Back-test on documented incidents</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">Each incident's first 5 days of coverage vs. the same 5 days 60 days earlier, scored exactly like a live search, compared with a sentiment-only and a mention-volume baseline.</div>
+          </div>
+          <button id="bt-run" class="btn-accent">Run back-test</button>
+        </div>
+        <div id="bt-body" style="margin-top:12px;color:var(--muted);font-size:12px">Loading…</div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:16px;align-items:start">
+        <div class="card">
+          <div class="card-title">Label headlines (FinBERT accuracy check)</div>
+          <div style="font-size:12px;color:var(--muted);margin:4px 0 10px">Read each headline and choose the sentiment a financial analyst would give it. The model's answer is hidden until the metrics are calculated.</div>
+          <div id="ev-label-box">Loading…</div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="card-title">Accuracy against your labels</div>
+            <button id="ev-refresh" class="btn-ghost">Recalculate</button>
+          </div>
+          <div id="ev-metrics" style="margin-top:8px;font-size:12px;color:var(--muted)">No labels yet.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Score one headline</div>
+        <form id="tt-form" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <input id="tt-text" class="input-field" style="flex:1;min-width:240px" placeholder="e.g. RBI imposes penalty on digital lending non-compliance" required>
+          <button class="btn-accent" type="submit">Score</button>
+        </form>
+        <div id="tt-out" style="margin-top:10px;font-size:13px"></div>
+      </div>
+    </section>
   </div><!-- end content-area -->
 </div><!-- end main -->
 
@@ -558,6 +636,10 @@
           </div>
         </div>
       </div>
+      <div style="margin-top:16px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px">Live News Feed (FinBERT scored)</div>
+        <div id="modal-headlines" style="max-height:220px;overflow-y:auto"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -565,6 +647,7 @@
 <!-- ============================================================ -->
 <!--  JavaScript modules (order matters)                          -->
 <!-- ============================================================ -->
+<script src="js/config.js"></script>
 <script src="js/data.js"></script>
 <script src="js/helpers.js"></script>
 <script src="js/nav.js"></script>
@@ -575,6 +658,10 @@
 <script src="js/mcdm.js"></script>
 <script src="js/action.js"></script>
 <script src="js/main.js"></script>
+<script src="js/live.js"></script>
+<script src="js/search.js"></script>
+<script src="js/sources.js"></script>
+<script src="js/validation.js"></script>
 
 </body>
 </html>

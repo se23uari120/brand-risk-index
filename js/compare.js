@@ -455,28 +455,28 @@ function renderCompareTable() {
       fn: c => `<span style="font-weight:600;color:${c.reach === 'Viral' ? COLORS.critical : COLORS.text}">${c.reach}</span> (${REACH_SCORE[c.reach] || 25} pts)`
     },
     {
-      label: 'C1 Severity Score (AHP 0.35)',
+      label: `C1 Severity (w ${AHP_W[0].toFixed(3)})`,
       fn: c => {
         const sc = getCriteriaScores(c);
         return `<span style="font-variant-numeric:tabular-nums">${sc.c1.toFixed(1)} / 100</span>`;
       }
     },
     {
-      label: 'C2 Reach Score (AHP 0.28)',
+      label: `C2 Reach (w ${AHP_W[1].toFixed(3)})`,
       fn: c => {
         const sc = getCriteriaScores(c);
         return `<span style="font-variant-numeric:tabular-nums">${sc.c2.toFixed(1)} / 100</span>`;
       }
     },
     {
-      label: 'C3 Recoverability (AHP 0.22)',
+      label: `C3 Recoverability (w ${AHP_W[2].toFixed(3)})`,
       fn: c => {
         const sc = getCriteriaScores(c);
         return `<span style="font-variant-numeric:tabular-nums">${sc.c3.toFixed(1)} / 100</span>`;
       }
     },
     {
-      label: 'C4 Criticality (AHP 0.15)',
+      label: `C4 Criticality (w ${AHP_W[3].toFixed(3)})`,
       fn: c => {
         const sc = getCriteriaScores(c);
         return `<span style="font-variant-numeric:tabular-nums">${sc.c4.toFixed(1)} / 100</span>`;

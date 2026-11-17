@@ -25,3 +25,6 @@ ENV/
 Thumbs.db
 .vscode/
 .idea/
+
+# Pipeline run history (latest.json is kept)
+backend/output/risk_results_*.json

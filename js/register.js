@@ -67,6 +67,20 @@ function renderRegTable(data) {
     </tr>
   `).join('');
 
+  const q = document.getElementById('reg-search').value.trim();
+  if (!data.length && q.length >= 2) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:18px;color:var(--muted)">
+      "${escapeHtml(q)}" is not monitored.
+      <a href="#" id="reg-live-search" style="color:var(--accent);font-weight:600">Analyse "${escapeHtml(q)}" from live news →</a>
+    </td></tr>`;
+    document.getElementById('reg-live-search').addEventListener('click', e => {
+      e.preventDefault();
+      switchTab('search');
+      document.getElementById('search-company').value = q;
+      runSearch();
+    });
+  }
+
   // Row click → open modal
   tbody.querySelectorAll('tr[data-id]').forEach(row => {
     row.addEventListener('click', () => {
