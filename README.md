@@ -13,11 +13,11 @@ short_description: FinBERT + AHP-TOPSIS reputational risk for any company
 
 A decision-support system that scores the reputational risk of companies from live news: headlines from Indian business outlets, Moneycontrol and Google News are scored with **FinBERT**, turned into four criteria, weighted with **AHP** and ranked with **TOPSIS** into a 0–100 Brand Image Risk Index with Low / Moderate / Critical bands and a prescribed action. Search any company, live or for a past date range.
 
-* **Public live app (search + live news):** <!-- HF_LINK -->see "Deploy a public live link" below
-* **Static demo (stored data only, no search):** https://se23uari120.github.io/brand-risk-index/
+* **Online demo (stored results, no search or live refresh):** https://se23uari120.github.io/brand-risk-index/
+* **Full app (search + live news + FinBERT):** run it locally with the two commands below, or host it (see "Hosting")
 * **Repository:** https://github.com/se23uari120/brand-risk-index
 
-(The block between `---` lines above is configuration for Hugging Face Spaces.)
+(The block between `---` lines above is only used if the app is hosted on Hugging Face Spaces.)
 
 ---
 
@@ -48,20 +48,29 @@ Then open **http://localhost:8000**. `setup` runs once; afterwards only `start` 
 
 ---
 
-## Deploy a public live link (Hugging Face Spaces, free)
+## Hosting
 
-GitHub Pages can only host the static dashboard, because live news, search and FinBERT need the Python server. Hugging Face Spaces runs the `Dockerfile` in this repo for free (2 CPU, 16 GB RAM):
+GitHub Pages hosts only the static dashboard: live news, Company Search and FinBERT need the Python server.
+To put the full app online, run the `Dockerfile` on any host with about **2 GB RAM** (FinBERT + PyTorch).
+As of November 2026:
 
-1. Create a free account at https://huggingface.co and an access token with **write** permission (Settings → Access Tokens).
-2. In this folder run `.venv\Scripts\hf auth login` (Windows) or `.venv/bin/hf auth login` and paste the token.
-3. Create the Space and upload the code:
+| Option | Cost | Notes |
+|---|---|---|
+| Hugging Face Spaces (Docker) | PRO plan, $9/month | Free accounts can no longer host Docker Spaces. Steps below. |
+| Google Cloud Run | free tier for light use | Needs a billing account; set memory to 2 GiB. |
+| Your own PC + a tunnel (e.g. Cloudflare quick tunnel) | free | Works only while the PC and `start.bat` are running. |
+
+**Hugging Face Spaces** (with PRO):
+1. Sign in: `.venv\Scripts\hf auth login` (Windows) or `.venv/bin/hf auth login`.
+2. Create the Space and upload the code:
    ```bash
    hf repos create YOUR-NAME/brand-risk-index --type space --space-sdk docker --public
    hf upload YOUR-NAME/brand-risk-index . . --repo-type space --exclude ".venv/*" "backend/models/*" ".git/*" "**/__pycache__/*" "backend/output/risk_results_*"
    ```
-4. The first build takes about 5–10 minutes. The app is then live at `https://YOUR-NAME-brand-risk-index.hf.space`.
+3. The first build takes about 5–10 minutes; the app is then at `https://YOUR-NAME-brand-risk-index.hf.space`.
 
-Free Spaces sleep after 48 hours without visitors and wake up on the next visit (about a minute). To make the GitHub Pages copy use the live server too, set `window.BRI_API_BASE` in `js/config.js` to the Space URL.
+Once the full app is hosted anywhere, set `window.BRI_API_BASE` in `js/config.js` to its URL and the GitHub Pages
+copy will use it for live data and search too.
 
 ---
 
