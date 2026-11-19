@@ -1,0 +1,67 @@
+# Keeps the dashboard up to date: after every NSE trading session this job
+# downloads fresh prices + headlines, re-scores all companies, appends the
+# day to the history and commits the new data (GitHub Pages then redeploys).
+name: Update brand risk data
+
+on:
+  schedule:
+    - cron: "15 11 * * 1-5"      # 16:45 IST Mon–Fri, after the NSE close (15:30 IST)
+  workflow_dispatch:
+    inputs:
+      sentiment:
+        description: "Headline sentiment engine"
+        type: choice
+        default: auto
+        options: [auto, finbert, lexicon]
+      reset_history:
+        description: "Discard stored history and backfill 30 days again"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-risk-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+
+      - name: Install dependencies (core + CPU FinBERT)
+        run: |
+          pip install -r backend/requirements.txt
+          if [ "${{ inputs.sentiment || 'auto' }}" != "lexicon" ]; then
+            pip install torch --index-url https://download.pytorch.org/whl/cpu
+            pip install -r backend/requirements-finbert.txt
+          fi
+
+      - name: Cache FinBERT model weights
+        uses: actions/cache@v4
+        with:
+          path: backend/models
+          key: finbert-${{ runner.os }}-v1
+
+      - name: Run pipeline
+        run: |
+          python backend/run_pipeline.py --sentiment "${{ inputs.sentiment || 'auto' }}" \
+            ${{ inputs.reset_history && '--reset-history' || '' }}
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/data.js backend/output/latest.json backend/output/history.json
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "data: brand risk update $(date -u +%Y-%m-%d)"
+          git push

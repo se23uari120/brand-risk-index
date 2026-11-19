@@ -1,7 +1,1 @@
-"""
-engine/__init__.py
-"""
-from engine.risk_scorer import RiskScoringPipeline, build_criterion_scores
-
-__all__ = ["RiskScoringPipeline", "build_criterion_scores"]
-
+"""Scoring engine: criteria definitions and the end-to-end pipeline."""

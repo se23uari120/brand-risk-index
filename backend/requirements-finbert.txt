@@ -1,0 +1,5 @@
+# FinBERT sentiment engine (used automatically when installed).
+# Tip: install the much smaller CPU-only torch first:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.0
+transformers>=4.35

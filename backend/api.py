@@ -1,232 +1,139 @@
 """
 api.py
 ======
-FastAPI REST API and Web Server for Brand Image Risk Index.
+Optional REST API + local web server for the NSE Brand Risk Monitor.
 
-Features:
-  - Serves Interactive Web Dashboard at http://127.0.0.1:8000/
-  - Automatic Swagger API docs at http://127.0.0.1:8000/docs
-  - REST Endpoints for FinBERT NLP, AHP-TOPSIS MCDM, & Company Comparison
+    pip install -r backend/requirements-api.txt
+    python backend/api.py              → dashboard at http://127.0.0.1:8000
+                                         interactive API docs at /docs
+
+Endpoints (all read backend/output/latest.json, produced by run_pipeline.py)
+  GET  /api/health
+  GET  /api/summary                       as-of date, engine, counts per level
+  GET  /api/companies?sector=&level=&q=   ranked list (light fields)
+  GET  /api/companies/{symbol}            full record incl. headlines & series
+  GET  /api/sectors                       average score per sector
+  GET  /api/method                        criteria definitions + AHP weights
+  POST /api/score-headline {"text": ...}  sentiment of any headline
+  POST /api/refresh {"offline": false}    re-run the pipeline now (takes ~2 min)
 """
 
 import json
 import logging
 import sys
+from collections import defaultdict
 from pathlib import Path
-from typing import Optional, List
 
-# Ensure backend root in path
 BACKEND_DIR = Path(__file__).resolve().parent
-PROJECT_DIR = BACKEND_DIR.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from fastapi import FastAPI, HTTPException, Query, Body
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
 import uvicorn
+from fastapi import Body, FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
-from config import API_HOST, OUTPUT_DIR, DATA_DIR
-from mcdm.ahp import get_default_ahp, DEFAULT_PAIRWISE, CRITERIA_NAMES
-from nlp.finbert_pipeline import get_pipeline
-from engine.risk_scorer import RiskScoringPipeline
+from config import API_HOST, API_PORT, LATEST_FILE, PROJECT_DIR
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
-logger = logging.getLogger("api")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)-7s %(message)s")
 
-app = FastAPI(
-    title="AI + MCDM Brand Image Risk Index",
-    description="Real-time reputational risk assessment using FinBERT Sentiment NLP and AHP-TOPSIS MCDM weighting engine.",
-    version="1.0.0"
-)
+app = FastAPI(title="NSE Brand Risk Monitor API",
+              description="Brand risk index for NSE-listed companies from stock behaviour and news "
+                          "(AHP-weighted TOPSIS).", version="2.0.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+for folder in ("css", "js"):
+    if (PROJECT_DIR / folder).exists():
+        app.mount(f"/{folder}", StaticFiles(directory=str(PROJECT_DIR / folder)), name=folder)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Mount static CSS & JS folders
-css_dir = PROJECT_DIR / "css"
-js_dir  = PROJECT_DIR / "js"
-if css_dir.exists():
-    app.mount("/css", StaticFiles(directory=str(css_dir)), name="css")
-if js_dir.exists():
-    app.mount("/js", StaticFiles(directory=str(js_dir)), name="js")
+LIGHT_FIELDS = ("symbol", "name", "sector", "score", "level", "rank", "change5d", "criteria")
 
 
-def _load_latest_results() -> list:
-    """Load latest results from output/latest.json or compute fallback."""
-    latest_path = OUTPUT_DIR / "latest.json"
-    if latest_path.exists():
-        try:
-            with open(latest_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            logger.error("Error reading %s: %s", latest_path, e)
-
-    pipeline = RiskScoringPipeline(use_mock=True, offline=True)
-    results = pipeline.run(verbose=False)
-    pipeline.save_results(results)
-    return results
+def _data() -> dict:
+    if not LATEST_FILE.exists():
+        raise HTTPException(503, "No results yet — run: python backend/run_pipeline.py")
+    return json.loads(LATEST_FILE.read_text(encoding="utf-8"))
 
 
-@app.get("/", summary="Dashboard Application")
-def serve_dashboard():
-    """Serves the single-page application dashboard."""
-    index_file = PROJECT_DIR / "index.html"
-    if index_file.exists():
-        return FileResponse(index_file)
-    return JSONResponse({"status": "Dashboard HTML file not found."}, status_code=404)
+@app.get("/", include_in_schema=False)
+def dashboard():
+    return FileResponse(PROJECT_DIR / "index.html")
 
 
-@app.get("/api/health", summary="Health Check")
+@app.get("/api/health")
 def health():
-    return {
-        "status": "healthy",
-        "service": "AI + MCDM Brand Image Risk Index API",
-        "finbert_model": "ProsusAI/finbert",
-        "ahp_criteria": CRITERIA_NAMES,
-        "docs_url": "/docs"
-    }
+    return {"status": "ok", "hasData": LATEST_FILE.exists()}
 
 
-@app.get("/api/companies", summary="List All Monitored Companies")
-def get_companies(
-    sector: Optional[str] = Query(None, description="Filter by sector name"),
-    level: Optional[str] = Query(None, description="Filter by risk level (Low, Moderate, Critical)"),
-    q: Optional[str] = Query(None, description="Search company name or ID")
-):
-    results = _load_latest_results()
-    filtered = results
+@app.get("/api/summary")
+def summary():
+    d = _data()
+    counts = defaultdict(int)
+    for c in d["companies"]:
+        counts[c["level"]] += 1
+    return {"asOf": d["asOf"], "generatedAt": d["generatedAt"], "universe": d["universe"],
+            "sentimentEngine": d["sentimentEngine"], "companies": len(d["companies"]),
+            "levels": counts, "thresholds": d["thresholds"]}
 
+
+@app.get("/api/companies")
+def companies(sector: str | None = None, level: str | None = None,
+              q: str | None = Query(None, description="search name or symbol")):
+    rows = _data()["companies"]
     if sector:
-        filtered = [c for c in filtered if c.get("sector") == sector]
+        rows = [c for c in rows if c["sector"].lower() == sector.lower()]
     if level:
-        filtered = [c for c in filtered if c.get("level") == level]
+        rows = [c for c in rows if c["level"].lower() == level.lower()]
     if q:
-        query_lower = q.lower()
-        filtered = [c for c in filtered if query_lower in c.get("name", "").lower() or query_lower in c.get("id", "").lower()]
-
-    return {
-        "total": len(filtered),
-        "data": filtered
-    }
+        ql = q.lower()
+        rows = [c for c in rows if ql in c["name"].lower() or ql in c["symbol"].lower()]
+    return {"total": len(rows), "data": [{k: c[k] for k in LIGHT_FIELDS} for c in rows]}
 
 
-@app.get("/api/companies/{company_id}", summary="Get Single Company Details")
-def get_company(company_id: str):
-    results = _load_latest_results()
-    match = next((c for c in results if c.get("id", "").upper() == company_id.upper()), None)
-    if not match:
-        raise HTTPException(status_code=404, detail=f"Company ID '{company_id}' not found")
-    return match
+@app.get("/api/companies/{symbol}")
+def company(symbol: str):
+    for c in _data()["companies"]:
+        if c["symbol"].upper() == symbol.upper():
+            return c
+    raise HTTPException(404, f"{symbol} is not in the watchlist")
 
 
-@app.get("/api/sectors", summary="Sector Aggregated Risk Summary")
-def get_sectors():
-    results = _load_latest_results()
-    sectors_map = {}
-    for c in results:
-        sec = c.get("sector", "General")
-        if sec not in sectors_map:
-            sectors_map[sec] = {"low": 0, "moderate": 0, "critical": 0, "scores": []}
-        lvl = c.get("level", "Low")
-        if lvl == "Low":
-            sectors_map[sec]["low"] += 1
-        elif lvl == "Moderate":
-            sectors_map[sec]["moderate"] += 1
-        else:
-            sectors_map[sec]["critical"] += 1
-        sectors_map[sec]["scores"].append(float(c.get("risk_index", 0)))
-
-    response = []
-    for sec, val in sectors_map.items():
-        avg = round(sum(val["scores"]) / len(val["scores"]), 1) if val["scores"] else 0.0
-        response.append({
-            "name": sec,
-            "low": val["low"],
-            "moderate": val["moderate"],
-            "critical": val["critical"],
-            "avg": avg
-        })
-    response.sort(key=lambda s: s["avg"], reverse=True)
-    return response
+@app.get("/api/sectors")
+def sectors():
+    groups = defaultdict(list)
+    for c in _data()["companies"]:
+        groups[c["sector"]].append(c["score"])
+    out = [{"sector": s, "companies": len(v), "avgScore": round(sum(v) / len(v), 1), "maxScore": max(v)}
+           for s, v in groups.items()]
+    return sorted(out, key=lambda x: -x["avgScore"])
 
 
-@app.get("/api/mcdm/ahp", summary="AHP Pairwise Matrix & Weights")
-def get_ahp_details():
-    ahp = get_default_ahp()
-    res = ahp.compute()
-    return {
-        "pairwise_matrix": DEFAULT_PAIRWISE.tolist(),
-        "criteria": CRITERIA_NAMES,
-        "weights": res["weights"],
-        "consistency_ratio": res["CR"],
-        "consistency_index": res["CI"],
-        "lambda_max": res["lambda_max"],
-        "acceptable": res["CR_acceptable"]
-    }
+@app.get("/api/method")
+def method():
+    d = _data()
+    return {"criteria": d["criteria"], "ahp": d["ahp"], "thresholds": d["thresholds"],
+            "guidance": d["guidance"]}
 
 
-@app.post("/api/score-text", summary="FinBERT Headline Sentiment Scoring")
-def score_text(
-    payload: dict = Body(..., example={"text": "RBI imposes penalty on digital lending non-compliance", "use_mock": True})
-):
-    text = payload.get("text", "").strip()
+@app.post("/api/score-headline")
+def score_headline(payload: dict = Body(..., examples=[{"text": "SEBI probes accounting lapses at XYZ Ltd"}])):
+    from nlp.sentiment import SentimentEngine
+    text = (payload.get("text") or "").strip()
     if not text:
-        raise HTTPException(status_code=400, detail="Missing 'text' in request body")
-
-    use_mock = payload.get("use_mock", True)
-    bert = get_pipeline(use_mock=use_mock)
-    result = bert.score_text(text)
-    return {
-        "input_text": text,
-        "result": result
-    }
+        raise HTTPException(400, "Provide 'text'")
+    eng = SentimentEngine(payload.get("engine", "auto"))
+    return {"engine": eng.name, "text": text, **eng.score_batch([text])[0]}
 
 
-@app.post("/api/recalculate", summary="Re-run Full Risk Scoring Pipeline")
-def recalculate(
-    payload: dict = Body(default={}, example={"use_mock": True, "offline": True, "sync_frontend": True})
-):
-    use_mock = payload.get("use_mock", True)
-    offline = payload.get("offline", True)
-    sync_frontend = payload.get("sync_frontend", True)
-
-    pipeline = RiskScoringPipeline(use_mock=use_mock, offline=offline)
-    results = pipeline.run(verbose=False)
-    pipeline.save_results(results)
-
-    if sync_frontend:
-        pipeline.export_to_frontend(results)
-
-    return {
-        "status": "success",
-        "processed_entities": len(results),
-        "timestamp": results[0].get("timestamp") if results else None,
-        "top_risk": results[0] if results else None
-    }
-
-
-@app.get("/api/compare", summary="Compare Companies Side-by-Side")
-def compare_companies(ids: str = Query(..., description="Comma separated IDs, e.g. BR-101,BR-104")):
-    target_ids = [i.strip().upper() for i in ids.split(",") if i.strip()]
-    if not target_ids:
-        raise HTTPException(status_code=400, detail="Please provide ?ids=BR-101,BR-104")
-
-    results = _load_latest_results()
-    matched = [c for c in results if c.get("id", "").upper() in target_ids]
-    return {
-        "count": len(matched),
-        "companies": matched
-    }
+@app.post("/api/refresh")
+def refresh(payload: dict = Body(default={}, examples=[{"offline": False}])):
+    from engine.risk_scorer import BrandRiskPipeline
+    pipe = BrandRiskPipeline(offline=bool(payload.get("offline", False)))
+    result = pipe.run()
+    pipe.save(export_frontend=True)
+    return {"status": "ok", "asOf": result["asOf"], "companies": len(result["companies"]),
+            "skipped": result["skipped"]}
 
 
 if __name__ == "__main__":
-    port = 8000
-    logger.info("Starting Brand Image Risk server on http://127.0.0.1:%s", port)
-    uvicorn.run("api:app", host="127.0.0.1", port=port, reload=False)
+    uvicorn.run(app, host=API_HOST, port=API_PORT)

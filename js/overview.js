@@ -1,126 +1,89 @@
-// =============================================
-// OVERVIEW TAB
-// Charts: horizontal bar (sector avg risk) +
-//         stacked bar (risk distribution) +
-//         top-5 critical companies table
-// =============================================
+// =============================================================
+// overview.js — the landing view: summary tiles, highest risk,
+// risers, negative news, sector averages and the level guide.
+// =============================================================
 
-function initOverview() {
-  // --- Sector Average Risk — horizontal bar chart ---
-  const sAvg   = sectors.map(s => s.avg);
-  const sNames = sectors.map(s => s.name.length > 24 ? s.name.slice(0, 22) + '…' : s.name);
-  const sBarColors = sAvg.map(v => v >= 70 ? COLORS.critical : v >= 40 ? COLORS.moderate : COLORS.low);
+function renderOverview() {
+  const cs = D.companies;
+  const n = cs.length;
 
-  createChart('sector-avg', document.getElementById('chart-sector-avg').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: sNames,
-      datasets: [{
-        label: 'Avg Risk Index',
-        data: sAvg,
-        backgroundColor: sBarColors,
-        borderRadius: 3,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1c2128',
-          borderColor: '#30363d',
-          borderWidth: 1,
-          titleColor: '#e6edf3',
-          bodyColor: '#8b949e',
-          callbacks: { label: ctx => ` Risk Index: ${ctx.raw}` }
-        }
-      },
-      scales: {
-        x: {
-          min: 0, max: 100,
-          grid:   { color: COLORS.grid },
-          ticks:  { color: COLORS.tick, font: { size: 11 } },
-          border: { color: COLORS.grid }
-        },
-        y: {
-          grid:   { display: false },
-          ticks:  { color: COLORS.tick, font: { size: 11 } },
-          border: { color: COLORS.grid }
-        }
-      }
-    }
+  $('#intro-text').innerHTML =
+    `A daily <strong>brand risk score from 0 to 100</strong> for ${n} NSE-listed companies (the ${esc(D.universe)}). ` +
+    `It reads two kinds of evidence: how the <strong>share price</strong> behaves once market- and sector-wide moves are removed, ` +
+    `and how <strong>negative the news</strong> is. <a href="#method">How is it calculated?</a>`;
+
+  // ── Tiles ──
+  const counts = Object.fromEntries(LEVELS.map(l => [l, cs.filter(c => c.level === l).length]));
+  const med = median(cs.map(c => c.score));
+  const medChange = median(cs.map(c => c.change5d));
+  const tile = (label, value, foot, icon = '') =>
+    `<div class="card tile"><div class="tile-label">${icon}${label}</div><div class="tile-value">${value}</div><div class="tile-foot">${foot}</div></div>`;
+  $('#tiles').innerHTML = [
+    tile('Companies tracked', n, `${esc(D.universe)} · NSE`),
+    tile('High risk', counts.High, `score ${levelRange('High')}`, `<span class="lvl-High">${SHAPE.High}</span>`),
+    tile('Moderate risk', counts.Moderate, `score ${levelRange('Moderate')}`, `<span class="lvl-Moderate">${SHAPE.Moderate}</span>`),
+    tile('Typical score', fmt.score(med),
+      medChange == null ? 'median of all companies' : `median · ${delta(medChange)} vs last week`),
+  ].join('');
+
+  // ── Highest risk list ──
+  $('#top-list').innerHTML = cs.slice(0, 8).map(c => `
+    <li class="rank-item" tabindex="0" data-symbol="${esc(c.symbol)}" role="button" aria-label="${esc(c.name)}, score ${fmt.score(c.score)}, ${c.level}. Open details">
+      <span class="rank-no">${c.rank}</span>
+      <div style="min-width:0">
+        <div class="co-name">${esc(c.name)} <span class="co-sub" style="display:inline">${esc(c.symbol)}</span></div>
+        <div class="co-reason">${esc(headline(c))}</div>
+      </div>
+      <div>${meter(c.score, c.level)}<div style="margin-top:4px">${levelPill(c.level)}</div></div>
+      <div class="r hide-sm" style="text-align:right">${delta(c.change5d)}</div>
+      <div class="hide-sm">${sparkline(c.history, c.level)}</div>
+    </li>`).join('');
+
+  // ── Risers ──
+  const risers = cs.filter(c => c.change5d != null && c.change5d >= 1).sort((a, b) => b.change5d - a.change5d).slice(0, 5);
+  $('#risers').innerHTML = risers.length ? risers.map(c => `
+    <li class="mini-item" tabindex="0" data-symbol="${esc(c.symbol)}" role="button">
+      <div class="grow"><div class="co-name">${esc(c.name)}</div><div class="co-sub">${esc(headline(c))}</div></div>
+      ${delta(c.change5d)}
+      <span class="meter-val" style="min-width:36px">${fmt.score(c.score)}</span>
+    </li>`).join('') : '<li class="muted small" style="padding:8px 4px">No company’s score rose by a point or more this week.</li>';
+
+  // ── Negative news ──
+  $('#news-window-hint').textContent = `last ${D.newsWindowDays} days`;
+  const neg = cs.filter(c => c.news.neg7d > 0).sort((a, b) => b.news.neg7d - a.news.neg7d || b.score - a.score).slice(0, 5);
+  $('#neg-news').innerHTML = neg.length ? neg.map(c => {
+    const top = topNegative(c);
+    return `
+    <li class="mini-item" tabindex="0" data-symbol="${esc(c.symbol)}" role="button">
+      <div class="grow"><div class="co-name">${esc(c.name)}</div>${top ? `<div class="mini-quote">“${esc(top.t)}”</div>` : ''}</div>
+      <span class="small text-2" style="white-space:nowrap"><strong>${c.news.neg7d}</strong> of ${c.news.count7d}</span>
+    </li>`;
+  }).join('') : '<li class="muted small" style="padding:8px 4px">No negative headlines this week.</li>';
+
+  // ── Sector chart ──
+  const groups = {};
+  cs.forEach(c => { (groups[c.sector] = groups[c.sector] || []).push(c); });
+  const sectors = Object.entries(groups).map(([name, list]) => ({
+    name, n: list.length, avg: list.reduce((s, c) => s + c.score, 0) / list.length,
+    top: list.reduce((m, c) => (c.score > m.score ? c : m), list[0]),
+  })).sort((a, b) => b.avg - a.avg);
+  $('#sector-box').style.height = (sectors.length * 28 + 40) + 'px';
+  hbarChart('sector', $('#chart-sector'), {
+    labels: sectors.map(s => s.name), values: sectors.map(s => +s.avg.toFixed(1)),
+    max: Math.max(50, Math.ceil(Math.max(...sectors.map(s => s.avg)) / 10) * 10 + 10),
+    tip: i => ` ${sectors[i].avg.toFixed(1)} average · ${fmt.plural(sectors[i].n, 'company')} · highest: ${sectors[i].top.name} (${sectors[i].top.score.toFixed(1)})`,
   });
+  $('#sector-table').innerHTML = dataTable(['Sector', 'Companies', 'Average score', 'Highest'],
+    sectors.map(s => [s.name, s.n, s.avg.toFixed(1), `${s.top.name} (${s.top.score.toFixed(1)})`]));
 
-  // --- Sectoral Risk Distribution — stacked bar chart ---
-  const sLabels = sectors.map(s => s.name.split(' ')[0]);
-
-  createChart('sector-stack', document.getElementById('chart-sector-stack').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: sLabels,
-      datasets: [
-        { label: 'Low',      data: sectors.map(s => s.low),      backgroundColor: COLORS.low,      borderRadius: 0, stack: 's' },
-        { label: 'Moderate', data: sectors.map(s => s.moderate), backgroundColor: COLORS.moderate, borderRadius: 0, stack: 's' },
-        { label: 'Critical', data: sectors.map(s => s.critical), backgroundColor: COLORS.critical, borderRadius: 3, stack: 's' }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: true,
-          labels: { color: COLORS.tick, font: { size: 11 }, boxWidth: 12, boxHeight: 12, padding: 10 }
-        },
-        tooltip: {
-          backgroundColor: '#1c2128',
-          borderColor: '#30363d',
-          borderWidth: 1,
-          titleColor: '#e6edf3',
-          bodyColor: '#8b949e'
-        }
-      },
-      scales: {
-        x: {
-          stacked: true,
-          grid:   { display: false },
-          ticks:  { color: COLORS.tick, font: { size: 11 } },
-          border: { color: COLORS.grid }
-        },
-        y: {
-          stacked: true,
-          grid:   { color: COLORS.grid },
-          ticks:  { color: COLORS.tick, font: { size: 11 } },
-          border: { color: COLORS.grid }
-        }
-      }
-    }
-  });
-
-  // --- Top 5 Critical Companies table ---
-  const top5  = [...companies].sort((a, b) => b.risk - a.risk).slice(0, 5);
-  const tbody = document.querySelector('#top5-table tbody');
-  tbody.innerHTML = top5.map(c => `
-    <tr style="cursor:default">
-      <td class="id-cell">${c.id}</td>
-      <td><strong>${c.name}</strong></td>
-      <td style="color:var(--muted)">${c.sector}</td>
-      <td>
-        <div class="risk-bar-wrap">
-          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${c.risk}%;background:${riskBarColor(c.risk)}"></div></div>
-          <span class="risk-bar-val">${c.risk}</span>
-        </div>
-      </td>
-      <td><span class="badge ${levelBadgeClass(c.level)}">${c.level}</span></td>
-      <td style="color:var(--muted);font-size:12px">${c.crisis}</td>
-      <td><span style="font-size:12px;color:var(--accent)">${c.action}</span></td>
-    </tr>
-  `).join('');
+  // ── Level guide ──
+  $('#guide').innerHTML = guideHtml(counts);
 }
 
-// Register with nav
-tabInits['overview'] = initOverview;
-
+function guideHtml(counts) {
+  return LEVELS.slice().reverse().map(l => `
+    <div class="guide-item lvl-${l}">
+      <h4>${SHAPE[l]} ${l}<span class="range">score ${levelRange(l)}${counts ? ` · ${fmt.plural(counts[l], 'company')} today` : ''}</span></h4>
+      <p>${esc(D.guidance[l])}</p>
+    </div>`).join('');
+}

@@ -1,295 +1,242 @@
 """
 engine/risk_scorer.py
 =====================
-Core pipeline orchestrator.
+End-to-end pipeline:
 
-Connects FinBERT NLP output → MCDM criterion scores → AHP weights
-→ TOPSIS ranking → final Risk Index per company.
+  NSE prices (Yahoo) ──► stock signals ──► C1 C2 C3 ─┐
+                                                     ├─► AHP weights ─► TOPSIS ─► Risk Index 0–100
+  Google News ──► relevance filter ──► sentiment ──► C4 C5 ─┘                         │
+                                                                                     ▼
+                                     history.json (daily track) · latest.json · js/data.js
+
+Every day in the backfill window is scored point-in-time (only prices up to
+that day and headlines published up to that day), so the trend line on the
+dashboard is what the model would have said on each date.
 """
 
 import json
 import logging
 import time
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import List, Dict, Optional
+from datetime import date, datetime, timedelta, timezone
 
 import numpy as np
-import pandas as pd
 
-from config import DATA_DIR, OUTPUT_DIR, REACH_SCORE, BASE_DIR
-from nlp.finbert_pipeline import get_pipeline
-from nlp.text_ingestion import (fetch_company_articles, articles_to_texts,
-                                 ingest_all_feeds)
-from mcdm.ahp import get_default_ahp
-from mcdm.topsis import TOPSIS, build_decision_matrix
+from config import (BACKFILL_DAYS, BENCHMARK_NAME, BENCHMARK_SYMBOL, CHART_DAYS,
+                    FRONTEND_DATA_JS, HISTORY_FILE, HISTORY_MAX, LATEST_FILE,
+                    LEVEL_GUIDANCE, LEVEL_THRESHOLDS, NEWS_KEEP_DAYS,
+                    NEWS_REQUEST_GAP_S, NEWS_WINDOW_DAYS, RECOMPUTE_DAYS,
+                    WATCHLIST_FILE)
+from engine.criteria import CRITERIA, news_criteria, stock_criteria
+from market.nse_prices import IST, get_prices
+from market.stock_signals import compute_stock_signals, log_returns, peer_returns
+from mcdm.ahp import AHP
+from mcdm.topsis import topsis_score
+from nlp.news import fetch_company_news
+from nlp.sentiment import SentimentEngine
 
 logger = logging.getLogger(__name__)
 
-FRONTEND_JS_DATA = BASE_DIR.parent / "js" / "data.js"
 
-
-def _reach_label(article_count: int, negative_ratio: float, default: str = "Low") -> str:
-    """Derive reach label from article volume or default."""
-    if article_count >= 15 and negative_ratio >= 0.6:
-        return "Viral"
-    elif article_count >= 8 or negative_ratio >= 0.5:
+def level_for(score: float) -> str:
+    if score >= LEVEL_THRESHOLDS["high"]:
         return "High"
-    elif article_count >= 3:
-        return "Medium"
-    return default
+    if score >= LEVEL_THRESHOLDS["moderate"]:
+        return "Moderate"
+    return "Low"
 
 
-def build_criterion_scores(company: dict,
-                            sentiment_agg: dict,
-                            articles: list[dict]) -> dict:
-    """
-    Convert raw FinBERT output + enterprise metadata into 4 normalised criterion scores [0–100].
-    
-    C1 (Severity): FinBERT negative sentiment depth & regulatory claim risk.
-    C2 (Reach): Audience volume & share velocity.
-    C3 (Recoverability): PR turnaround difficulty & historical issue decay.
-    C4 (Criticality): Impact on institutional investors, regulators & trust.
-    """
-    compound = sentiment_agg["compound_score"]
-    neg_ratio = sentiment_agg["negative_ratio"]
-    count = sentiment_agg["article_count"]
-
-    # Use benchmark values as baseline calibration if available
-    b_sent = company.get("benchmark_sentiment")
-    if b_sent is not None and abs(compound) < 0.05:
-        effective_sentiment = float(b_sent)
-    else:
-        effective_sentiment = compound
-
-    reach_label = company.get("reach_velocity") or _reach_label(count, neg_ratio)
-    dominant_crisis = company.get("crisis_category") or "Operational Scrutiny"
-
-    if articles and not company.get("crisis_category"):
-        dominant_crisis = articles[0].get("title", dominant_crisis)[:70]
-
-    # C1: Severity (0-100) - negative sentiment mapped into depth
-    # e.g., -0.95 -> 95, -0.10 -> 15
-    c1 = float(np.clip(abs(min(0.0, effective_sentiment)) * 100, 5, 100))
-
-    # C2: Reach (0-100)
-    c2 = float(REACH_SCORE.get(reach_label, 25))
-
-    # C3: Recoverability (0-100) - proxy based on sentiment depth & reach
-    c3 = float(np.clip(0.6 * c1 + 0.4 * c2, 10, 100))
-
-    # C4: Criticality (0-100) - sector sensitivity multiplier * severity
-    sector_sensitivity = {
-        "Banking & Finance": 1.1,
-        "FinTech":           1.15,
-        "NBFC":              1.05,
-        "Consumer Tech":     0.95,
-        "Healthcare":        0.90,
-        "Automotive":        0.85,
-        "IT Services":       0.75,
-        "Telecom":           0.80,
-        "Conglomerate":      0.70,
-        "Infrastructure":    0.85,
-        "Metals & Mining":   0.80,
-        "Engineering":       0.70,
-        "FMCG":              0.65,
-    }
-    sens = sector_sensitivity.get(company.get("sector", ""), 0.8)
-    c4 = float(np.clip(c1 * sens, 10, 100))
-
-    return {
-        "name":               company["name"],
-        "id":                 company["id"],
-        "sector":             company.get("sector", ""),
-        "reach_label":        reach_label,
-        "article_count":      count,
-        "compound_sentiment": round(effective_sentiment, 2),
-        "negative_ratio":     round(neg_ratio, 4),
-        "dominant_crisis":    dominant_crisis,
-        "action_trigger":     company.get("action_trigger", ""),
-        "C1_severity":        round(c1, 2),
-        "C2_reach":           round(c2, 2),
-        "C3_recoverability":  round(c3, 2),
-        "C4_criticality":     round(c4, 2),
-    }
+def _r(x, nd=2):
+    if x is None:
+        return None
+    x = float(x)
+    return None if np.isnan(x) else round(x, nd)
 
 
-class RiskScoringPipeline:
-    """
-    End-to-end Brand Image Risk Index pipeline.
-    """
-
-    def __init__(self, lookback_hours: int = 24, use_mock: bool = False, offline: bool = False):
-        self.lookback_hours = lookback_hours
-        self.use_mock = use_mock
+class BrandRiskPipeline:
+    def __init__(self, offline: bool = False, sentiment: str = "auto",
+                 limit: int | None = None, reset_history: bool = False):
         self.offline = offline
+        self.reset_history = reset_history
+        wl = json.loads(WATCHLIST_FILE.read_text(encoding="utf-8"))
+        self.universe = wl.get("universe", "NSE watchlist")
+        self.companies = wl["companies"][:limit] if limit else wl["companies"]
+        self.ahp = AHP().compute()
+        self.weights = np.array(self.ahp["weights"])
+        self.sentiment = SentimentEngine(sentiment)
 
-        registry_path = DATA_DIR / "companies.json"
-        with open(registry_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        self.companies = data["companies"]
+    # ── per-company scoring ─────────────────────────────────────────────────
+    def _score_company(self, co, prices, info, peer, bench, today):
+        signals, path = compute_stock_signals(prices, bench, peer, BACKFILL_DAYS, CHART_DAYS)
+        if signals.empty:
+            raise RuntimeError("not enough price history")
 
-        self._bert = None
-
-        ahp = get_default_ahp()
-        self.ahp_result = ahp.compute()
-        self.ahp_weights = np.array(list(self.ahp_result["weights"].values()))
-
-    @property
-    def bert(self):
-        if self._bert is None:
-            self._bert = get_pipeline(use_mock=self.use_mock)
-        return self._bert
-
-    def run(self, verbose: bool = True) -> list[dict]:
-        logger.info("=" * 60)
-        logger.info("Brand Image Risk Index Pipeline — %s",
-                    datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC"))
-        logger.info("=" * 60)
-
-        general_pool = []
+        articles, news_stats = fetch_company_news(co, offline=self.offline)
         if not self.offline:
-            logger.info("Fetching general RSS feeds …")
-            general_pool = ingest_all_feeds(lookback_hours=self.lookback_hours)
+            time.sleep(NEWS_REQUEST_GAP_S)
+        scored = self.sentiment.score_batch([a["title"] for a in articles]) if articles else []
+        for a, s in zip(articles, scored):
+            a["sentiment"], a["label"] = s["score"], s["label"]
+        art_dates = [date.fromisoformat(a["date"]) for a in articles]
 
-        criterion_records = []
+        daily = {}
+        last_day = signals.index[-1].date()
+        for ts, sig in signals.iterrows():
+            d = ts.date()
+            # the latest row also counts headlines published after the last close
+            end = max(d, today) if d == last_day else d
+            start = end - timedelta(days=NEWS_WINDOW_DAYS)
+            window = [a for a, ad in zip(articles, art_dates) if start < ad <= end]
+            c1, c2, c3 = stock_criteria(sig)
+            c4, c5 = news_criteria([a["sentiment"] for a in window], [a["label"] for a in window])
+            crit = [c1, c2, c3, c4, c5]
+            score, d_pos, d_neg = topsis_score(crit, self.weights)
+            daily[d.isoformat()] = {"score": score, "criteria": crit, "dPos": d_pos,
+                                    "dNeg": d_neg, "window": window, "sig": sig}
 
-        for company in self.companies:
-            logger.info("Processing: %s", company["name"])
+        cur = daily[last_day.isoformat()]
+        sig, window = cur["sig"], cur["window"]
+        recent_cut = today - timedelta(days=NEWS_KEEP_DAYS)
+        return {
+            "symbol": co["symbol"],
+            "name": co["name"],
+            "legalName": info.get("longName"),
+            "sector": co["sector"],
+            "score": _r(cur["score"], 1),
+            "level": level_for(cur["score"]),
+            "criteria": [_r(c, 1) for c in cur["criteria"]],
+            "topsis": {"dPos": _r(cur["dPos"], 4), "dNeg": _r(cur["dNeg"], 4)},
+            "stock": {
+                "close": _r(sig["close"], 2),
+                "beta": _r(sig["beta"], 2), "betaSector": _r(sig["beta_sector"], 2),
+                "hasPeers": peer is not None,
+                "ret5": _r(sig["ret5"], 4), "ret20": _r(sig["ret20"], 4),
+                "idxRet5": _r(sig["idx_ret5"], 4), "idxRet20": _r(sig["idx_ret20"], 4),
+                "peerRet5": _r(sig["peer_ret5"], 4),
+                "excess5": _r(sig["excess5"], 4), "excess20": _r(sig["excess20"], 4),
+                "z5": _r(sig["z5"], 2), "z20": _r(sig["z20"], 2), "sigma": _r(sig["sigma"], 4),
+                "volRatio": _r(sig["vol_ratio"], 2), "volumeRatio": _r(sig["volume_ratio"], 2),
+                "abnDrawdown": _r(sig["abn_drawdown"], 4), "ddSigma": _r(sig["dd_sigma"], 2),
+                "high52": info.get("fiftyTwoWeekHigh"), "low52": info.get("fiftyTwoWeekLow"),
+            },
+            "news": {
+                "count7d": len(window),
+                "neg7d": sum(a["label"] == "negative" for a in window),
+                "pos7d": sum(a["label"] == "positive" for a in window),
+                "fetched": news_stats.get("fetched", 0),
+                "kept": news_stats.get("kept", 0),
+                "rejected": news_stats.get("rejected", {}),
+                "articles": [
+                    {"t": a["title"], "s": a["source"], "u": a["url"], "d": a["date"],
+                     "sc": _r(a["sentiment"], 2), "l": a["label"]}
+                    for a in articles if date.fromisoformat(a["date"]) > recent_cut
+                ][:15],
+            },
+            "_daily": {d: v["score"] for d, v in daily.items()},
+            "_closes": prices["close"],
+            "_path": path,
+        }
 
-            articles = []
-            if not self.offline:
-                articles = fetch_company_articles(
-                    company,
-                    general_pool=general_pool,
-                    lookback_hours=self.lookback_hours,
-                )
+    # ── history (the long-term track record) ────────────────────────────────
+    def _merge_history(self, records: list[dict]) -> dict:
+        hist = {"series": {}}
+        if HISTORY_FILE.exists() and not self.reset_history:
+            hist = json.loads(HISTORY_FILE.read_text(encoding="utf-8"))
+        series = hist.setdefault("series", {})
+        for rec in records:
+            stored = series.setdefault(rec["symbol"], {})
+            new_dates = sorted(rec["_daily"])
+            refresh = set(new_dates[-RECOMPUTE_DAYS:])
+            for d in new_dates:
+                # past days stay frozen as originally scored; the last few are refreshed
+                if d not in stored or d in refresh:
+                    stored[d] = round(rec["_daily"][d], 1)
+            for d in sorted(stored)[:-HISTORY_MAX]:
+                del stored[d]
+        hist["updated"] = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
+        return hist
 
-            # If no live articles fetched, use representative crisis headlines
-            if not articles:
-                sample_h = company.get("sample_headlines", [])
-                if sample_h:
-                    articles = [{"title": h, "summary": h, "source": "Corporate Risk Monitor"} for h in sample_h]
-                else:
-                    sample_text = f"{company['name']} operational and regulatory filing updates in {company.get('sector', '')}."
-                    articles = [{"title": sample_text, "summary": sample_text, "source": "Internal Monitored Stream"}]
+    # ── main entry point ────────────────────────────────────────────────────
+    def run(self) -> dict:
+        today = datetime.now(tz=IST).date()
+        bench, _ = get_prices(BENCHMARK_SYMBOL, offline=self.offline)
 
-            texts = articles_to_texts(articles)
-            scores_list = self.bert.score_batch(texts)
-            sentiment_agg = self.bert.aggregate_scores(scores_list)
+        # 1. prices for everyone first (sector peer returns need the whole panel)
+        prices, infos, skipped = {}, {}, []
+        for co in self.companies:
+            try:
+                prices[co["symbol"]], infos[co["symbol"]] = get_prices(co["symbol"], offline=self.offline)
+            except Exception as exc:
+                skipped.append({"symbol": co["symbol"], "reason": str(exc)})
+                logger.warning("%-12s skipped: %s", co["symbol"], exc)
+        sectors = {co["symbol"]: co["sector"] for co in self.companies if co["symbol"] in prices}
+        peers = peer_returns({s: log_returns(df["adj"]) for s, df in prices.items()}, sectors)
 
-            crit = build_criterion_scores(company, sentiment_agg, articles)
-            criterion_records.append(crit)
+        # 2. score each company (stock signals + news)
+        records = []
+        todo = [co for co in self.companies if co["symbol"] in prices]
+        for i, co in enumerate(todo, 1):
+            sym = co["symbol"]
+            try:
+                rec = self._score_company(co, prices[sym], infos[sym], peers[sym], bench, today)
+                records.append(rec)
+                logger.info("[%2d/%d] %-12s score %5.1f  %-8s news %d (neg %d)", i, len(todo), sym,
+                            rec["score"], rec["level"], rec["news"]["count7d"], rec["news"]["neg7d"])
+            except Exception as exc:
+                skipped.append({"symbol": sym, "reason": str(exc)})
+                logger.warning("[%2d/%d] %-12s skipped: %s", i, len(todo), sym, exc)
+        if not records:
+            raise RuntimeError("No company could be scored")
 
-            if verbose:
-                logger.info(
-                    "  Sentiment=%.3f | Articles=%d | "
-                    "C1=%.1f C2=%.1f C3=%.1f C4=%.1f",
-                    crit["compound_sentiment"],
-                    sentiment_agg["article_count"],
-                    crit["C1_severity"], crit["C2_reach"],
-                    crit["C3_recoverability"], crit["C4_criticality"],
-                )
+        # 3. history, ranking and chart series
+        hist = self._merge_history(records)
+        hist_dates = sorted({d for s in hist["series"].values() for d in s})
+        chart_dates = bench.index[-CHART_DAYS:]
 
-            time.sleep(0.02)
+        records.sort(key=lambda r: r["score"], reverse=True)
+        for rank, rec in enumerate(records, 1):
+            rec["rank"] = rank
+            s = hist["series"][rec["symbol"]]
+            rec["history"] = [s.get(d) for d in hist_dates]
+            past = [v for v in rec["history"][:-1] if v is not None]
+            rec["change5d"] = _r(rec["score"] - past[-5], 1) if len(past) >= 5 else None
+            rec["closes"] = [_r(rec["_closes"].get(d), 2) for d in chart_dates]
+            path = rec["_path"]
+            rec["specific"] = [_r(path.get(d), 2) if path is not None else None for d in chart_dates]
+            del rec["_daily"], rec["_closes"], rec["_path"]
 
-        # Build decision matrix and run TOPSIS
-        dm = build_decision_matrix(criterion_records)
-        topsis = TOPSIS(dm, self.ahp_weights)
-        ranking = topsis.run()
+        payload = {
+            "generatedAt": datetime.now(tz=timezone.utc).isoformat(timespec="seconds"),
+            "asOf": chart_dates[-1].date().isoformat(),
+            "universe": self.universe,
+            "exchange": "NSE",
+            "sentimentEngine": self.sentiment.name,
+            "thresholds": LEVEL_THRESHOLDS,
+            "guidance": LEVEL_GUIDANCE,
+            "newsWindowDays": NEWS_WINDOW_DAYS,
+            "criteria": CRITERIA,
+            "ahp": self.ahp,
+            "benchmark": {
+                "symbol": BENCHMARK_SYMBOL, "name": BENCHMARK_NAME,
+                "closes": [_r(x, 2) for x in bench["close"].iloc[-CHART_DAYS:]],
+                "ret5": _r(bench["adj"].iloc[-1] / bench["adj"].iloc[-6] - 1, 4),
+                "ret20": _r(bench["adj"].iloc[-1] / bench["adj"].iloc[-21] - 1, 4),
+            },
+            "chartDates": [d.date().isoformat() for d in chart_dates],
+            "historyDates": hist_dates,
+            "companies": records,
+            "skipped": skipped,
+        }
+        self.payload, self.history = payload, hist
+        return payload
 
-        rank_map = dict(zip(ranking["company"], ranking.to_dict("records")))
-
-        results = []
-        for rec in criterion_records:
-            rank_row = rank_map.get(rec["name"], {})
-            action = rec.get("action_trigger") or rank_row.get("action", "")
-            merged = {
-                **rec,
-                "risk_index": rank_row.get("risk_index", 0.0),
-                "level":      rank_row.get("level",      "Low"),
-                "action":     action,
-                "cc":         rank_row.get("cc",         0.0),
-                "d_pos":      rank_row.get("d_pos",      0.0),
-                "d_neg":      rank_row.get("d_neg",      0.0),
-                "timestamp":  datetime.now(tz=timezone.utc).isoformat(),
-                "ahp_weights": self.ahp_result["weights"],
-                "ahp_CR":     self.ahp_result["CR"],
-            }
-            results.append(merged)
-
-        results.sort(key=lambda x: x["risk_index"], reverse=True)
-        logger.info("Pipeline complete. %d companies scored.", len(results))
-        return results
-
-    def save_results(self, results: list[dict], filename: str = None) -> Path:
-        ts = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
-        name = filename or f"risk_results_{ts}.json"
-        path = OUTPUT_DIR / name
-
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-
-        latest_path = OUTPUT_DIR / "latest.json"
-        with open(latest_path, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-
-        logger.info("Results saved → %s and %s", path, latest_path)
-        return path
-
-    def export_to_frontend(self, results: list[dict], js_path: Optional[Path] = None) -> Path:
-        target = js_path or FRONTEND_JS_DATA
-        target.parent.mkdir(exist_ok=True)
-
-        formatted_companies = []
-        for r in results:
-            formatted_companies.append({
-                "id":        r["id"],
-                "name":      r["name"],
-                "sector":    r["sector"],
-                "risk":      float(r["risk_index"]),
-                "level":     r["level"],
-                "crisis":    r.get("dominant_crisis", "Operational Scrutiny"),
-                "sentiment": float(r["compound_sentiment"]),
-                "reach":     r["reach_label"],
-                "action":    r["action"]
-            })
-
-        sectors_dict = {}
-        for c in formatted_companies:
-            sec = c["sector"]
-            if sec not in sectors_dict:
-                sectors_dict[sec] = {"low": 0, "moderate": 0, "critical": 0, "risks": []}
-            if c["level"] == "Low":
-                sectors_dict[sec]["low"] += 1
-            elif c["level"] == "Moderate":
-                sectors_dict[sec]["moderate"] += 1
-            else:
-                sectors_dict[sec]["critical"] += 1
-            sectors_dict[sec]["risks"].append(c["risk"])
-
-        formatted_sectors = []
-        for sec, val in sectors_dict.items():
-            avg_risk = round(sum(val["risks"]) / len(val["risks"]), 1) if val["risks"] else 0.0
-            formatted_sectors.append({
-                "name": sec,
-                "low": val["low"],
-                "moderate": val["moderate"],
-                "critical": val["critical"],
-                "avg": avg_risk
-            })
-
-        content = f"""// =============================================
-// DATA — Auto-generated by Python AI+MCDM Engine
-// Generated: {datetime.now(tz=timezone.utc).isoformat()}
-// =============================================
-
-const companies = {json.dumps(formatted_companies, indent=2)};
-
-const sectors = {json.dumps(formatted_sectors, indent=2)};
-"""
-        with open(target, "w", encoding="utf-8") as f:
-            f.write(content)
-
-        logger.info("Frontend data updated → %s", target)
-        return target
+    def save(self, export_frontend: bool = True):
+        LATEST_FILE.write_text(json.dumps(self.payload, indent=1, ensure_ascii=False), encoding="utf-8")
+        HISTORY_FILE.write_text(json.dumps(self.history, indent=1, sort_keys=True), encoding="utf-8")
+        logger.info("Saved %s and %s", LATEST_FILE.name, HISTORY_FILE.name)
+        if export_frontend:
+            body = json.dumps(self.payload, ensure_ascii=False, separators=(",", ":"))
+            FRONTEND_DATA_JS.write_text(
+                "// Auto-generated by backend/run_pipeline.py — do not edit by hand.\n"
+                f"// Generated {self.payload['generatedAt']} · data as of NSE close {self.payload['asOf']}\n"
+                f"window.RISK_DATA = {body};\n", encoding="utf-8")
+            logger.info("Dashboard data written to %s", FRONTEND_DATA_JS)
