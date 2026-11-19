@@ -90,6 +90,19 @@ function renderMethod() {
     <li><strong>It stays intuitive for balanced cases.</strong> Every signal at 50 gives exactly <strong>${all50.toFixed(0)}</strong>.</li>
     <li><strong>Fixed ideal points make days comparable.</strong> Classic TOPSIS uses the best and worst company of the day as the ideals, which forces someone to 100 and someone to 0 even on a calm day. Anchoring the ideals to 0 and 100 means a score of 40 today means the same as 40 last month — essential for tracking.</li>`;
 
+  // ── Robustness, back-test, mode ──
+  if (D.mcdm) {
+    const cr = D.mcdm.comparison.find(x => x.name === 'CRITIC'), mc = D.mcdm.monteCarlo;
+    $('#m-robust-now').innerHTML = `Today: CRITIC weights give a rank agreement of <strong>${cr.spearman.toFixed(2)}</strong> with AHP (${fmt.plural(cr.bandChanges, 'company')} change level), and across 1,000 random weightings the mean agreement is <strong>${mc.spearmanMean.toFixed(2)}</strong>.`;
+  }
+  const bt = D.backtest;
+  $('#m-backtest-now').innerHTML = bt && bt.metrics && bt.metrics.pairwiseAccuracy
+    ? `Latest run: the index was higher in the incident week for <strong>${Math.round(bt.metrics.pairwiseAccuracy.index * 100)}%</strong> of incidents and flagged ${Math.round(bt.metrics.hitRate.index * 100)}% of them (≥ ${bt.metrics.flagThreshold}), with ${Math.round(bt.metrics.falseAlarmRate.index * 100)}% false alarms on the control days.`
+    : 'No back-test has been run on this data yet.';
+  $('#m-mode-now').innerHTML = SERVER.on
+    ? '<strong>You are using the live server.</strong>'
+    : '<strong>You are viewing the static version.</strong> Search and the server features are switched off.';
+
   // ── Levels, tracking, engine ──
   const counts = Object.fromEntries(LEVELS.map(l => [l, cs.filter(c => c.level === l).length]));
   $('#m-guide').innerHTML = guideHtml(counts);

@@ -202,3 +202,40 @@ function groupedBarChart(key, canvas, { labels, series }) {
     options: opts,
   });
 }
+
+// Paired horizontal bars (e.g. incident week vs control day).
+function pairedBarChart(key, canvas, { labels, a, b, aLabel, bLabel }) {
+  const t = theme();
+  return groupedBarChart(key, canvas, {
+    labels, series: [{ label: aLabel, data: a, color: t.series[0] }, { label: bLabel, data: b, color: t.seriesMuted }],
+  });
+}
+
+// Floating range bars (5–95%) with a dot for the actual value, one row per item.
+function rangeChart(key, canvas, { labels, ranges, points, tip }) {
+  const t = theme();
+  const opts = baseOptions(t);
+  opts.indexAxis = 'y';
+  opts.interaction = { mode: 'index', axis: 'y', intersect: false };
+  opts.plugins.crosshair.enabled = false;
+  opts.plugins.tooltip.filter = item => item.datasetIndex === 0;
+  opts.plugins.tooltip.callbacks.title = items => labels[items[0].dataIndex];
+  opts.plugins.tooltip.callbacks.label = ctx => tip(ctx.dataIndex);
+  opts.plugins.tooltip.callbacks.labelPointStyle = () => ({ pointStyle: 'rect', rotation: 0 });
+  opts.plugins.zones = { enabled: false };
+  opts.scales = {
+    x: axis(t, { min: 0, max: 100, ticks: { color: t.muted, font: { size: 11 }, stepSize: 25 } }),
+    y: axis(t, { grid: { display: false }, ticks: { color: t.text2, font: { size: 12 }, autoSkip: false } }),
+  };
+  return mount(key, canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { type: 'bar', label: '5–95% range', data: ranges, backgroundColor: alpha(t.series[0], 0.28), borderRadius: 4, borderSkipped: false, maxBarThickness: 12 },
+        { type: 'line', label: 'Score', data: points, showLine: false, pointRadius: 4, pointHoverRadius: 5, pointBackgroundColor: t.series[0], pointBorderColor: t.surface, pointBorderWidth: 2 },
+      ],
+    },
+    options: opts,
+  });
+}

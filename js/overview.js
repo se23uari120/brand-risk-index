@@ -32,7 +32,7 @@ function renderOverview() {
       <span class="rank-no">${c.rank}</span>
       <div style="min-width:0">
         <div class="co-name">${esc(c.name)} <span class="co-sub" style="display:inline">${esc(c.symbol)}</span></div>
-        <div class="co-reason">${esc(headline(c))}</div>
+        <div class="co-reason">${esc(headline(c))}${c.issue && c.issue.dominant !== NO_ISSUE && c.issue.dominant !== 'General Coverage' ? ' ' + issueTag(c.issue.dominant, true) : ''}</div>
       </div>
       <div>${meter(c.score, c.level)}<div style="margin-top:4px">${levelPill(c.level)}</div></div>
       <div class="r hide-sm" style="text-align:right">${delta(c.change5d)}</div>
@@ -59,6 +59,19 @@ function renderOverview() {
       <span class="small text-2" style="white-space:nowrap"><strong>${c.news.neg7d}</strong> of ${c.news.count7d}</span>
     </li>`;
   }).join('') : '<li class="muted small" style="padding:8px 4px">No negative headlines this week.</li>';
+
+  // ── What the negative news is about (main issue per company) ──
+  const byIssue = {};
+  cs.forEach(c => {
+    const d = c.issue && c.issue.dominant;
+    if (d && d !== NO_ISSUE && d !== 'General Coverage') (byIssue[d] = byIssue[d] || []).push(c);
+  });
+  const issues = Object.entries(byIssue).sort((a, b) => b[1].length - a[1].length || b[1][0].score - a[1][0].score).slice(0, 6);
+  $('#issues-list').innerHTML = issues.length ? issues.map(([cat, list]) => `
+    <li class="mini-item" tabindex="0" data-symbol="${esc(list[0].symbol)}" role="button" title="Open ${esc(list[0].name)}">
+      <div class="grow">${issueTag(cat)}<div class="co-sub" style="margin-top:3px">${list.slice(0, 4).map(c => esc(c.name)).join(', ')}${list.length > 4 ? ` +${list.length - 4}` : ''}</div></div>
+      <span class="small text-2" style="white-space:nowrap">${fmt.plural(list.length, 'company')}</span>
+    </li>`).join('') : '<li class="muted small" style="padding:8px 4px">No company has a specific issue in its negative coverage this week.</li>';
 
   // ── Sector chart ──
   const groups = {};

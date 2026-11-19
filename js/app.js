@@ -1,12 +1,17 @@
 // =============================================================
-// app.js — bootstraps the dashboard: tab routing (with deep links
-// like #company/TMPV), lazy rendering, theme switching.
+// app.js — bootstraps the dashboard: detects the live server,
+// tab routing (with deep links like #company/TMPV), lazy rendering,
+// theme switching and redrawing when new data arrives.
 // =============================================================
 
 let currentView = 'overview';
-const VIEWS = ['overview', 'companies', 'compare', 'method'];
+let started = false;
+const VIEWS = ['overview', 'companies', 'search', 'compare', 'mcdm', 'validation', 'method'];
 const rendered = {};
-const RENDER = { overview: renderOverview, companies: renderCompanies, compare: renderCompare, method: renderMethod };
+const RENDER = {
+  overview: renderOverview, companies: renderCompanies, search: renderSearch, compare: renderCompare,
+  mcdm: renderMcdm, validation: renderValidation, method: renderMethod,
+};
 
 function showView(view, { updateHash = true } = {}) {
   if (!VIEWS.includes(view)) view = 'overview';
@@ -16,6 +21,7 @@ function showView(view, { updateHash = true } = {}) {
     $(`#tab-${v}`).setAttribute('aria-selected', String(v === view));
   });
   RENDER[view]();          // cheap enough to refresh every time; keeps charts sized correctly
+  if (view === 'validation' && SERVER.on && !rendered.labels) { rendered.labels = true; loadLabelQueue(); }
   rendered[view] = true;
   if (updateHash) history.replaceState(null, '', `#${view}`);
   window.scrollTo({ top: 0 });
@@ -36,10 +42,29 @@ function route() {
   }
 }
 
+function renderChrome() {
+  $('#brand-sub').textContent = `${D.exchange} · ${D.universe}`;
+  $('#asof').textContent = `Data as of NSE close, ${fmt.date(D.asOf)}`;
+  $('#foot').innerHTML = `Prices: Yahoo Finance (NSE) · News: Google News and Indian business outlets · Method: AHP-weighted TOPSIS over 5 stock &amp; news signals · ` +
+    `Generated ${new Date(D.generatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}${SERVER.on ? ' · live server' : ''}. Not investment advice.`;
+}
+
+// Called by live.js when the server has finished a new run.
+function applyNewData() {
+  if (!started) { start(); return; }
+  renderChrome();
+  fillSectorOptions();
+  RENDER[currentView]();
+  if (detailSymbol) {
+    if (BY_SYMBOL[detailSymbol]) openDetail(detailSymbol, { updateHash: false });
+    else closeDetail();
+  }
+}
+
 function applyThemeChange() {
   // charts read colours from CSS tokens at draw time → redraw the visible ones
   RENDER[currentView]();
-  if (detailSymbol) renderDetailCharts(BY_SYMBOL[detailSymbol]);
+  if (detailSymbol) renderDetailCharts(BY_SYMBOL[detailSymbol], defaultCtx(), 'd');
 }
 
 function initTheme() {
@@ -55,18 +80,11 @@ function initTheme() {
   });
 }
 
-function boot() {
-  if (!D || !D.companies || !D.companies.length) {
-    $('#no-data').hidden = false;
-    $$('.view').forEach(v => v.classList.remove('active'));
-    return;
-  }
+function start() {
+  started = true;
+  $('#no-data').hidden = true;
   Chart.defaults.font.family = tok('--font');
-
-  $('#brand-sub').textContent = `${D.exchange} · ${D.universe}`;
-  $('#asof').textContent = `Data as of NSE close, ${fmt.date(D.asOf)}`;
-  $('#foot').innerHTML = `Prices: Yahoo Finance (NSE) · News: Google News · Method: AHP-weighted TOPSIS over 5 stock &amp; news signals · ` +
-    `Generated ${new Date(D.generatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}. Not investment advice.`;
+  renderChrome();
 
   $$('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
   // in-page links like href="#companies" or "#method"
@@ -82,9 +100,20 @@ function boot() {
   initCompanies();
   initCompare();
   initDetail();
-  initTheme();
+  initSearch();
+  initMcdm();
+  initValidation();
   window.addEventListener('hashchange', route);
   route();
+}
+
+async function boot() {
+  initTheme();
+  await initLive();
+  if (D && D.companies && D.companies.length) { start(); return; }
+  $('#no-data').hidden = false;
+  $$('.view').forEach(v => v.classList.remove('active'));
+  if (SERVER.on) $('#no-data').innerHTML = 'The server is running its first scoring pass (about 2 minutes). This page fills in by itself when it is done.';
 }
 
 boot();

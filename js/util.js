@@ -3,13 +3,18 @@
 // explanations used by every view.
 // =============================================================
 
-const D = window.RISK_DATA || null;
+let D = null, BY_SYMBOL = {}, WEIGHTS = [], CRIT = [];
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
 
-const BY_SYMBOL = D ? Object.fromEntries(D.companies.map(c => [c.symbol, c])) : {};
-const WEIGHTS = D ? D.ahp.weights : [];
-const CRIT = D ? D.criteria : [];
+// The data comes from js/data.js (static site) or /api/data (live server).
+function setData(payload) {
+  D = payload || null;
+  BY_SYMBOL = D ? Object.fromEntries(D.companies.map(c => [c.symbol, c])) : {};
+  WEIGHTS = D ? D.ahp.weights : [];
+  CRIT = D ? D.criteria : [];
+}
+setData(window.RISK_DATA);
 
 // ── Safety: headlines and sources come from external feeds ──────────────────
 function esc(s) {
@@ -165,6 +170,21 @@ function headline(c) {
   if (top.i === 1) return `Volatility ${fmt.times(s.volRatio)} normal`;
   if (top.i === 2) return `${fmt.pctAbs(s.abnDrawdown)} below its 3-month best`;
   return `${fmt.plural(c.news.neg7d, 'negative headline')} this week`;
+}
+
+// Issue type behind the negative coverage (crisis classifier)
+const NO_ISSUE = 'No significant adverse coverage';
+function issueTag(cat, small = false) {
+  if (!cat || cat === NO_ISSUE) return '';
+  return `<span class="tag${small ? ' small' : ''}" title="Issue type (crisis classifier)">${esc(cat)}</span>`;
+}
+
+async function getJSON(url, opts) {
+  const r = await fetch(url, opts);
+  let body = null;
+  try { body = await r.json(); } catch (e) { /* not JSON */ }
+  if (!r.ok) throw new Error((body && (body.detail || body.error)) || `HTTP ${r.status}`);
+  return body;
 }
 
 // Small accessible data table (the "table view" twin of a chart).

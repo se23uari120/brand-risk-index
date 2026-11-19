@@ -14,9 +14,16 @@ const SORTERS = {
   neg7d: c => -c.news.neg7d,
 };
 
-function initCompanies() {
+function fillSectorOptions() {
+  const sel = $('#f-sector'), keep = sel.value;
   const sectors = [...new Set(D.companies.map(c => c.sector))].sort();
-  $('#f-sector').insertAdjacentHTML('beforeend', sectors.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join(''));
+  sel.innerHTML = '<option value="">All sectors</option>' + sectors.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+  sel.value = sectors.includes(keep) ? keep : '';
+  tableState.sector = sel.value;
+}
+
+function initCompanies() {
+  fillSectorOptions();
 
   $('#f-search').addEventListener('input', e => { tableState.q = e.target.value.trim().toLowerCase(); renderCompanies(); });
   $('#f-sector').addEventListener('change', e => { tableState.sector = e.target.value; renderCompanies(); });
