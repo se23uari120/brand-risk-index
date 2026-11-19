@@ -1,17 +1,17 @@
 {
-  "_note": "Documented Indian corporate incidents for the pilot back-test (report Sec. VII-C). 'date' is the day the event became public. The incident window is date..date+4 days; the control window is the same length, 60 days earlier.",
+  "_note": "Documented Indian corporate incidents for the pilot back-test (report Sec. VII-C). 'date' is the day the event became public; the incident day scored is date + 4 days and the control day is 60 days before that. 'symbol' is the NSE symbol under which Yahoo Finance now carries the price history (Zomato → ETERNAL, Tata Motors → TMPV); null = never listed (scored on news only). 'aliases' are extra names a headline may use.",
   "incidents": [
-    {"company": "Paytm", "sector": "FinTech", "date": "2024-01-31", "event": "RBI restricts Paytm Payments Bank from taking new deposits"},
-    {"company": "Kotak Mahindra Bank", "sector": "Banking & Finance", "date": "2024-04-24", "event": "RBI bars Kotak Mahindra Bank from onboarding customers online and issuing new credit cards"},
-    {"company": "Bajaj Finance", "sector": "NBFC", "date": "2023-11-15", "event": "RBI stops Bajaj Finance lending under its eCOM and Insta EMI Card products"},
-    {"company": "IIFL Finance", "sector": "NBFC", "date": "2024-03-04", "event": "RBI bars IIFL Finance from sanctioning new gold loans"},
-    {"company": "Adani Enterprises", "sector": "Conglomerate", "date": "2023-01-25", "event": "Hindenburg Research short-seller report on the Adani Group"},
-    {"company": "Adani Green Energy", "sector": "Energy & Power", "date": "2024-11-21", "event": "US prosecutors indict Adani Green executives in a bribery case"},
-    {"company": "Zomato", "sector": "Consumer Tech", "date": "2024-03-19", "event": "Backlash over the 'Pure Veg Fleet' green uniforms, rolled back next day"},
-    {"company": "Infosys", "sector": "IT Services", "date": "2024-07-31", "event": "GST authorities issue a pre-show-cause notice of about Rs 32,000 crore"},
-    {"company": "Go First", "sector": "Aviation", "date": "2023-05-02", "event": "Go First files for voluntary insolvency and suspends flights"},
-    {"company": "ICICI Bank", "sector": "Banking & Finance", "date": "2022-12-23", "event": "CBI arrests former CEO Chanda Kochhar in the Videocon loan case"},
-    {"company": "Tata Motors", "sector": "Automotive", "date": "2025-09-02", "event": "Cyber attack halts Jaguar Land Rover production"},
-    {"company": "Vedanta", "sector": "Metals & Mining", "date": "2025-07-09", "event": "Viceroy Research short-seller report on Vedanta Resources"}
+    {"company": "Paytm", "symbol": "PAYTM", "sector": "Financial Services", "date": "2024-01-31", "aliases": ["Paytm", "One97", "Paytm Payments Bank"], "query": "Paytm OR \"One97 Communications\"", "event": "RBI restricts Paytm Payments Bank from taking new deposits"},
+    {"company": "Kotak Mahindra Bank", "symbol": "KOTAKBANK", "sector": "Financial Services", "date": "2024-04-24", "event": "RBI bars Kotak Mahindra Bank from onboarding customers online and issuing new credit cards"},
+    {"company": "Bajaj Finance", "symbol": "BAJFINANCE", "sector": "Financial Services", "date": "2023-11-15", "event": "RBI stops Bajaj Finance lending under its eCOM and Insta EMI Card products"},
+    {"company": "IIFL Finance", "symbol": "IIFL", "sector": "Financial Services", "date": "2024-03-04", "aliases": ["IIFL Finance", "IIFL"], "query": "\"IIFL Finance\" OR IIFL", "event": "RBI bars IIFL Finance from sanctioning new gold loans"},
+    {"company": "Adani Enterprises", "symbol": "ADANIENT", "sector": "Metals & Mining", "date": "2023-01-25", "event": "Hindenburg Research short-seller report on the Adani Group"},
+    {"company": "Adani Green Energy", "symbol": "ADANIGREEN", "sector": "Energy", "date": "2024-11-21", "aliases": ["Adani Green", "Adani Group", "Gautam Adani"], "query": "\"Adani Green\" OR \"Gautam Adani\"", "event": "US prosecutors indict Adani Green executives in a bribery case"},
+    {"company": "Zomato", "symbol": "ETERNAL", "sector": "Consumer & Retail", "date": "2024-03-19", "event": "Backlash over the 'Pure Veg Fleet' green uniforms, rolled back next day"},
+    {"company": "Infosys", "symbol": "INFY", "sector": "IT Services", "date": "2024-07-31", "event": "GST authorities issue a pre-show-cause notice of about Rs 32,000 crore"},
+    {"company": "Go First", "symbol": null, "sector": "Transport & Logistics", "date": "2023-05-02", "aliases": ["Go First", "GoFirst", "Go Air", "GoAir"], "query": "\"Go First\" OR GoFirst OR \"Go Air\"", "event": "Go First files for voluntary insolvency and suspends flights"},
+    {"company": "ICICI Bank", "symbol": "ICICIBANK", "sector": "Financial Services", "date": "2022-12-23", "aliases": ["ICICI Bank", "Chanda Kochhar", "ICICI"], "query": "\"ICICI Bank\" OR \"Chanda Kochhar\"", "event": "CBI arrests former CEO Chanda Kochhar in the Videocon loan case"},
+    {"company": "Tata Motors", "symbol": "TMPV", "sector": "Automobile", "date": "2025-09-02", "event": "Cyber attack halts Jaguar Land Rover production"},
+    {"company": "Vedanta", "symbol": "VEDL", "sector": "Metals & Mining", "date": "2025-07-09", "aliases": ["Vedanta", "Vedanta Resources", "Anil Agarwal"], "query": "Vedanta OR \"Vedanta Resources\"", "event": "Viceroy Research short-seller report on Vedanta Resources"}
   ]
 }

@@ -16,7 +16,7 @@ import json
 import logging
 import time
 import urllib.parse
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import pandas as pd
 import requests
@@ -41,14 +41,19 @@ def yahoo_ticker(symbol: str) -> str:
     return symbol if symbol.startswith("^") else f"{symbol}{EXCHANGE_SUFFIX}"
 
 
-def _cache_path(symbol: str):
+def _cache_path(symbol: str, tag: str = ""):
     safe = symbol.replace("^", "IDX_").replace("&", "_and_")
-    return PRICE_CACHE / f"{safe}.json"
+    return PRICE_CACHE / f"{safe}{tag}.json"
 
 
-def _download(symbol: str, retries: int = 3) -> dict:
+def _download(symbol: str, period: tuple[date, date] | None = None, retries: int = 3) -> dict:
     ticker = urllib.parse.quote(yahoo_ticker(symbol))
-    params = {"range": PRICE_RANGE, "interval": "1d", "events": "div,splits"}
+    params = {"interval": "1d", "events": "div,splits"}
+    if period:
+        params["period1"] = int(datetime(period[0].year, period[0].month, period[0].day, tzinfo=timezone.utc).timestamp())
+        params["period2"] = int(datetime(period[1].year, period[1].month, period[1].day, tzinfo=timezone.utc).timestamp()) + 86400
+    else:
+        params["range"] = PRICE_RANGE
     last_err = None
     for attempt in range(1, retries + 1):
         try:
@@ -105,16 +110,19 @@ def _to_frame(result: dict) -> pd.DataFrame:
     return df
 
 
-def get_prices(symbol: str, offline: bool = False) -> tuple[pd.DataFrame, dict]:
+def get_prices(symbol: str, offline: bool = False,
+               period: tuple[date, date] | None = None) -> tuple[pd.DataFrame, dict]:
     """
     Return (daily DataFrame[close, adj, volume], meta) for one NSE symbol.
+    period=(start, end) downloads that date range instead of the last year
+    (used by the back-test and past-period search).
     With offline=True the cached download is used instead of the network.
     """
-    cache = _cache_path(symbol)
+    cache = _cache_path(symbol, f"_{period[0]:%Y%m%d}_{period[1]:%Y%m%d}" if period else "")
     result = None
     if not offline:
         try:
-            result = _download(symbol)
+            result = _download(symbol, period)
             cache.write_text(json.dumps(result), encoding="utf-8")
         except Exception as exc:
             logger.warning("%s — falling back to cache", exc)

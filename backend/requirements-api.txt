@@ -1,3 +1,4 @@
-# Optional REST API (python backend/api.py → http://127.0.0.1:8000, docs at /docs)
+# Web server for the full app: live re-scoring, Company Search, Validation tools
+# (python backend/api.py → http://127.0.0.1:8000, API docs at /docs)
 fastapi>=0.110
 uvicorn>=0.27
