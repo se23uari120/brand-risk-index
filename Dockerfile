@@ -1,21 +1,22 @@
-# Brand Image Risk Index — container for Hugging Face Spaces (Docker SDK) or any Docker host.
-#   docker build -t brand-risk-index .
-#   docker run -p 7860:7860 brand-risk-index      → http://localhost:7860
-FROM python:3.10-slim
+# NSE Brand Risk Monitor — container for Hugging Face Spaces (Docker SDK), Cloud Run or any Docker host.
+#   docker build -t brand-risk .
+#   docker run -p 7860:7860 brand-risk      → http://localhost:7860
+FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     HOST=0.0.0.0 \
     PORT=7860 \
-    USE_FINBERT=true \
+    SENTIMENT=auto \
+    REFRESH_MINUTES=60 \
     HF_HOME=/tmp/hf-home
 
 WORKDIR /app
 
 # CPU-only PyTorch keeps the image small; then the rest of the requirements
-COPY backend/requirements.txt backend/requirements.txt
+COPY backend/requirements*.txt backend/
 RUN pip install torch --index-url https://download.pytorch.org/whl/cpu \
- && pip install -r backend/requirements.txt
+ && pip install -r backend/requirements.txt -r backend/requirements-api.txt -r backend/requirements-finbert.txt
 
 COPY . .
 

@@ -11,7 +11,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
 else
   .venv/bin/python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 fi
-.venv/bin/python -m pip install -r backend/requirements.txt
+.venv/bin/python -m pip install -r backend/requirements.txt -r backend/requirements-api.txt -r backend/requirements-finbert.txt
 echo
 echo "Setup complete. Run ./start.sh, then open http://localhost:8000"
 echo "(FinBERT, about 440 MB, downloads automatically on the first run.)"

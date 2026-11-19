@@ -1,6 +1,7 @@
 # Keeps the dashboard up to date: after every NSE trading session this job
-# downloads fresh prices + headlines, re-scores all companies, appends the
-# day to the history and commits the new data (GitHub Pages then redeploys).
+# runs the unit tests, downloads fresh prices + headlines, re-scores all
+# companies, appends the day to the history and commits the new data
+# (GitHub Pages then redeploys).
 name: Update brand risk data
 
 on:
@@ -17,6 +18,10 @@ on:
         description: "Discard stored history and backfill 30 days again"
         type: boolean
         default: false
+      backtest:
+        description: "Also re-run the 12-incident back-test (~5 min)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -28,7 +33,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -46,6 +51,9 @@ jobs:
             pip install -r backend/requirements-finbert.txt
           fi
 
+      - name: Unit tests
+        run: python -m unittest discover -s backend/tests
+
       - name: Cache FinBERT model weights
         uses: actions/cache@v4
         with:
@@ -57,11 +65,15 @@ jobs:
           python backend/run_pipeline.py --sentiment "${{ inputs.sentiment || 'auto' }}" \
             ${{ inputs.reset_history && '--reset-history' || '' }}
 
+      - name: Run back-test
+        if: ${{ inputs.backtest }}
+        run: python backend/run_pipeline.py --backtest --sentiment "${{ inputs.sentiment || 'auto' }}"
+
       - name: Commit updated data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/data.js backend/output/latest.json backend/output/history.json
+          git add js/data.js backend/output/latest.json backend/output/history.json backend/output/backtest.json
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "data: brand risk update $(date -u +%Y-%m-%d)"
           git push

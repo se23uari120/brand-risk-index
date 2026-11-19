@@ -1,8 +1,10 @@
 .git
 .venv
 venv
+.claude
 **/__pycache__
 backend/models
+backend/cache
 backend/output/risk_results_*.json
 docs/*.png
 docs/*.pdf
