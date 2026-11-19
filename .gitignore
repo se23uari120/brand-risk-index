@@ -28,3 +28,9 @@ Thumbs.db
 
 # Raw downloads (prices / news) - re-created on every run
 backend/cache/
+
+# Pipeline run history (latest.json is kept)
+backend/output/risk_results_*.json
+
+# Local virtual environment created by setup.bat / setup.sh
+.venv/

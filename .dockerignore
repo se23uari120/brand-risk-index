@@ -1,0 +1,8 @@
+.git
+.venv
+venv
+**/__pycache__
+backend/models
+backend/output/risk_results_*.json
+docs/*.png
+docs/*.pdf

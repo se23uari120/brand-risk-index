@@ -1,0 +1,291 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1110" viewBox="0 0 1600 1110">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#424a53"/>
+    </marker>
+    <style>
+      text { font-family: "Segoe UI", Helvetica, Arial, sans-serif; fill: #1f2328; white-space: pre; }
+      .title { font-size: 26px; font-weight: 700; }
+      .sub { font-size: 14px; fill: #57606a; }
+      .h { font-size: 15px; font-weight: 700; fill: #ffffff; }
+      .t { font-size: 13px; }
+      .b { font-size: 13px; font-weight: 700; }
+      .m { font-size: 12px; fill: #57606a; }
+      .c { font-family: Consolas, "Cascadia Mono", Menlo, monospace; font-size: 12px; fill: #0a3069; }
+      .s { font-size: 11px; fill: #57606a; }
+      .box { fill: #ffffff; stroke-width: 1.5; }
+      .flow { stroke: #424a53; stroke-width: 2; fill: none; marker-end: url(#arr); }
+      .both { stroke: #424a53; stroke-width: 2; fill: none; marker-end: url(#arr); marker-start: url(#arr); }
+      .ctrl { stroke: #6e7781; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; }
+      .ctrlA { stroke: #6e7781; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; marker-end: url(#arr); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1110" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="30" y="42" class="title">Brand Image Risk Index — System Architecture</text>
+  <text x="30" y="68" class="sub">Live news → FinBERT sentiment → four criteria (C1–C4) → AHP-TOPSIS risk index → API &amp; dashboard  ·  report Fig. 1, as built</text>
+
+  <!-- ============ ROW A: processing pipeline ============ -->
+
+  <!-- 1 Sources -->
+  <rect x="30" y="100" width="276" height="440" rx="8" class="box" stroke="#0e7490"/>
+  <path d="M30,108 a8,8 0 0 1 8,-8 h260 a8,8 0 0 1 8,8 v28 h-276 z" fill="#0e7490"/>
+  <text x="44" y="124" class="h">① News sources</text>
+  <text x="44" y="160" class="b">Direct RSS · 9 outlets, 18 feeds</text>
+  <text x="50" y="179" class="t">• Business Standard (4 feeds)</text>
+  <text x="50" y="197" class="t">• Economic Times (4)</text>
+  <text x="50" y="215" class="t">• Livemint (3) · BusinessLine (2)</text>
+  <text x="50" y="233" class="t">• The Hindu · CNBC-TV18</text>
+  <text x="50" y="251" class="t">• NDTV Profit · Times of India</text>
+  <text x="50" y="269" class="t">• Indian Express</text>
+  <text x="44" y="297" class="b">Moneycontrol</text>
+  <text x="50" y="316" class="t">• Official news sitemap (~800 latest)</text>
+  <text x="50" y="334" class="t">• Google News, site:moneycontrol.com</text>
+  <text x="44" y="362" class="b">Google News search</text>
+  <text x="50" y="381" class="t">• Every other publisher</text>
+  <text x="50" y="399" class="t">• India edition, global fallback</text>
+  <text x="50" y="417" class="t">• Live: when:Nd · Past: after:/before:</text>
+  <text x="44" y="445" class="b">Not usable</text>
+  <text x="50" y="464" class="t">• Zee Business (HTTP 403)</text>
+  <text x="50" y="482" class="t">• Financial Express (empty feed)</text>
+  <text x="44" y="522" class="s">User-Agent: BrandRiskIndex/1.0 feed reader</text>
+
+  <!-- 2 Ingestion -->
+  <rect x="346" y="100" width="276" height="440" rx="8" class="box" stroke="#1f6feb"/>
+  <path d="M346,108 a8,8 0 0 1 8,-8 h260 a8,8 0 0 1 8,8 v28 h-276 z" fill="#1f6feb"/>
+  <text x="360" y="124" class="h">② Ingestion</text>
+  <text x="360" y="160" class="c">nlp/text_ingestion.py</text>
+  <text x="366" y="184" class="t">• Parallel fetch, 8 workers (~4 s)</text>
+  <text x="366" y="202" class="t">• Shared news pool, cached 15 min</text>
+  <text x="366" y="220" class="t">• Window: last 48 h, or past dates</text>
+  <text x="360" y="248" class="b">Company matching</text>
+  <text x="366" y="267" class="t">• Headline must name the company</text>
+  <text x="366" y="285" class="t">  or one of its aliases</text>
+  <text x="366" y="303" class="t">• Body-only mentions dropped</text>
+  <text x="366" y="321" class="t">• Google query: name OR aliases</text>
+  <text x="360" y="347" class="c">data/company_directory.json</text>
+  <text x="366" y="365" class="m">~100 firms: sector + aliases</text>
+  <text x="360" y="387" class="c">data/companies.json</text>
+  <text x="366" y="405" class="m">monitored watchlist (15 + user adds)</text>
+  <text x="366" y="431" class="t">• De-duplication across sources</text>
+  <text x="366" y="449" class="t">• Publisher → outlet normalisation</text>
+  <text x="360" y="477" class="b">Output per article</text>
+  <text x="366" y="495" class="m">title · outlet · provider · url ·</text>
+  <text x="366" y="512" class="m">published time</text>
+
+  <!-- 3 NLP -->
+  <rect x="662" y="100" width="276" height="440" rx="8" class="box" stroke="#8250df"/>
+  <path d="M662,108 a8,8 0 0 1 8,-8 h260 a8,8 0 0 1 8,8 v28 h-276 z" fill="#8250df"/>
+  <text x="676" y="124" class="h">③ NLP</text>
+  <text x="676" y="160" class="b">FinBERT sentiment</text>
+  <text x="676" y="178" class="c">nlp/finbert_pipeline.py</text>
+  <text x="682" y="202" class="t">• ProsusAI/finbert (CPU, batch 16)</text>
+  <text x="682" y="220" class="t">• P(positive), P(neutral), P(negative)</text>
+  <text x="682" y="238" class="t">• score = P(pos) − P(neg), −1 … +1</text>
+  <text x="682" y="256" class="t">• label = most likely class</text>
+  <text x="682" y="274" class="t">• Keyword heuristic if model absent</text>
+  <text x="676" y="306" class="b">Crisis-event classifier</text>
+  <text x="676" y="324" class="c">nlp/crisis_classifier.py</text>
+  <text x="682" y="348" class="t">• Rule-based, 12 issue types:</text>
+  <text x="694" y="366" class="m">Regulatory · Fraud &amp; Governance ·</text>
+  <text x="694" y="383" class="m">Tax · Legal · Data &amp; Cyber · Safety ·</text>
+  <text x="694" y="400" class="m">Outage · Labour &amp; Protest ·</text>
+  <text x="694" y="417" class="m">Leadership · Financial Distress ·</text>
+  <text x="694" y="434" class="m">ESG · Market &amp; Earnings</text>
+  <text x="682" y="458" class="t">• Regulators named: RBI, SEBI,</text>
+  <text x="682" y="476" class="t">  USFDA, CCI, ED, CBI, courts …</text>
+  <text x="676" y="512" class="m">Output: score, label, issue type</text>
+
+  <!-- 4 Scoring & MCDM -->
+  <rect x="978" y="100" width="276" height="440" rx="8" class="box" stroke="#bc4c00"/>
+  <path d="M978,108 a8,8 0 0 1 8,-8 h260 a8,8 0 0 1 8,8 v28 h-276 z" fill="#bc4c00"/>
+  <text x="992" y="124" class="h">④ Scoring &amp; MCDM</text>
+  <text x="992" y="160" class="c">engine/live_scoring.py</text>
+  <text x="998" y="184" class="t">• Recency weight w = 0.5^(age / 72 h)</text>
+  <text x="998" y="202" class="t">• s = weighted negative intensity of</text>
+  <text x="998" y="220" class="t">  opinionated headlines (+2 prior)</text>
+  <text x="998" y="244" class="t"><tspan font-weight="700">C1</tspan> Severity = clip(100·s, 5, 100)</text>
+  <text x="998" y="262" class="t"><tspan font-weight="700">C2</tspan> Reach = Viral / High / Med / Low</text>
+  <text x="998" y="280" class="t"><tspan font-weight="700">C3</tspan> Recoverability = 0.6·C1 + 0.4·C2</text>
+  <text x="998" y="298" class="t"><tspan font-weight="700">C4</tspan> Criticality = sector × C1</text>
+  <text x="992" y="326" class="c">mcdm/ahp.py</text>
+  <text x="998" y="344" class="t">• w = 0.466 / 0.277 / 0.161 / 0.096</text>
+  <text x="998" y="362" class="t">• λmax 4.031 · CR 0.0115 &lt; 0.10</text>
+  <text x="992" y="388" class="c">mcdm/topsis.py (anchored)</text>
+  <text x="998" y="406" class="t">• A⁺ baseline (5, 25, 13, 10)</text>
+  <text x="998" y="424" class="t">• A⁻ crisis (100, 100, 100, 100)</text>
+  <text x="998" y="442" class="t">• Index = D⁺ / (D⁺ + D⁻) × 100</text>
+  <text x="998" y="468" class="t">• 90% range: 200 bootstrap</text>
+  <text x="998" y="486" class="t">  resamples of the headlines</text>
+  <text x="992" y="512" class="m">Same fixed scale for every company</text>
+
+  <!-- 5 Results -->
+  <rect x="1294" y="100" width="276" height="440" rx="8" class="box" stroke="#1a7f37"/>
+  <path d="M1294,108 a8,8 0 0 1 8,-8 h260 a8,8 0 0 1 8,8 v28 h-276 z" fill="#1a7f37"/>
+  <text x="1308" y="124" class="h">⑤ Result per company</text>
+  <text x="1308" y="160" class="b">Brand Image Risk Index 0–100</text>
+  <text x="1314" y="178" class="t">• with 90% confidence range</text>
+  <text x="1308" y="204" class="b">Band → action (Table V)</text>
+  <rect x="1314" y="214" width="10" height="10" rx="2" fill="#2da44e"/>
+  <text x="1330" y="223" class="t">Low &lt; 40: background logging</text>
+  <rect x="1314" y="234" width="10" height="10" rx="2" fill="#d4a72c"/>
+  <text x="1330" y="243" class="t">Moderate 40–&lt;70: assign analyst,</text>
+  <text x="1330" y="260" class="t">SEBI check, draft statement</text>
+  <rect x="1314" y="271" width="10" height="10" rx="2" fill="#cf222e"/>
+  <text x="1330" y="280" class="t">Critical ≥ 70: crisis protocol,</text>
+  <text x="1330" y="297" class="t">legal review, PR response</text>
+  <text x="1308" y="326" class="b">Explanation</text>
+  <text x="1314" y="345" class="t">• Dominant issue + worst headline</text>
+  <text x="1314" y="363" class="t">• Each criterion's share of the index</text>
+  <text x="1314" y="381" class="t">• Headlines driving severity</text>
+  <text x="1314" y="399" class="t">• Daily coverage timeline</text>
+  <text x="1308" y="427" class="b">Comparison</text>
+  <text x="1314" y="446" class="t">• Per-outlet sentiment &amp; risk</text>
+  <text x="1314" y="464" class="t">• Source agreement (spread)</text>
+  <text x="1314" y="482" class="t">• Rank vs monitored companies</text>
+  <text x="1308" y="512" class="m">Live, or for a past date range</text>
+
+  <!-- Row A arrows -->
+  <path d="M308,320 H344" class="flow"/>
+  <path d="M624,320 H660" class="flow"/>
+  <path d="M940,320 H976" class="flow"/>
+  <path d="M1256,320 H1292" class="flow"/>
+
+  <!-- Orchestration bus -->
+  <path d="M484,560 H1432" class="ctrl"/>
+  <path d="M484,560 V543" class="ctrlA"/>
+  <path d="M800,560 V543" class="ctrlA"/>
+  <path d="M1116,560 V543" class="ctrlA"/>
+  <path d="M1432,560 V543" class="ctrlA"/>
+  <path d="M642,575 V560" class="ctrl"/>
+  <rect x="843" y="551" width="230" height="17" fill="#ffffff"/>
+  <text x="958" y="564" class="s" text-anchor="middle">orchestrated by RiskScoringPipeline</text>
+
+  <!-- ============ ROW B ============ -->
+
+  <!-- 6 Storage (rows B + C) -->
+  <rect x="30" y="575" width="276" height="485" rx="8" class="box" stroke="#57606a"/>
+  <path d="M30,583 a8,8 0 0 1 8,-8 h260 a8,8 0 0 1 8,8 v28 h-276 z" fill="#57606a"/>
+  <text x="44" y="599" class="h">⑥ Storage (JSON files)</text>
+  <text x="44" y="635" class="c">backend/output/latest.json</text>
+  <text x="50" y="652" class="m">latest run, all monitored companies</text>
+  <text x="44" y="676" class="c">output/risk_results_*.json</text>
+  <text x="50" y="693" class="m">timestamped history of every run</text>
+  <text x="44" y="717" class="c">js/data.js</text>
+  <text x="50" y="734" class="m">static copy for the offline page</text>
+  <text x="44" y="758" class="c">output/backtest.json</text>
+  <text x="50" y="775" class="m">last back-test results</text>
+  <text x="44" y="799" class="c">data/companies.json</text>
+  <text x="50" y="816" class="m">monitored watchlist</text>
+  <text x="44" y="840" class="c">data/company_directory.json</text>
+  <text x="50" y="857" class="m">sectors + aliases for search</text>
+  <text x="44" y="881" class="c">data/incidents.json</text>
+  <text x="50" y="898" class="m">12 documented incidents</text>
+  <text x="44" y="922" class="c">data/labels.json</text>
+  <text x="50" y="939" class="m">your hand labels for FinBERT</text>
+  <text x="44" y="963" class="c">models/finbert_cache/</text>
+  <text x="50" y="980" class="m">downloaded FinBERT model</text>
+  <text x="44" y="1040" class="s">Config: backend/config.py</text>
+
+  <!-- Orchestrator -->
+  <rect x="346" y="575" width="592" height="110" rx="8" class="box" stroke="#24292f"/>
+  <path d="M346,583 a8,8 0 0 1 8,-8 h576 a8,8 0 0 1 8,8 v28 h-592 z" fill="#24292f"/>
+  <text x="360" y="599" class="h">Orchestrator — engine/risk_scorer.py · RiskScoringPipeline</text>
+  <text x="360" y="632" class="t"><tspan class="c" style="font-size:13px">run()</tspan> — every monitored company through ② → ⑤, every 15 min</text>
+  <text x="360" y="650" class="t">   in a background thread; results saved to ⑥</text>
+  <text x="360" y="672" class="t"><tspan class="c" style="font-size:13px">analyze_company()</tspan> — any company on demand, live or past dates</text>
+
+  <!-- Validation & analysis -->
+  <rect x="978" y="575" width="592" height="110" rx="8" class="box" stroke="#9a6700"/>
+  <path d="M978,583 a8,8 0 0 1 8,-8 h576 a8,8 0 0 1 8,8 v28 h-592 z" fill="#9a6700"/>
+  <text x="992" y="599" class="h">Validation &amp; analysis</text>
+  <text x="992" y="632" class="c">engine/backtest.py</text>
+  <text x="992" y="650" class="m">12 incidents · incident vs control week</text>
+  <text x="992" y="668" class="m">vs sentiment-only &amp; mention-volume</text>
+  <text x="1280" y="632" class="c">engine/evaluation.py</text>
+  <text x="1280" y="650" class="m">hand labels → FinBERT accuracy</text>
+  <text x="1280" y="668" class="c">mcdm/sensitivity.py · critic.py</text>
+
+  <!-- Orchestrator -> storage -->
+  <path d="M344,640 H308" class="flow"/>
+
+  <!-- ============ ROW C ============ -->
+
+  <!-- 7 API -->
+  <rect x="346" y="715" width="592" height="345" rx="8" class="box" stroke="#0969da"/>
+  <path d="M346,723 a8,8 0 0 1 8,-8 h576 a8,8 0 0 1 8,8 v28 h-592 z" fill="#0969da"/>
+  <text x="360" y="739" class="h">⑦ API server — backend/api.py (FastAPI + uvicorn, port 8000)</text>
+  <text x="360" y="775" class="b">Live monitoring</text>
+  <text x="360" y="793" class="c">GET  /api/live/status</text>
+  <text x="360" y="810" class="c">POST /api/live/refresh</text>
+  <text x="360" y="827" class="c">GET  /api/companies · /api/sectors</text>
+  <text x="360" y="844" class="c">GET  /api/headlines · /api/compare</text>
+  <text x="360" y="868" class="b">Company search</text>
+  <text x="360" y="886" class="c">GET  /api/search?company=…</text>
+  <text x="360" y="903" class="c">     &amp;hours= | &amp;date_from=&amp;date_to=</text>
+  <text x="360" y="920" class="c">GET  /api/resolve?q=…</text>
+  <text x="360" y="937" class="c">POST/DELETE /api/watchlist</text>
+  <text x="360" y="961" class="b">Sources</text>
+  <text x="360" y="979" class="c">GET  /api/sources · /api/source-matrix</text>
+  <text x="660" y="775" class="b">MCDM</text>
+  <text x="660" y="793" class="c">GET  /api/mcdm/ahp</text>
+  <text x="660" y="810" class="c">GET  /api/mcdm/weights?alpha=</text>
+  <text x="660" y="827" class="c">GET  /api/mcdm/sensitivity</text>
+  <text x="660" y="851" class="b">Validation</text>
+  <text x="660" y="869" class="c">GET  /api/backtest</text>
+  <text x="660" y="886" class="c">POST /api/backtest/run</text>
+  <text x="660" y="903" class="c">GET  /api/eval/sample · /metrics</text>
+  <text x="660" y="920" class="c">POST /api/eval/label</text>
+  <text x="660" y="937" class="c">POST /api/score-text</text>
+  <text x="660" y="961" class="b">Also</text>
+  <text x="660" y="979" class="c">GET  /  (dashboard) · /docs</text>
+  <text x="360" y="1018" class="m">On startup a background thread runs the live refresh, then repeats every 15 min.</text>
+  <text x="360" y="1038" class="m">Env: REFRESH_MINUTES=15 · LOOKBACK_HOURS=48 · USE_FINBERT=auto · DECAY_HALF_LIFE_HOURS=72</text>
+
+  <!-- 8 Dashboard -->
+  <rect x="978" y="715" width="592" height="345" rx="8" class="box" stroke="#0e7490"/>
+  <path d="M978,723 a8,8 0 0 1 8,-8 h576 a8,8 0 0 1 8,8 v28 h-592 z" fill="#0e7490"/>
+  <text x="992" y="739" class="h">⑧ Dashboard — index.html + js/*.js (Chart.js)</text>
+  <text x="992" y="775" class="b">Overview</text>
+  <text x="992" y="792" class="m">KPIs, sector charts, top risks</text>
+  <text x="992" y="816" class="b">Company Search</text>
+  <text x="992" y="833" class="m">any company → full assessment</text>
+  <text x="992" y="857" class="b">Source Comparison</text>
+  <text x="992" y="874" class="m">company × outlet sentiment grid</text>
+  <text x="992" y="898" class="b">Risk Register</text>
+  <text x="992" y="915" class="m">filterable table + detail view</text>
+  <text x="1280" y="775" class="b">Company Comparator</text>
+  <text x="1280" y="792" class="m">up to 4 companies side by side</text>
+  <text x="1280" y="816" class="b">MCDM Matrix</text>
+  <text x="1280" y="833" class="m">AHP weights, CRITIC, sensitivity</text>
+  <text x="1280" y="857" class="b">Action Engine</text>
+  <text x="1280" y="874" class="m">alerts by band, band counts</text>
+  <text x="1280" y="898" class="b">Validation</text>
+  <text x="1280" y="915" class="m">back-test · labelling · headline scorer</text>
+  <text x="992" y="945" class="c">live.js — polls /api/live/status every 60 s</text>
+  <text x="992" y="962" class="c">search.js · sources.js · mcdm.js · validation.js</text>
+  <rect x="992" y="985" width="564" height="58" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+  <circle cx="1018" cy="1004" r="7" fill="none" stroke="#424a53" stroke-width="1.6"/>
+  <path d="M1006,1030 a12,12 0 0 1 24,0" fill="none" stroke="#424a53" stroke-width="1.6"/>
+  <text x="1042" y="1009" class="b">Analyst's browser — http://localhost:8000</text>
+  <text x="1042" y="1028" class="m">Started with start.bat · search any company, compare sources, run validation</text>
+
+  <!-- Row C arrows -->
+  <path d="M642,713 V687" class="both"/>
+  <text x="650" y="705" class="s">triggers runs &amp; searches</text>
+  <path d="M900,715 V700 H1010 V687" class="flow"/>
+  <text x="1018" y="705" class="s">back-test, labels, sensitivity</text>
+  <path d="M344,880 H308" class="both"/>
+  <text x="312" y="872" class="s" style="font-size:10px">r/w</text>
+  <path d="M940,880 H976" class="both"/>
+  <text x="944" y="872" class="s" style="font-size:10px">JSON</text>
+
+  <!-- Legend -->
+  <path d="M30,1088 H70" class="flow"/>
+  <text x="78" y="1092" class="s">data flow</text>
+  <path d="M150,1088 H190" class="ctrlA"/>
+  <text x="198" y="1092" class="s">orchestration (calls)</text>
+  <text x="1570" y="1092" class="s" text-anchor="end">brand-risk-index · local-live-feed branch · November 2026</text>
+</svg>

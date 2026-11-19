@@ -1,0 +1,17 @@
+{
+  "_note": "Documented Indian corporate incidents for the pilot back-test (report Sec. VII-C). 'date' is the day the event became public. The incident window is date..date+4 days; the control window is the same length, 60 days earlier.",
+  "incidents": [
+    {"company": "Paytm", "sector": "FinTech", "date": "2024-01-31", "event": "RBI restricts Paytm Payments Bank from taking new deposits"},
+    {"company": "Kotak Mahindra Bank", "sector": "Banking & Finance", "date": "2024-04-24", "event": "RBI bars Kotak Mahindra Bank from onboarding customers online and issuing new credit cards"},
+    {"company": "Bajaj Finance", "sector": "NBFC", "date": "2023-11-15", "event": "RBI stops Bajaj Finance lending under its eCOM and Insta EMI Card products"},
+    {"company": "IIFL Finance", "sector": "NBFC", "date": "2024-03-04", "event": "RBI bars IIFL Finance from sanctioning new gold loans"},
+    {"company": "Adani Enterprises", "sector": "Conglomerate", "date": "2023-01-25", "event": "Hindenburg Research short-seller report on the Adani Group"},
+    {"company": "Adani Green Energy", "sector": "Energy & Power", "date": "2024-11-21", "event": "US prosecutors indict Adani Green executives in a bribery case"},
+    {"company": "Zomato", "sector": "Consumer Tech", "date": "2024-03-19", "event": "Backlash over the 'Pure Veg Fleet' green uniforms, rolled back next day"},
+    {"company": "Infosys", "sector": "IT Services", "date": "2024-07-31", "event": "GST authorities issue a pre-show-cause notice of about Rs 32,000 crore"},
+    {"company": "Go First", "sector": "Aviation", "date": "2023-05-02", "event": "Go First files for voluntary insolvency and suspends flights"},
+    {"company": "ICICI Bank", "sector": "Banking & Finance", "date": "2022-12-23", "event": "CBI arrests former CEO Chanda Kochhar in the Videocon loan case"},
+    {"company": "Tata Motors", "sector": "Automotive", "date": "2025-09-02", "event": "Cyber attack halts Jaguar Land Rover production"},
+    {"company": "Vedanta", "sector": "Metals & Mining", "date": "2025-07-09", "event": "Viceroy Research short-seller report on Vedanta Resources"}
+  ]
+}
