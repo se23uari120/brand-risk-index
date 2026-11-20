@@ -19,6 +19,9 @@ from typing import Dict, List, Optional
 
 # (category, pattern). Order matters: the first match wins.
 _CATEGORY_RULES = [
+    # crimes against the company (a store heist, oil stolen from a well) are not governance failures
+    ("Theft & Crime",      r"\btheft\w*|\bstealing\b|\bstolen\b|\bheist\w*|\brobber(y|ies)\b|\brobbed\b|"
+                           r"\bburglar\w*|\bloot(ed|ing)?\b|\bdacoity\b|\bpilferage\b"),
     ("Fraud & Governance", r"\bfraud\w*|\bscam\w*|money[- ]laundering|\bpmla\b|\bed raids?\b|\braids?\b|\bcbi\b|"
                            r"\barrest\w*|embezzl\w*|misconduct|whistle-?blower|governance (lapse|issue|concern)|"
                            r"short[- ]seller|hindenburg|viceroy|manipulat\w*|insider trading|brib\w*|indict\w*|"
@@ -33,9 +36,11 @@ _CATEGORY_RULES = [
     ("Legal & Litigation", r"\bcourt\b|lawsuit|\bsued?\b|\bsues\b|\bnclt\b|\bnclat\b|tribunal|arbitration|"
                            r"verdict|litigation|\bplea\b|\bpil\b|\bfir\b|legal (battle|action|notice|tangle)|"
                            r"class action|contempt|summon\w*"),
-    ("Data & Cyber",       r"data (breach|leak)|\bleak(ed|s)?\b|\bhack\w*|cyber[- ]?attack|cyber\w*|ransomware|"
-                           r"phishing|privacy"),
-    ("Safety & Product",   r"\brecall\w*|defect\w*|\bfire\b|explosion|blast|accident|safety|contaminat\w*|"
+    # "leak" only counts as a data issue when the headline is about data (a gas leak is Safety & Product)
+    ("Data & Cyber",       r"data (breach|leak)|(data|information|documents?|customer|user|personal|records?)\b[^.]{0,20}?\bleak\w*|"
+                           r"\bleak(ed|s)?\b[^.]{0,20}?\b(data|documents?|details|records|information)\b|"
+                           r"\bhack\w*|cyber[- ]?attack|cyber\w*|ransomware|phishing|privacy"),
+    ("Safety & Product",   r"\brecall\w*|defect\w*|\bfire\b|explosion|blast|accident|safety|contaminat\w*|\bleak\w*|evacuat\w*|"
                            r"injur\w*|\bdeaths?\b|\bdied\b|\bcrash(es|ed)?\b(?! in share)|faulty|"
                            r"quality (issue|concern|lapse)|adulterat\w*|food poisoning|spurious"),
     ("Service Outage",     r"outage|disruption|\bglitch\w*|downtime|services? (down|hit|disrupted)|"

@@ -235,8 +235,38 @@ class TestCrisisClassifier(unittest.TestCase):
         for text, want in cases.items():
             self.assertEqual(classify(text)["category"], want, text)
 
+    def test_leaks_and_crime(self):
+        cases = {
+            "Gas Leak at ONGC Well in Andhra Pradesh Evacuates 800": "Safety & Product",
+            "Leaked documents reveal pricing plan": "Data & Cyber",
+            "Customer data leak at app exposes 2 lakh users": "Data & Cyber",
+            "Gujarat ATS arrests six for stealing crude oil from ONGC": "Theft & Crime",
+            "Madurai Tanishq heist: prime accused arrested": "Theft & Crime",
+            "CBI arrests former CEO in loan case": "Fraud & Governance",
+        }
+        for text, want in cases.items():
+            self.assertEqual(classify(text)["category"], want, text)
+
     def test_regulators(self):
         self.assertEqual(regulators_mentioned("SEBI and RBI act; edits planned"), ["RBI", "SEBI"])
+
+
+class TestPriceHoles(unittest.TestCase):
+    def test_empty_recent_day_rebuilt_from_15_minute_bars(self):
+        from market.nse_prices import _to_frame, fill_from_intraday
+        day = lambda d, h=9, m=15: int(datetime(2026, 11, d, h, m, tzinfo=timezone(timedelta(hours=5, minutes=30))).timestamp())
+        result = {"meta": {"gmtoffset": 19800},
+                  "timestamp": [day(17), day(18), day(19), day(20)],
+                  "indicators": {"quote": [{"close": [100.0, 101.0, None, 103.0], "volume": [10, 11, None, 13]}],
+                                 "adjclose": [{"adjclose": [100.0, 101.0, None, 103.0]}]}}
+        intraday = {"timestamp": [day(19, 9, 15), day(19, 15, 0), day(19, 15, 15), day(20, 9, 15)],
+                    "indicators": {"quote": [{"close": [101.5, 102.0, 102.4, 103.0], "volume": [3, 4, 5, 6]}]}}
+        self.assertEqual(fill_from_intraday(result, intraday), 1)
+        df = _to_frame(result)
+        row = df.loc[pd.Timestamp("2026-11-19")]
+        self.assertAlmostEqual(row["close"], 102.4)               # the day's last 15-minute close
+        self.assertAlmostEqual(row["volume"], 12)                 # 3 + 4 + 5
+        self.assertAlmostEqual(row["adj"], 102.4)                 # adjustment factor carried forward
 
 
 class TestCriticAndSensitivity(unittest.TestCase):

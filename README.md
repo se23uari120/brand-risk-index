@@ -121,7 +121,7 @@ A brand problem shows up in two places: **investors sell the shares more than th
 * **News:** a Google News search per company (live: last 50 days; past: `after:`/`before:`), plus, for the latest 3 days, the RSS feeds of Business Standard, Economic Times, Livemint, Hindu BusinessLine, CNBC-TV18, NDTV Profit and Indian Express.
 * **Relevance:** a headline must name the company (with tuned name variants) and not a similarly named one (e.g. "SBI Life" for SBI). Market wrap-ups ("Sensex, Nifty fall…") and duplicates are dropped, and HTML entities are decoded.
 * **Sentiment:** each headline is scored −1…+1 by **FinBERT** (`ProsusAI/finbert`: P(positive) − P(negative)), or by a transparent finance word list when FinBERT isn't installed. Headlines at ≤ −0.15 count as negative and ≥ +0.15 as positive.
-* **Issue type:** a rule-based **crisis-event classifier** tags each headline: Regulatory Action, Fraud & Governance, Tax Dispute, Legal & Litigation, Data & Cyber, Safety & Product, Service Outage, Labour & Protest, Leadership Change, Financial Distress, ESG & Environment or Market & Earnings. It also records the regulators named (RBI, SEBI, USFDA, …). This explains the score; it does not change it.
+* **Issue type:** a rule-based **crisis-event classifier** tags each headline: Theft & Crime, Regulatory Action, Fraud & Governance, Tax Dispute, Legal & Litigation, Data & Cyber, Safety & Product, Service Outage, Labour & Protest, Leadership Change, Financial Distress, ESG & Environment or Market & Earnings. It also records the regulators named (RBI, SEBI, USFDA, …). This explains the score; it does not change it.
 
 ### Step 2: The five signals (0–100 risk points each)
 
@@ -389,8 +389,8 @@ The first version (the report's Tables III–V) scored companies from **news alo
 
 ## Data sources and limitations
 
-* **Prices** come from Yahoo Finance's public chart data. It is unofficial and can be late or revised. The newest bar is taken from Yahoo's final market quote once the session has closed.
-* **Headlines** come from Google News RSS (for personal, non-commercial use) and the outlets' own RSS feeds. Only headlines are analysed, not full articles. Moneycontrol's news sitemap refused automated access (HTTP 403) on 20 Nov 2026, so Moneycontrol stories arrive through Google News. Times of India's feed was empty that day.
+* **Prices** come from Yahoo Finance's public chart data. It is unofficial and can be late or revised. The newest bar is taken from Yahoo's final market quote once the session has closed, and a recent day that Yahoo leaves empty (it happened for 13 stocks on 19 Nov 2026) is rebuilt from its 15-minute bars.
+* **Headlines** come from Google News RSS (for personal, non-commercial use) and the outlets' own RSS feeds. Only headlines are analysed, not full articles. Moneycontrol's news sitemap works from GitHub's servers (884 stories on 20 Nov 2026) but refused our test PC (HTTP 403); when it is blocked, Moneycontrol stories still arrive through Google News. The Times of India and Indian Express feeds were empty that day.
 * **The word-list sentiment engine is crude.** For example, it reads "court sets aside sanction to prosecute" as negative because of "scam". FinBERT is better; the daily job and `setup` use it.
 * **The issue classifier is keyword-based.** It explains coverage but can mislabel. For example, arrests in the Tanishq jewellery heist were tagged Fraud & Governance for Titan.
 * **A stock fall is not always a brand problem.** Results, guidance or analyst calls also move prices, so read the headlines in each company's panel.

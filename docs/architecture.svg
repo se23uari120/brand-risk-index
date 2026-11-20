@@ -40,7 +40,7 @@
   <text x="50" y="345" class="t">• Business Standard · Economic Times</text>
   <text x="50" y="363" class="t">• Livemint · BusinessLine · CNBC-TV18</text>
   <text x="50" y="381" class="t">• NDTV Profit · Indian Express</text>
-  <text x="50" y="399" class="t">• Moneycontrol sitemap (HTTP 403 now)</text>
+  <text x="50" y="399" class="t">• Moneycontrol news sitemap</text>
   <text x="44" y="427" class="b">Company lookup (search)</text>
   <text x="50" y="446" class="t">• Watchlist → directory → Yahoo search</text>
   <text x="50" y="464" class="t">• NSE equities only, sector mapped</text>
@@ -62,7 +62,7 @@
   <text x="366" y="345" class="t">• Fallback: finance word list</text>
   <text x="366" y="363" class="t">• Negative ≤ −0.15, positive ≥ +0.15</text>
   <text x="360" y="391" class="c">nlp/crisis_classifier.py</text>
-  <text x="366" y="410" class="t">• 12 issue types + regulators named</text>
+  <text x="366" y="410" class="t">• 13 issue types + regulators named</text>
   <text x="366" y="428" class="t">• Explains the score, never changes it</text>
   <text x="360" y="502" class="s">HTML entities decoded, accents normalised</text>
 

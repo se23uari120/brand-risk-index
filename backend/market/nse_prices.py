@@ -8,6 +8,10 @@ from Yahoo Finance's public chart endpoint.
 * The benchmark is the NIFTY 50 index  ^NSEI
 * Every successful download is cached under backend/cache/prices/, so the
   pipeline can be re-run offline (`--offline`) with the last downloaded data.
+* Yahoo occasionally leaves a recent trading day completely empty for some
+  symbols (13 of the NIFTY 50 on 19 Nov 2026); such a day is rebuilt from
+  Yahoo's 15-minute bars before caching, and the newest bar is completed
+  from the final market quote.
 
 Only `requests` + `pandas` are needed (no yfinance dependency).
 """
@@ -70,6 +74,61 @@ def _download(symbol: str, period: tuple[date, date] | None = None, retries: int
     raise RuntimeError(f"Yahoo Finance download failed for {symbol}: {last_err}")
 
 
+HOLE_LOOKBACK = 6        # recent daily bars checked for holes
+
+
+def fill_from_intraday(result: dict, intraday: dict) -> int:
+    """
+    Yahoo sometimes leaves a whole recent trading day empty (open, close and
+    volume all null) for a few symbols, while its 15-minute bars for that day
+    are complete. Rebuild such a day's close (last 15-minute close) and volume
+    (sum of 15-minute volumes) in place. The newest bar is left to _to_frame,
+    which fills it from the final market quote. Returns the number of days filled.
+    """
+    ts = result.get("timestamp") or []
+    quote = result["indicators"]["quote"][0]
+    closes = quote.get("close") or []
+    holes = [i for i in range(max(0, len(ts) - HOLE_LOOKBACK), len(ts) - 1) if closes[i] is None]
+    if not holes:
+        return 0
+    offset = int(result.get("meta", {}).get("gmtoffset", 19800))
+    iq = intraday["indicators"]["quote"][0]
+    by_day: dict = {}
+    for t, c, v in zip(intraday.get("timestamp") or [], iq.get("close") or [], iq.get("volume") or []):
+        if c is None:
+            continue
+        rec = by_day.setdefault(datetime.fromtimestamp(t + offset, tz=timezone.utc).date(), [None, 0.0])
+        rec[0] = c                      # bars come in time order → ends on the day's last close
+        rec[1] += v or 0
+    adj = (result["indicators"].get("adjclose") or [{}])[0].get("adjclose")
+    filled = 0
+    for i in holes:
+        day = datetime.fromtimestamp(ts[i] + offset, tz=timezone.utc).date()
+        if day in by_day:
+            closes[i] = by_day[day][0]
+            if quote.get("volume") is not None:
+                quote["volume"][i] = by_day[day][1]
+            if adj:
+                adj[i] = None           # rebuilt from the carried-forward adjustment factor
+            filled += 1
+    return filled
+
+
+def _fill_recent_holes(symbol: str, result: dict) -> None:
+    closes = result["indicators"]["quote"][0].get("close") or []
+    if not any(c is None for c in closes[-HOLE_LOOKBACK:-1]):
+        return
+    try:
+        r = _session.get(CHART_URL.format(ticker=urllib.parse.quote(yahoo_ticker(symbol))),
+                         params={"range": "5d", "interval": "15m"}, timeout=20)
+        r.raise_for_status()
+        n = fill_from_intraday(result, r.json()["chart"]["result"][0])
+        if n:
+            logger.info("%s: rebuilt %d empty day(s) from 15-minute bars", symbol, n)
+    except Exception as exc:
+        logger.info("%s: could not fill missing days (%s)", symbol, exc)
+
+
 def _to_frame(result: dict) -> pd.DataFrame:
     """Convert a Yahoo chart payload into a tidy daily DataFrame indexed by IST date."""
     ts = result.get("timestamp") or []
@@ -123,6 +182,8 @@ def get_prices(symbol: str, offline: bool = False,
     if not offline:
         try:
             result = _download(symbol, period)
+            if period is None:
+                _fill_recent_holes(symbol, result)      # cached filled, so offline re-runs match
             cache.write_text(json.dumps(result), encoding="utf-8")
         except Exception as exc:
             logger.warning("%s — falling back to cache", exc)
