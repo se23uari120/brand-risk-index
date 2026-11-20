@@ -174,22 +174,23 @@ The weights are the principal eigenvector, with λmax = 5.0133, CI = 0.0033, RI(
 
 **90% range:** each score is recomputed for 200 bootstrap resamples of the week's headlines. The middle 90% shows how much the score depends on which stories happened to be picked up.
 
-**Example (NSE close, 19 Nov 2026).** Tata Motors PV scored **71.6 (High, 90% range 70–73)**. The shares fell 13.4% more than the market and sector explained (−3.8σ) after Jaguar Land Rover cut its outlook, and 24 of 42 headlines were negative. TCS fell 4.1% that week, but its sector peers fell 4.5%, so it correctly stayed **Low**.
+**Example (NSE close, 19 Nov 2026, FinBERT).** Tata Motors PV scored **75.9 (High, 90% range 74–78)**. The shares fell 13.4% more than the market and sector explained (−3.8σ) after Jaguar Land Rover cut its outlook, and 27 of 43 headlines were negative. TCS fell 4.1% that week, but its sector peers fell 4.5%, so all three of its stock signals are 0 and it stayed **Low** (21.8, from news alone).
 
 ---
 
 ## Robustness and validation
 
-**Weights (MCDM tab, data as of 19 Nov 2026).** All rank-agreement figures are Spearman ρ with the AHP ranking.
+**Weights (MCDM tab; FinBERT sentiment, NSE close of 19 Nov 2026).** All rank-agreement figures are Spearman ρ with the AHP ranking. The figures change with each day's data; the MCDM tab always shows the current ones.
 
-| Weighting | C1 | C2 | C3 | C4 | C5 | Rank agreement | Companies changing level |
-|---|---|---|---|---|---|---|---|
-| AHP | 36.9% | 10.9% | 20.6% | 20.6% | 10.9% | 1.000 | 0 |
-| CRITIC (objective) | 13.3% | 13.7% | 26.4% | 22.2% | 24.5% | 0.949 | 5 |
-| 50/50 blend | 25.1% | 12.3% | 23.5% | 21.4% | 17.7% | 0.985 | 0 |
-| Equal | 20% | 20% | 20% | 20% | 20% | 0.977 | 3 |
+| Weighting | C1 | C2 | C3 | C4 | C5 | Rank agreement | Low / Moderate / High | Companies changing level |
+|---|---|---|---|---|---|---|---|---|
+| AHP | 36.9% | 10.9% | 20.6% | 20.6% | 10.9% | 1.000 | 46 / 3 / 1 | 0 |
+| CRITIC (objective) | 11.9% | 12.4% | 24.5% | 20.2% | 31.0% | 0.913 | 36 / 11 / 3 | 15 |
+| 50/50 blend | 24.4% | 11.7% | 22.6% | 20.4% | 21.0% | 0.972 | 37 / 11 / 2 | 10 |
+| Equal | 20% | 20% | 20% | 20% | 20% | 0.966 | 39 / 9 / 2 | 12 |
 
-Moving any single AHP judgement one Saaty step keeps ρ ≥ 0.995 with no level changes. Changing any one weight by ±10–50% keeps ρ ≥ 0.986 with at most one level change. Over 1,000 Monte Carlo weightings the mean ρ is 0.987 (worst 5%: 0.968). The ranking is robust to the weights; the CRITIC weighting mainly shifts weight from Market reaction to the news signals.
+* **The ranking is robust.** Moving any single AHP judgement one Saaty step keeps ρ ≥ 0.996, with at most 2 level changes. Changing any one weight by ±10% keeps ρ ≥ 0.998; even ±50% keeps ρ ≥ 0.978, with at most 4 level changes. Over 1,000 random weightings around the AHP weights the mean ρ is 0.987 (worst 5%: 0.963). Tata Motors PV and Titan are the top two under all four weightings above.
+* **The levels are less robust.** CRITIC, the blend and equal weights put 40–51% of the weight on the two news signals, against 32% under AHP. (CRITIC weights each signal by how much it varies across companies and disagrees with the others, which today favours Negative coverage at 31%.) With FinBERT, heavily covered companies such as TCS, Infosys, ICICI Bank, IndiGo and ONGC carry a lot of negative coverage while their share-price signals stay low, so 9 to 12 companies move up from Low. Jio Financial and Shriram Finance, which are Moderate only because of their share price, drop to Low when Market reaction loses weight (CRITIC and equal weights). AHP gives the share-price reaction the most weight by design, so read a score near a level boundary together with its 90% range and its signal breakdown.
 
 **Back-test (Validation tab).** There are 12 documented Indian incidents. Each company is scored point-in-time at the end of the incident week and on a control day 60 days earlier, from the same data, alongside four simpler methods:
 
@@ -205,7 +206,7 @@ These results are from the word-list sentiment engine. Detected incidents: Paytm
 
 **Sentiment check.** With the server running, hand-label headlines in the Validation tab (the model's answer is hidden). Accuracy, macro-F1 and the confusion matrix are reported for the word list and FinBERT. Labels are stored in `backend/data/labels.json`.
 
-**Unit tests (37):**
+**Unit tests (39):**
 
 ```bash
 py -3 -m unittest discover -s backend/tests -v
@@ -220,6 +221,7 @@ They cover:
 - relevance filtering and HTML decoding
 - sentiment, the crisis classifier, CRITIC and the sensitivity analysis
 - the shared company scorer and the evaluation metrics
+- rebuilding a price day that Yahoo left empty from its 15-minute bars
 
 ---
 
@@ -342,7 +344,7 @@ brand-risk-index/
     │   ├── search.py             # Company Search
     │   ├── backtest.py           # Incident back-test with baselines
     │   └── evaluation.py         # Sentiment accuracy against human labels
-    ├── tests/test_model.py       # 37 unit tests
+    ├── tests/test_model.py       # 39 unit tests
     └── output/                   # latest.json, history.json, backtest.json
 ```
 
@@ -391,7 +393,7 @@ The first version (the report's Tables III–V) scored companies from **news alo
 
 * **Prices** come from Yahoo Finance's public chart data. It is unofficial and can be late or revised. The newest bar is taken from Yahoo's final market quote once the session has closed, and a recent day that Yahoo leaves empty (it happened for 13 stocks on 19 Nov 2026) is rebuilt from its 15-minute bars.
 * **Headlines** come from Google News RSS (for personal, non-commercial use) and the outlets' own RSS feeds. Only headlines are analysed, not full articles. Moneycontrol's news sitemap works from GitHub's servers (884 stories on 20 Nov 2026) but refused our test PC (HTTP 403); when it is blocked, Moneycontrol stories still arrive through Google News. The Times of India and Indian Express feeds were empty that day.
-* **The word-list sentiment engine is crude.** For example, it reads "court sets aside sanction to prosecute" as negative because of "scam". FinBERT is better; the daily job and `setup` use it.
+* **The word-list sentiment engine is crude.** For example, it reads "court sets aside sanction to prosecute" as negative because of "scam". FinBERT is better; the daily job and `setup` use it. FinBERT still misreads some headlines (on 20 Nov it scored "Infosys Stock Could Be Undervalued As AI Telecom Demand Builds" at −0.85), and Negative coverage counts every negative headline, so heavily covered companies can collect news points without a real issue.
 * **The issue classifier is keyword-based.** It explains coverage but can mislabel. For example, arrests in the Tanishq jewellery heist were tagged Fraud & Governance for Titan.
 * **A stock fall is not always a brand problem.** Results, guidance or analyst calls also move prices, so read the headlines in each company's panel.
 * **A Low score does not mean no reputational issue.** If the market shrugs off bad news, the stock signals stay quiet. The Overview's "Most negative news" list catches those cases (e.g. a fatal accident at an NTPC site with no share-price reaction).
