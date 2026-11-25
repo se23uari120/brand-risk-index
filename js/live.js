@@ -100,7 +100,7 @@ function renderLiveBadge(s) {
     title = 'Waking the free server that refreshes the data (about a minute after a quiet spell). The stored results are shown meanwhile.';
   } else if (running) {
     text = 'Updating…';
-    title = 'Fetching fresh prices and headlines for every company. This page updates by itself when it is done (a few minutes).';
+    title = 'Fetching fresh prices and headlines for every company. This page updates by itself when it is done (several minutes on a free server).';
   } else if (info.refreshOnVisit) {
     text = D && D.generatedAt ? `Updated ${fmtTime(D.generatedAt)}` : 'Up to date';
     title = `Re-scored when someone opens the page and the data is more than ${Math.round(info.staleMinutes)} minutes old.` +

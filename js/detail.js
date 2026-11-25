@@ -20,7 +20,7 @@ function openDetail(symbol, { updateHash = true } = {}) {
   if (!$('#drawer').classList.contains('open')) lastFocus = document.activeElement;
 
   $('#d-name').textContent = c.name;
-  $('#d-sub').textContent = `NSE: ${c.symbol} · ${c.sector} · ${fmt.inr(c.stock.close)} on ${fmt.date(c.asOf || D.asOf)}`;
+  $('#d-sub').textContent = `NSE: ${c.symbol}${c.index ? ` · ${c.index}` : ''} · ${c.sector} · ${fmt.inr(c.stock.close)} on ${fmt.date(c.asOf || D.asOf)}`;
   $('#d-body').innerHTML = detailHtml(c, defaultCtx(), 'd');
   $('#d-body').scrollTop = 0;
 
@@ -138,7 +138,7 @@ function detailHtml(c, ctx, prefix) {
       <div class="card-head"><h3>Company-specific performance</h3><span class="hint">market &amp; sector moves removed</span></div>
       <div class="chart-box h-220"><canvas id="cv-${prefix}-specific" role="img" aria-label="Cumulative company-specific return for ${esc(c.name)}"></canvas></div>
       <p class="small muted" style="margin-top:8px">This line is what is left of the share-price move after subtracting what the NIFTY 50${s.hasPeers ? ' and sector peers' : ''} explain
-        (β to NIFTY ${s.beta.toFixed(2)}${s.hasPeers ? `, β to sector ${s.betaSector.toFixed(2)}` : ''}). Falls in this line are what the stock signals measure.</p>
+        (β to NIFTY ${s.beta.toFixed(2)}${s.hasPeers ? `, β to sector ${s.betaSector.toFixed(2)}` : ''}). Falls in this line are what the stock signals measure.${s.estDays && s.estDays < 120 ? ` <strong>Short price history:</strong> listed recently, so its normal behaviour was learned from ${s.estDays} trading days instead of 120, and its stock signals are less certain.` : ''}</p>
     </div>
 
     <div class="card">

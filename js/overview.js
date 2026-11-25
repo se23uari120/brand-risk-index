@@ -19,7 +19,10 @@ function renderOverview() {
   const tile = (label, value, foot, icon = '') =>
     `<div class="card tile"><div class="tile-label">${icon}${label}</div><div class="tile-value">${value}</div><div class="tile-foot">${foot}</div></div>`;
   $('#tiles').innerHTML = [
-    tile('Companies tracked', n, `${esc(D.universe)} · NSE`),
+    tile('Companies tracked', n, (() => {
+      const n50 = cs.filter(c => c.index === 'NIFTY 50').length, nx = cs.filter(c => c.index === 'NIFTY Next 50').length;
+      return n50 && nx ? `${n50} NIFTY 50 · ${nx} Next 50` : `${esc(D.universe)} · NSE`;
+    })()),
     tile('High risk', counts.High, `score ${levelRange('High')}`, `<span class="lvl-High">${SHAPE.High}</span>`),
     tile('Moderate risk', counts.Moderate, `score ${levelRange('Moderate')}`, `<span class="lvl-Moderate">${SHAPE.Moderate}</span>`),
     tile('Typical score', fmt.score(med),

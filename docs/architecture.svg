@@ -114,7 +114,7 @@
   <text x="1308" y="160" class="c">engine/assess.py</text>
   <text x="1314" y="179" class="t">• One scorer: pipeline, search, back-test</text>
   <text x="1308" y="207" class="c">engine/risk_scorer.py</text>
-  <text x="1314" y="226" class="t">• NIFTY 50, scored point-in-time</text>
+  <text x="1314" y="226" class="t">• NIFTY 100 (50 + Next 50), point-in-time</text>
   <text x="1314" y="244" class="t">• 30-day backfill; last 5 days refreshed</text>
   <text x="1308" y="272" class="c">backend/output/</text>
   <text x="1314" y="291" class="t">• history.json — daily track (≤ 400 days)</text>
@@ -173,8 +173,8 @@
   <path d="M1070,598 a8,8 0 0 1 8,-8 h484 a8,8 0 0 1 8,8 v28 h-500 z" fill="#0969da"/>
   <text x="1084" y="614" class="h">⑧ Live server (full app)</text>
   <text x="1084" y="650" class="c">backend/api.py (FastAPI)</text>
-  <text x="1090" y="669" class="t">• start.bat / start.sh / Dockerfile (port 7860)</text>
-  <text x="1090" y="687" class="t">• Re-scores every 60 min; open dashboards refresh</text>
+  <text x="1090" y="669" class="t">• start.bat · Docker · free Render (render.yaml)</text>
+  <text x="1090" y="687" class="t">• Re-scores hourly, or on visit if &gt; 15 min old</text>
   <text x="1084" y="715" class="b">Adds to the dashboard</text>
   <text x="1090" y="734" class="t">• Search any NSE company, now or as of a past day</text>
   <text x="1090" y="752" class="t">• Add / remove watchlist companies</text>

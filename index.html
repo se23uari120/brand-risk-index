@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NSE Brand Risk Monitor</title>
-  <meta name="description" content="A daily 0–100 brand risk score for NIFTY 50 companies, built from company-specific stock behaviour and news headlines using AHP-weighted TOPSIS." />
+  <meta name="description" content="A daily 0–100 brand risk score for the NIFTY 100 companies (NIFTY 50 and NIFTY Next 50), built from company-specific stock behaviour and news headlines using AHP-weighted TOPSIS." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Cpath d='M6 20l6-6 5 4 9-9' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="css/style.css" />
   <script>
@@ -105,6 +105,7 @@
     <div class="filters">
       <input class="input" id="f-search" type="search" placeholder="Search company or NSE symbol…" aria-label="Search companies" />
       <select class="select" id="f-sector" aria-label="Filter by sector"><option value="">All sectors</option></select>
+      <select class="select" id="f-index" aria-label="Filter by index" hidden><option value="">All indices</option></select>
       <div class="seg" role="group" aria-label="Filter by level" id="f-level">
         <button type="button" data-level="" aria-pressed="true">All</button>
         <button type="button" data-level="High" aria-pressed="false">High</button>
@@ -340,7 +341,7 @@
         <section class="card" id="m-universe">
           <h2>Which companies</h2>
           <p id="m-universe-text"></p>
-          <p>Each company is matched with its <strong>sector peers</strong> (other tracked companies in the same sector). Their average daily move is used to strip out sector-wide swings. Sectors with fewer than three tracked companies (for example Telecom) are compared with the NIFTY 50 only.</p>
+          <p>Each company is matched with its <strong>sector peers</strong> (other tracked companies in the same sector). Their average daily move is used to strip out sector-wide swings. The sector groups follow NSE's industry classification, with banks kept apart from other financial companies and power apart from oil and gas. Sectors with fewer than three tracked companies (Telecom, Transport &amp; Logistics) are compared with the NIFTY 50 index only. A company listed only recently (for example Vedanta Aluminium, demerged in June 2026) is scored once it has 60 trading days of prices, and its panel notes the shorter history.</p>
           <p>To track another NSE company, add its NSE symbol, a news search query and the name variants used in headlines to <code>backend/data/watchlist.json</code>.</p>
         </section>
 

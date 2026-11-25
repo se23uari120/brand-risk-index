@@ -140,6 +140,7 @@ def assess_company(co: dict, prices, info: dict, peer, bench, articles: list[dic
         "name": co["name"],
         "legalName": info.get("longName"),
         "sector": co["sector"],
+        "index": co.get("index"),
         "asOf": last_day.isoformat(),
         "score": _r(cur["score"], 1),
         "level": level_for(cur["score"]),
@@ -160,6 +161,7 @@ def assess_company(co: dict, prices, info: dict, peer, bench, articles: list[dic
             "volRatio": _r(sig["vol_ratio"], 2), "volumeRatio": _r(sig["volume_ratio"], 2),
             "abnDrawdown": _r(sig["abn_drawdown"], 4), "ddSigma": _r(sig["dd_sigma"], 2),
             "high52": info.get("fiftyTwoWeekHigh"), "low52": info.get("fiftyTwoWeekLow"),
+            "estDays": int(sig["est_days"]),      # < 120: short price history (recent listing)
         },
         "news": {
             "count7d": len(window),

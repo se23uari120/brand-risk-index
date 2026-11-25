@@ -3,7 +3,7 @@
 // every tracked company. Rows open the detail drawer.
 // =============================================================
 
-const tableState = { q: '', sector: '', level: '', sort: 'rank', dir: 1 };
+const tableState = { q: '', sector: '', index: '', level: '', sort: 'rank', dir: 1 };
 
 const SORTERS = {
   rank: c => c.rank,
@@ -14,12 +14,22 @@ const SORTERS = {
   neg7d: c => -c.news.neg7d,
 };
 
+const INDEX_SHORT = { 'NIFTY 50': 'NIFTY 50', 'NIFTY Next 50': 'Next 50' };
+const indexOf = c => c.index || 'Added';
+
 function fillSectorOptions() {
   const sel = $('#f-sector'), keep = sel.value;
   const sectors = [...new Set(D.companies.map(c => c.sector))].sort();
   sel.innerHTML = '<option value="">All sectors</option>' + sectors.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
   sel.value = sectors.includes(keep) ? keep : '';
   tableState.sector = sel.value;
+  // index filter (NIFTY 50 / NIFTY Next 50 / companies added from Search)
+  const isel = $('#f-index'), ikeep = isel.value;
+  const idx = [...new Set(D.companies.map(indexOf))].sort((a, b) => (a === 'Added') - (b === 'Added') || a.localeCompare(b));
+  isel.hidden = idx.length < 2;
+  isel.innerHTML = `<option value="">All indices</option>` + idx.map(i => `<option value="${esc(i)}">${esc(i)} (${D.companies.filter(c => indexOf(c) === i).length})</option>`).join('');
+  isel.value = idx.includes(ikeep) ? ikeep : '';
+  tableState.index = isel.value;
 }
 
 function initCompanies() {
@@ -27,6 +37,7 @@ function initCompanies() {
 
   $('#f-search').addEventListener('input', e => { tableState.q = e.target.value.trim().toLowerCase(); renderCompanies(); });
   $('#f-sector').addEventListener('change', e => { tableState.sector = e.target.value; renderCompanies(); });
+  $('#f-index').addEventListener('change', e => { tableState.index = e.target.value; renderCompanies(); });
   $$('#f-level button').forEach(b => b.addEventListener('click', () => {
     tableState.level = b.dataset.level;
     $$('#f-level button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
@@ -49,10 +60,10 @@ function initCompanies() {
 }
 
 function renderCompanies() {
-  const { q, sector, level, sort, dir } = tableState;
+  const { q, sector, index, level, sort, dir } = tableState;
   const rows = D.companies.filter(c =>
     (!q || c.name.toLowerCase().includes(q) || c.symbol.toLowerCase().includes(q) || (c.legalName || '').toLowerCase().includes(q)) &&
-    (!sector || c.sector === sector) && (!level || c.level === level));
+    (!sector || c.sector === sector) && (!index || indexOf(c) === index) && (!level || c.level === level));
   const key = SORTERS[sort];
   rows.sort((a, b) => { const x = key(a), y = key(b); return (x < y ? -1 : x > y ? 1 : 0) * dir; });
 
@@ -65,7 +76,7 @@ function renderCompanies() {
   $('#co-body').innerHTML = rows.map(c => `
     <tr class="clickable" tabindex="0" data-symbol="${esc(c.symbol)}" aria-label="${esc(c.name)}: open details">
       <td class="r num muted hide-sm">${c.rank}</td>
-      <td class="co-cell"><div class="co-name">${esc(c.name)}</div><div class="co-sub">${esc(c.symbol)} · ${esc(c.sector)}</div></td>
+      <td class="co-cell"><div class="co-name">${esc(c.name)}</div><div class="co-sub">${esc(c.symbol)} · ${esc(c.sector)}${c.index ? ` · ${esc(INDEX_SHORT[c.index] || c.index)}` : ''}</div></td>
       <td class="score-cell">${meter(c.score, c.level)}<div class="show-sm" style="margin-top:4px">${levelPill(c.level)}</div></td>
       <td class="hide-sm">${levelPill(c.level)}</td>
       <td class="r">${delta(c.change5d)}</td>

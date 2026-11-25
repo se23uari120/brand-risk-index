@@ -42,6 +42,10 @@ from config import (DRAWDOWN_DAYS, ESTIMATION_DAYS, EVENT_LONG, EVENT_SHORT,
 BETA_SHRINK = 0.67
 MIN_PEERS = 2                     # sector needs ≥ 2 *other* members to form a peer factor
 MIN_HISTORY = 1 + ESTIMATION_DAYS + EVENT_LONG
+# A recent listing or demerger (e.g. Vedanta Aluminium, June 2026) is scored once it
+# has MIN_ESTIMATION days to learn from; its windows shrink to the history available.
+MIN_ESTIMATION = 60
+MIN_SHORT_HISTORY = 1 + MIN_ESTIMATION + EVENT_LONG
 
 
 def log_returns(adj: pd.Series) -> pd.Series:
@@ -75,10 +79,10 @@ def compute_stock_signals(stock: pd.DataFrame, bench: pd.DataFrame,
     p, m, v = df["adj"].to_numpy(), df["mkt"].to_numpy(), df["volume"].to_numpy(float)
 
     rows, path = [], None
-    start = max(MIN_HISTORY, len(df) - n_days)
+    start = max(MIN_SHORT_HISTORY, len(df) - n_days)
     for k in range(start, len(df)):
-        # 1. Fit the expected-return model on the estimation window
-        est = slice(k - EVENT_LONG - ESTIMATION_DAYS + 1, k - EVENT_LONG + 1)
+        # 1. Fit the expected-return model on the estimation window (index 0 has no return)
+        est = slice(max(1, k - EVENT_LONG - ESTIMATION_DAYS + 1), k - EVENT_LONG + 1)
         X = np.column_stack([rm[est], rs[est]]) if has_peer else rm[est][:, None]
         y = r[est]
         ok = ~np.isnan(X).any(axis=1) & ~np.isnan(y)
@@ -98,20 +102,20 @@ def compute_stock_signals(stock: pd.DataFrame, bench: pd.DataFrame,
 
         # 3. Trading stress
         recent_vol = np.nanstd(r[k - VOL_SHORT + 1:k + 1], ddof=1)
-        base_vol = np.nanstd(r[k - VOL_SHORT - VOL_BASE + 1:k - VOL_SHORT + 1], ddof=1)
+        base_vol = np.nanstd(r[max(1, k - VOL_SHORT - VOL_BASE + 1):k - VOL_SHORT + 1], ddof=1)
         vol_ratio = float(recent_vol / base_vol) if base_vol > 0 else 1.0
         recent_volu = np.nanmean(v[k - VOLUME_SHORT + 1:k + 1])
-        base_volu = np.nanmedian(v[k - VOLUME_SHORT - VOLUME_BASE + 1:k - VOLUME_SHORT + 1])
+        base_volu = np.nanmedian(v[max(0, k - VOLUME_SHORT - VOLUME_BASE + 1):k - VOLUME_SHORT + 1])
         volume_ratio = float(recent_volu / base_volu) if base_volu > 0 else 1.0
 
         # 4. Lingering damage: drawdown of the cumulative-AR line over ~3 months
-        cum = np.concatenate([[0.0], np.nancumsum(ar[k - DRAWDOWN_DAYS + 1:k + 1])])
+        cum = np.concatenate([[0.0], np.nancumsum(ar[max(1, k - DRAWDOWN_DAYS + 1):k + 1])])
         dd = float(cum.max() - cum[-1])
         dd_sigma = dd / (sigma * math.sqrt(DRAWDOWN_DAYS))
 
         rows.append({
             "date": df.index[k], "close": float(df["close"].iloc[k]),
-            "beta": beta_m, "beta_sector": beta_s, "sigma": sigma,
+            "beta": beta_m, "beta_sector": beta_s, "sigma": sigma, "est_days": est.stop - est.start,
             "car5": car5, "car20": car20, "z5": z5, "z20": z20,
             "excess5": math.exp(car5) - 1, "excess20": math.exp(car20) - 1,
             "ret5": p[k] / p[k - 5] - 1, "ret20": p[k] / p[k - 20] - 1,

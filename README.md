@@ -11,7 +11,7 @@ short_description: Brand risk for NSE companies from stock moves + news (AHP-TOP
 
 # NSE Brand Risk Monitor (AI + MCDM Brand Image Risk Index)
 
-A daily **brand risk score from 0 to 100** for companies listed on the **National Stock Exchange of India (NSE)**, by default the 50 companies of the **NIFTY 50**. The score is built from two kinds of evidence:
+A daily **brand risk score from 0 to 100** for companies listed on the **National Stock Exchange of India (NSE)**, by default the 100 companies of the **NIFTY 100**: the **NIFTY 50** and the **NIFTY Next 50**. The score is built from two kinds of evidence:
 
 1. **Stock effect.** How unusually the share price behaves *after removing what the NIFTY 50 and the company's sector peers did*.
 2. **News.** How negative the recent headlines are, when there are any, scored with **FinBERT** or a finance word list.
@@ -90,7 +90,7 @@ py -3 backend/run_pipeline.py
 | Tab | What it shows |
 |---|---|
 | **Overview** | Counts of High / Moderate companies, the highest-risk companies with a one-line reason and their main issue, the biggest risers this week, the most negative news, what the bad news is about (issue types) and average risk by sector. |
-| **All companies** | Searchable, sortable table: score, level, 1-week change, company-specific share move, news count, 30-day trend. |
+| **All companies** | Searchable, sortable table: score, level, 1-week change, company-specific share move, news count, 30-day trend. Filter by sector, by index (NIFTY 50 or NIFTY Next 50) and by level. |
 | **Company panel** (click any company) | The score in plain English, a 90% range, the main issue and regulators named, the five signals with their evidence, the risk history, price vs NIFTY 50, the company-specific performance line, the headlines with sentiment and issue type, and the full TOPSIS calculation. |
 | **Search** *(server)* | Any NSE-listed company (name, brand or symbol), live or **as of a past day**. It is scored exactly like the tracked companies and can be added to the watchlist. |
 | **Compare** | Up to four companies side by side. |
@@ -131,7 +131,7 @@ A brand problem shows up in two places: **investors sell the shares more than th
 expected return = β · r_NIFTY + γ · (r_peers − r_NIFTY)        abnormal return AR = actual − expected
 ```
 
-`r_peers` is the average of the company's sector peers on the watchlist (itself excluded; at least 3 tracked companies in the sector, otherwise γ = 0). Both coefficients are shrunk toward 1 (`0.67·b + 0.33`). σ is the stock's normal daily abnormal-return noise. So if every IT stock falls 5% on a sector-wide worry, Infosys's abnormal return is about zero.
+`r_peers` is the average of the company's sector peers on the watchlist (itself excluded; at least 3 tracked companies in the sector, otherwise γ = 0). The 15 sector groups follow NSE's industry classification, with banks kept apart from other financial companies, power apart from oil and gas, and capital goods and defence as groups of their own: Financial Services 14, Automobile 10, Banks 9, Healthcare 8, Metals & Mining 8, Capital Goods 7, FMCG 7, Consumer & Retail 6, IT Services 6, Oil, Gas & Fuels 6, Power 6, Infrastructure & Materials 5, Defence 4, Telecom 2 and Transport & Logistics 2 (the last two have no sector factor). A recent listing or demerger with less than 141 trading days of prices (Vedanta Aluminium, June 2026) is scored once it has 60, with the windows shortened to the history available; its company panel says so. Both coefficients are shrunk toward 1 (`0.67·b + 0.33`). σ is the stock's normal daily abnormal-return noise. So if every IT stock falls 5% on a sector-wide worry, Infosys's abnormal return is about zero.
 
 **News weighting (C4, C5).** Each headline in the last 7 days has a recency weight `w = 0.5^(age / 72 h)`.
 
@@ -180,7 +180,7 @@ The weights are the principal eigenvector, with λmax = 5.0133, CI = 0.0033, RI(
 
 ## Robustness and validation
 
-**Weights (MCDM tab; FinBERT sentiment, NSE close of 19 Nov 2026).** All rank-agreement figures are Spearman ρ with the AHP ranking. The figures change with each day's data; the MCDM tab always shows the current ones.
+**Weights (MCDM tab; FinBERT sentiment, NSE close of 19 Nov 2026, when the 50 NIFTY 50 companies were tracked).** All rank-agreement figures are Spearman ρ with the AHP ranking. The figures change with each day's data; the MCDM tab always shows the current ones.
 
 | Weighting | C1 | C2 | C3 | C4 | C5 | Rank agreement | Low / Moderate / High | Companies changing level |
 |---|---|---|---|---|---|---|---|---|
@@ -206,7 +206,7 @@ These results are from the word-list sentiment engine. Detected incidents: Paytm
 
 **Sentiment check.** With the server running, hand-label headlines in the Validation tab (the model's answer is hidden). Accuracy, macro-F1 and the confusion matrix are reported for the word list and FinBERT. Labels are stored in `backend/data/labels.json`.
 
-**Unit tests (42):**
+**Unit tests (43):**
 
 ```bash
 py -3 -m unittest discover -s backend/tests -v
@@ -223,6 +223,7 @@ They cover:
 - the shared company scorer and the evaluation metrics
 - rebuilding a price day that Yahoo left empty from its 15-minute bars
 - refresh on visit: reusing stored FinBERT scores, and keeping the old results when a refresh is incomplete
+- scoring a recent listing (about 110 trading days of prices) on a shorter estimation window
 
 ---
 
@@ -241,7 +242,7 @@ They cover:
 1. **GitHub Pages** hosts the dashboard at https://se23uari120.github.io/brand-risk-index/, and the daily GitHub Actions job keeps it current. Both are free for a public repository.
 2. **A free Render web service** (optional) **refreshes the scores whenever someone opens the page** and adds **Company Search** and the headline scorer. [`render.yaml`](render.yaml) describes it:
    * the free plan (0.1 CPU, 512 MB RAM) in Render's Singapore region
-   * `REFRESH_ON_VISIT=true`, `STALE_MINUTES=15`: when a dashboard opens and the results are more than 15 minutes old, the server downloads fresh prices and headlines for every company and re-scores them (a few minutes on the free plan). The page shows the stored results at once with an *Updating…* badge and swaps in the new scores by itself. Anyone opening it within the next 15 minutes gets the fresh scores straight away, and Yahoo and Google News are asked at most four times an hour.
+   * `REFRESH_ON_VISIT=true`, `STALE_MINUTES=15`: when a dashboard opens and the results are more than 15 minutes old, the server downloads fresh prices and headlines for every company and re-scores them (several minutes for 100 companies on the free plan). The page shows the stored results at once with an *Updating…* badge and swaps in the new scores by itself. Anyone opening it within the next 15 minutes gets the fresh scores straight away, and Yahoo and Google News are asked at most four times an hour.
    * `SENTIMENT=lexicon`: FinBERT needs about 2 GB of RAM. Headlines the daily FinBERT run already scored keep their FinBERT score (`backend/output/sentiment_cache.json`); only headlines published since are scored with the finance word list, until the next daily run.
    * a refresh is published only if every company was scored and Google News answered; otherwise the previous results stay up, so a failed download never makes a company look safer
    * `READ_ONLY=true`: visitors can search, but cannot change the watchlist or labels, or start other re-runs
@@ -372,7 +373,7 @@ brand-risk-index/
     │   ├── refresh.py            # Safety check before a server publishes a refresh
     │   ├── backtest.py           # Incident back-test with baselines
     │   └── evaluation.py         # Sentiment accuracy against human labels
-    ├── tests/test_model.py       # 42 unit tests
+    ├── tests/test_model.py       # 43 unit tests
     └── output/                   # latest.json, history.json, backtest.json, sentiment_cache.json (FinBERT score per headline)
 ```
 
@@ -404,7 +405,7 @@ Start the server (`start.bat`), then see the interactive docs at http://localhos
 The first version (the report's Tables III–V) scored companies from **news alone** with four criteria. This version keeps the AHP + TOPSIS framework and everything built for the report's remaining work, and changes the evidence:
 
 * **Criteria.** Severity, Reach, Recoverability and Criticality were all derived from news, and C3 and C4 were formulas of C1 and C2. They are replaced by **five independently measured signals**: three from company-specific stock behaviour and two from news. This also addresses the open item "independent indicators for C3/C4".
-* **Universe.** NSE-listed companies (NIFTY 50) with their share prices; Company Search covers any NSE-listed company.
+* **Universe.** NSE-listed companies (the NIFTY 100: NIFTY 50 and NIFTY Next 50, constituents of November 2026) with their share prices; index changes are not followed automatically, so update `backend/data/watchlist.json` after each half-yearly rebalance; Company Search covers any NSE-listed company.
 * **Weights.** A new 5×5 AHP matrix (CR 0.003) replaces the 4×4 matrix (CR 0.0115).
 * **Levels.** Low < 30, Moderate 30–50, High ≥ 50, replacing Low < 40, Moderate 40–70, Critical ≥ 70. Company-specific evidence produces lower everyday scores, so the cut-offs are stricter. The prescribed actions are the same.
 * **Kept from the report's work:**

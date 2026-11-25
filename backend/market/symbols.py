@@ -31,14 +31,14 @@ _session.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) bran
 
 # Directory sectors (report naming) → watchlist sectors
 DIRECTORY_SECTORS = {
-    "Banking & Finance": "Financial Services", "FinTech": "Financial Services", "NBFC": "Financial Services",
+    "Banking & Finance": "Banks", "FinTech": "Financial Services", "NBFC": "Financial Services",
     "Insurance": "Financial Services", "IT Services": "IT Services", "Automotive": "Automobile",
     "FMCG": "FMCG", "Healthcare": "Healthcare", "Metals & Mining": "Metals & Mining",
-    "Energy & Power": "Energy", "Conglomerate": "Energy", "Consumer Tech": "Consumer & Retail",
-    "Retail": "Consumer & Retail", "EdTech": "Consumer & Retail", "Cement & Materials": "Infrastructure & Materials",
-    "Infrastructure": "Infrastructure & Materials", "Engineering": "Infrastructure & Materials",
-    "Telecom": "Telecom", "Aviation": "Transport & Logistics", "Media": "Media & Entertainment",
-    "Real Estate": "Real Estate",
+    "Power": "Power", "Oil & Gas": "Oil, Gas & Fuels", "Conglomerate": "Oil, Gas & Fuels",
+    "Consumer Tech": "Consumer & Retail", "Retail": "Consumer & Retail", "EdTech": "Consumer & Retail",
+    "Cement & Materials": "Infrastructure & Materials", "Infrastructure": "Transport & Logistics",
+    "Engineering": "Capital Goods", "Telecom": "Telecom", "Aviation": "Transport & Logistics",
+    "Media": "Media & Entertainment", "Real Estate": "Infrastructure & Materials",
 }
 
 _SUFFIX = re.compile(r"\s*\b(limited|ltd\.?|the|corporation|corp\.?|company|co\.?)\b\.?\s*", re.I)
@@ -50,7 +50,7 @@ def yahoo_sector(sector: str | None, industry: str | None) -> str | None:
     if not s:
         return None
     if s == "Financial Services":
-        return "Financial Services"
+        return "Banks" if "bank" in i else "Financial Services"
     if s == "Technology":
         return "IT Services"
     if s == "Communication Services":
@@ -65,8 +65,10 @@ def yahoo_sector(sector: str | None, industry: str | None) -> str | None:
         if "building" in i or "cement" in i:
             return "Infrastructure & Materials"
         return "Chemicals" if "chemical" in i else "Metals & Mining"
-    if s in ("Energy", "Utilities"):
-        return "Energy"
+    if s == "Energy":
+        return "Oil, Gas & Fuels"
+    if s == "Utilities":
+        return "Power"
     if s == "Industrials":
         if "defense" in i or "aerospace" in i:
             return "Defence"
@@ -76,7 +78,7 @@ def yahoo_sector(sector: str | None, industry: str | None) -> str | None:
             return "Infrastructure & Materials"
         return "Capital Goods"
     if s == "Real Estate":
-        return "Real Estate"
+        return "Infrastructure & Materials"
     return s
 
 

@@ -6,7 +6,7 @@
 #
 # Free plan: 0.1 CPU and 512 MB RAM. The service sleeps after 15 minutes
 # without visitors and takes about a minute to wake up; a full refresh of
-# the 50 companies takes a few minutes. Every push to main (including the
+# the 100 companies takes several minutes. Every push to main (including the
 # daily FinBERT data commit from GitHub Actions) redeploys it from the
 # latest daily results.
 services:

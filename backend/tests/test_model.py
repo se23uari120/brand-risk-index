@@ -168,6 +168,16 @@ class TestStockSignals(unittest.TestCase):
         self.assertLess(sig["z5"].iloc[-1], sig["z5"].iloc[0])
         self.assertEqual(len(path), 126)
 
+    def test_recent_listing_is_scored_on_a_shorter_window(self):
+        # 111 trading days, like Vedanta Aluminium after its June 2026 demerger
+        stock, bench, peer = market(shock=(5, -0.15))
+        stock = stock.iloc[-111:]
+        sig, _ = compute_stock_signals(stock, bench, peer, 30, 126)
+        self.assertEqual(len(sig), 30)
+        self.assertTrue((sig["est_days"] < 120).all() and (sig["est_days"] >= 60).all())
+        self.assertLess(sig["z5"].iloc[-1], -3)                      # the shock is still caught
+        self.assertTrue(np.isfinite(sig[["sigma", "vol_ratio", "dd_sigma"]].to_numpy()).all())
+
 
 class TestNewsCriteria(unittest.TestCase):
     def test_no_news_is_zero(self):
