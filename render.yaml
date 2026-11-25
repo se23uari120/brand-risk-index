@@ -1,0 +1,31 @@
+# Render Blueprint: a free public server that adds Company Search to the
+# GitHub Pages dashboard.
+#
+#   Render dashboard → New → Blueprint → connect this GitHub repo → Apply.
+#
+# Free plan: 0.1 CPU and 512 MB RAM. The service sleeps after 15 minutes
+# without visitors and takes about a minute to wake up. Every push to main
+# (including the daily data commit from GitHub Actions) redeploys it, so it
+# always serves the latest daily results.
+services:
+  - type: web
+    name: brand-risk-index
+    runtime: python
+    plan: free
+    region: singapore            # the Render region closest to India
+    branch: main
+    buildCommand: pip install -r backend/requirements.txt -r backend/requirements-api.txt
+    startCommand: python backend/api.py
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: SENTIMENT
+        value: lexicon           # FinBERT needs about 2 GB of RAM; this plan has 512 MB
+      - key: LIVE_REFRESH
+        value: "false"           # results come from the daily GitHub job via redeploys
+      - key: READ_ONLY
+        value: "true"            # visitors can search, but cannot change files or start re-runs
+      - key: MAX_SEARCHES
+        value: "2"               # parallel searches allowed on the small instance

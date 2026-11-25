@@ -21,7 +21,7 @@ function showView(view, { updateHash = true } = {}) {
     $(`#tab-${v}`).setAttribute('aria-selected', String(v === view));
   });
   RENDER[view]();          // cheap enough to refresh every time; keeps charts sized correctly
-  if (view === 'validation' && SERVER.on && !rendered.labels) { rendered.labels = true; loadLabelQueue(); }
+  if (view === 'validation' && canWrite() && !rendered.labels) { rendered.labels = true; loadLabelQueue(); }
   rendered[view] = true;
   if (updateHash) history.replaceState(null, '', `#${view}`);
   window.scrollTo({ top: 0 });
@@ -46,7 +46,7 @@ function renderChrome() {
   $('#brand-sub').textContent = `${D.exchange} · ${D.universe}`;
   $('#asof').textContent = `Data as of NSE close, ${fmt.date(D.asOf)}`;
   $('#foot').innerHTML = `Prices: Yahoo Finance (NSE) · News: Google News and Indian business outlets · Method: AHP-weighted TOPSIS over 5 stock &amp; news signals · ` +
-    `Generated ${new Date(D.generatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}${SERVER.on ? ' · live server' : ''}. Not investment advice.`;
+    `Generated ${new Date(D.generatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}${SERVER.on ? (SERVER.info.liveRefresh ? ' · live server' : ' · server') : SERVER.remote ? ' · hosted search server' : ''}. Not investment advice.`;
 }
 
 // Called by live.js when the server has finished a new run.

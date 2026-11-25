@@ -121,3 +121,8 @@ API_HOST = os.getenv("HOST", os.getenv("API_HOST", "127.0.0.1"))
 API_PORT = int(os.getenv("PORT", os.getenv("API_PORT", "8000")))
 REFRESH_MINUTES = float(os.getenv("REFRESH_MINUTES", "60"))       # live re-scoring interval
 LIVE_REFRESH = os.getenv("LIVE_REFRESH", "true").lower() not in ("0", "false", "no")
+# Public hosting (render.yaml): READ_ONLY switches off everything that changes stored
+# files or starts a long re-run (watchlist edits, labels, back-test, refresh);
+# MAX_SEARCHES caps parallel Company Searches so a 512 MB instance is not overrun.
+READ_ONLY = os.getenv("READ_ONLY", "false").lower() in ("1", "true", "yes")
+MAX_SEARCHES = max(1, int(os.getenv("MAX_SEARCHES", "2")))

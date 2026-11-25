@@ -14,14 +14,15 @@ function renderValidation() {
   renderBacktest(D.backtest);
   renderEvaluation(D.evaluation);
   renderSources();
-  $$('.server-only').forEach(el => { el.hidden = !SERVER.on; });
+  $$('.server-only').forEach(el => { el.hidden = !canWrite(); });        // changes files: own, writable server only
+  $$('.server-compute').forEach(el => { el.hidden = !searchOffered(); }); // read-only work: any server, hosted too
   $$('.static-only').forEach(el => { el.hidden = SERVER.on; });
 }
 
 // ── back-test ──────────────────────────────────────────────────────────────
 function renderBacktest(bt) {
   if (!bt || !bt.rows || !bt.metrics || !bt.metrics.pairwiseAccuracy) {     // none yet, or an old-format file
-    $('#bt-body').innerHTML = `<p class="muted">No back-test results yet. Run <code>py -3 backend/run_pipeline.py --backtest</code>${SERVER.on ? ' or press “Run back-test”' : ''}.</p>`;
+    $('#bt-body').innerHTML = `<p class="muted">No back-test results yet. Run <code>py -3 backend/run_pipeline.py --backtest</code>${canWrite() ? ' or press “Run back-test”' : ''}.</p>`;
     return;
   }
   const m = bt.metrics;
@@ -81,7 +82,7 @@ async function runBacktestNow() {
 function renderEvaluation(ev) {
   const box = $('#eval-results');
   if (!ev || !ev.labelled) {
-    box.innerHTML = `<p class="muted small">No headlines labelled yet.${SERVER.on ? ' Label a few above, then press “Show results”.' : ' Labelling needs the Python server (start.bat).'}</p>`;
+    box.innerHTML = `<p class="muted small">No headlines labelled yet.${canWrite() ? ' Label a few above, then press “Show results”.' : ' Labelling needs the Python server on your own computer (start.bat).'}</p>`;
     return;
   }
   const eng = ev.engines || {};
@@ -131,7 +132,8 @@ async function submitLabel(label) {
 async function scoreHeadline() {
   const text = $('#hs-input').value.trim();
   if (!text) return;
-  $('#hs-out').innerHTML = '<p class="muted small">Scoring…</p>';
+  $('#hs-out').innerHTML = `<p class="muted small">${SERVER.remote && SERVER.search !== 'ready' ? 'Waking the free server (about a minute)…' : 'Scoring…'}</p>`;
+  if (!(await searchServerReady())) { $('#hs-out').innerHTML = '<p class="muted small">Could not reach the server. Try again in a minute.</p>'; return; }
   try {
     const r = await getJSON('/api/score-headline', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
     $('#hs-out').innerHTML = `<p style="margin-top:8px">${sentimentTag(r.label)} <strong class="num">${r.score > 0 ? '+' : ''}${r.score.toFixed(2)}</strong>

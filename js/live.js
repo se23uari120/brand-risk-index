@@ -1,28 +1,61 @@
 // =============================================================
-// live.js — detects the Python server (start.bat / Docker / a hosted
-// copy set in js/config.js). With a server the dashboard:
-//   • loads the newest results from /api/data instead of js/data.js
-//   • polls /api/live/status and redraws when a new run finishes
-//   • enables Company Search, the watchlist and the server parts of
-//     the Validation tab
-// Without one (GitHub Pages, or index.html opened directly) it runs on
-// the stored js/data.js.
+// live.js — finds the Python server. Three ways the page can run:
+//
+//  1. Served by the server itself (start.bat / Docker / Render URL):
+//     loads /api/data, and if the server re-scores (liveRefresh) shows
+//     the Live badge and redraws when a run finishes. A read-only
+//     public server (READ_ONLY=true) hides the editing tools.
+//  2. A static copy with a hosted server set in js/config.js
+//     (GitHub Pages + Render): the stored js/data.js loads at once, and
+//     the hosted server is only woken up when someone uses Search or
+//     the headline scorer (a free server can take ~1 minute to wake).
+//  3. A static copy without a server: stored results only.
 // =============================================================
 
-const SERVER = { on: false, status: null, timer: null };
+const SERVER = { on: false, remote: false, info: null, status: null, timer: null, search: 'off', wake: null };
 
-async function detectServer() {
-  // no server behind a plain static copy (opened from disk or on GitHub Pages) unless one is configured
-  if (!window.BRI_API_BASE && (location.protocol === 'file:' || location.hostname.endsWith('github.io'))) return false;
+// The configured server, if it is on another site than this page.
+function remoteBase() {
+  const base = (window.BRI_API_BASE || '').replace(/\/$/, '');
+  if (!base) return '';
+  try { return new URL(base, location.href).origin === location.origin ? '' : base; } catch (e) { return ''; }
+}
+
+// Editing tools (watchlist, labels, re-runs) need a server we are served by that allows changes.
+function canWrite() { return SERVER.on && !!SERVER.info && !SERVER.info.readOnly; }
+// Search and the headline scorer work with any server, including a hosted one.
+function searchOffered() { return SERVER.on || SERVER.remote; }
+
+async function fetchHealth(timeoutMs) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 2500);
     const r = await fetch('/api/health', { cache: 'no-store', signal: ctrl.signal });
-    clearTimeout(t);
-    if (!r.ok) return false;
+    if (!r.ok) return null;
     const j = await r.json();
-    return !!(j && j.server);
-  } catch (e) { return false; }
+    return j && j.server ? j : null;
+  } catch (e) { return null; } finally { clearTimeout(t); }
+}
+
+// Wake the hosted server (mode 2). Resolves to true when it answers.
+function wakeSearchServer() {
+  if (SERVER.on) return Promise.resolve(true);
+  if (!SERVER.remote) return Promise.resolve(false);
+  if (SERVER.search === 'ready') return Promise.resolve(true);
+  if (SERVER.wake) return SERVER.wake;
+  SERVER.search = 'waking';
+  if (typeof renderSearchStatus === 'function') renderSearchStatus();
+  SERVER.wake = (async () => {
+    // a sleeping free instance needs about a minute; allow two tries
+    let info = null;
+    for (let i = 0; i < 2 && !info; i++) info = await fetchHealth(75000);
+    SERVER.info = info;
+    SERVER.search = info ? 'ready' : 'down';
+    SERVER.wake = null;
+    if (typeof renderSearchStatus === 'function') renderSearchStatus();
+    return !!info;
+  })();
+  return SERVER.wake;
 }
 
 async function loadServerData() {
@@ -35,13 +68,13 @@ async function loadServerData() {
 
 function renderLiveBadge(s) {
   const el = $('#live-badge');
-  if (!SERVER.on) { el.hidden = true; return; }
+  if (!SERVER.on || !SERVER.info || !SERVER.info.liveRefresh) { el.hidden = true; return; }
   el.hidden = false;
   const running = s && s.running;
   el.innerHTML = `<span class="live-dot${running ? ' busy' : ''}"></span>${running ? 'Updating…' : 'Live'}`;
   el.title = s ? `Server mode · re-scored every ${Math.round(s.refreshMinutes)} min` +
     (s.lastRun ? ` · last run ${new Date(s.lastRun).toLocaleTimeString('en-IN', { timeStyle: 'short' })}` : '') +
-    (s.lastError ? ` · last error: ${s.lastError}` : '') + ' · click to refresh now' : 'Server mode';
+    (s.lastError ? ` · last error: ${s.lastError}` : '') + (canWrite() ? ' · click to refresh now' : '') : 'Server mode';
 }
 
 async function pollLive() {
@@ -55,10 +88,20 @@ async function pollLive() {
 }
 
 async function initLive() {
-  SERVER.on = await detectServer();
-  if (!SERVER.on) return;
+  // mode 1: did a server of our own serve this page? (never on a static host)
+  const staticHost = location.protocol === 'file:' || location.hostname.endsWith('github.io');
+  SERVER.info = staticHost ? null : await fetchHealth(2500);
+  SERVER.on = !!SERVER.info;
+  if (!SERVER.on) {
+    // mode 2: stored data now, the hosted server only on demand
+    SERVER.remote = !!remoteBase();
+    window.BRI_USE_REMOTE = SERVER.remote;
+    return;
+  }
   await loadServerData();
+  if (!SERVER.info.liveRefresh) return; // e.g. the public read-only server: new data arrives by redeploy
   $('#live-badge').addEventListener('click', async () => {
+    if (!canWrite()) return;
     try { await getJSON('/api/live/refresh', { method: 'POST' }); } catch (e) { /* ignore */ }
     pollLive();
   });

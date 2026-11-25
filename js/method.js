@@ -99,9 +99,13 @@ function renderMethod() {
   $('#m-backtest-now').innerHTML = bt && bt.metrics && bt.metrics.pairwiseAccuracy
     ? `Latest run: the index was higher in the incident week for <strong>${Math.round(bt.metrics.pairwiseAccuracy.index * 100)}%</strong> of incidents and flagged ${Math.round(bt.metrics.hitRate.index * 100)}% of them (≥ ${bt.metrics.flagThreshold}), with ${Math.round(bt.metrics.falseAlarmRate.index * 100)}% false alarms on the control days.`
     : 'No back-test has been run on this data yet.';
-  $('#m-mode-now').innerHTML = SERVER.on
+  $('#m-mode-now').innerHTML = canWrite()
     ? '<strong>You are using the live server.</strong>'
-    : '<strong>You are viewing the static version.</strong> Search and the server features are switched off.';
+    : SERVER.on
+      ? '<strong>You are using the public read-only server.</strong> Search and the headline scorer work; watchlist changes, labelling and re-runs are switched off.'
+      : SERVER.remote
+        ? '<strong>You are viewing the static version with a hosted search server.</strong> The daily results load instantly; Search and the headline scorer use the free server, which can take about a minute to wake up.'
+        : '<strong>You are viewing the static version.</strong> Search and the server features are switched off.';
 
   // ── Levels, tracking, engine ──
   const counts = Object.fromEntries(LEVELS.map(l => [l, cs.filter(c => c.level === l).length]));

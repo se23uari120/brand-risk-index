@@ -1,8 +1,9 @@
 // =============================================================
 // search.js — Company Search: any NSE-listed company, now or as of
 // a past day, scored by the server exactly like the watchlist
-// (GET /api/search). Needs the Python server (start.bat); on the
-// static site the tab explains how to enable it.
+// (GET /api/search). Works with the page's own server (start.bat)
+// or a hosted one set in js/config.js (woken up on first use); on a
+// static copy without either, the tab explains how to enable it.
 // =============================================================
 
 const RECENT_KEY = 'brm-recent-searches';
@@ -18,10 +19,34 @@ function pushRecent(name) {
   } catch (e) { /* storage unavailable */ }
 }
 
+function renderSearchStatus() {
+  const el = $('#search-status');
+  if (!SERVER.remote) { el.hidden = true; return; }
+  el.hidden = false;
+  if (SERVER.search === 'ready') {
+    const wordList = SERVER.info && SERVER.info.sentiment !== 'finbert';
+    el.innerHTML = 'Connected to the free search server.' + (wordList
+      ? ' It scores headlines with the finance word list (FinBERT needs more memory than the free plan has), so a searched score can differ a little from the FinBERT-scored dashboard.'
+      : '');
+  } else if (SERVER.search === 'down') {
+    el.innerHTML = 'The search server did not answer. <button type="button" class="btn small" id="search-retry">Try again</button>';
+  } else {
+    el.innerHTML = '<span class="live-dot busy"></span> Starting the free search server. After a quiet spell this takes about a minute; then searches run normally.';
+  }
+}
+
+// true once a server can answer: our own, or the hosted one after it wakes up
+async function searchServerReady() {
+  return SERVER.on || (SERVER.remote && await wakeSearchServer());
+}
+
 function renderSearch() {
-  $('#search-static').hidden = SERVER.on;
-  $('#search-live').hidden = !SERVER.on;
-  if (!SERVER.on) return;
+  const offered = searchOffered();
+  $('#search-static').hidden = offered;
+  $('#search-live').hidden = !offered;
+  if (!offered) return;
+  if (SERVER.remote) wakeSearchServer();       // start waking it as soon as the tab is opened
+  renderSearchStatus();
   const rec = recentSearches();
   $('#search-recent').innerHTML = rec.length
     ? `Recent: ${rec.map(r => `<button type="button" data-q="${esc(r)}">${esc(r)}</button>`).join('')}`
@@ -37,9 +62,12 @@ function initSearch() {
     clearTimeout(searchTimer);
     const q = input.value.trim();
     if (q.length < 2) { close(); return; }
+    const seq = searchSeq;
     searchTimer = setTimeout(async () => {
       try {
+        if (!(await searchServerReady()) || input.value.trim() !== q) return;
         const { results } = await getJSON('/api/resolve?q=' + encodeURIComponent(q));
+        if (seq !== searchSeq || input.value.trim() !== q) return;    // a search started meanwhile: keep the list closed
         list.innerHTML = results.length ? results.map(r => `
           <li role="option" data-q="${esc(r.symbol)}"><span><strong>${esc(r.name)}</strong> <span class="muted small">NSE: ${esc(r.symbol)}</span></span>
           <span class="small text-2">${esc(r.sector || '')}${r.onWatchlist ? ' · tracked' : ''}</span></li>`).join('')
@@ -56,6 +84,7 @@ function initSearch() {
   });
   $('#search-go').addEventListener('click', () => runSearch(input.value));
   $('#search-recent').addEventListener('click', e => { const b = e.target.closest('button[data-q]'); if (b) { input.value = b.dataset.q; runSearch(b.dataset.q); } });
+  $('#search-status').addEventListener('click', e => { if (e.target.closest('#search-retry')) wakeSearchServer(); });
   $('#search-result').addEventListener('click', async e => {
     const b = e.target.closest('#search-add');
     if (!b) return;
@@ -70,10 +99,19 @@ function initSearch() {
 async function runSearch(q) {
   q = (q || '').trim();
   if (!q) return;
+  clearTimeout(searchTimer);
   const asOf = $('#search-date').value;
   const out = $('#search-result'), seq = ++searchSeq;
   ['s-trend', 's-price', 's-specific'].forEach(destroyChart);
-  out.innerHTML = `<div class="card empty">Scoring <strong>${esc(q)}</strong>${asOf ? ` as of ${fmt.date(asOf)}` : ''} — downloading prices and headlines (about 10–30 seconds)…</div>`;
+  if (SERVER.remote && SERVER.search !== 'ready') {
+    out.innerHTML = `<div class="card empty">Waiting for the free search server to wake up (about a minute), then scoring <strong>${esc(q)}</strong>…</div>`;
+  }
+  if (!(await searchServerReady())) {
+    if (seq === searchSeq) out.innerHTML = `<div class="card empty">Could not reach the search server. Try again in a minute.</div>`;
+    return;
+  }
+  if (seq !== searchSeq) return;
+  out.innerHTML = `<div class="card empty">Scoring <strong>${esc(q)}</strong>${asOf ? ` as of ${fmt.date(asOf)}` : ''} — downloading prices and headlines (${SERVER.remote ? 'up to a minute on the free server' : 'about 10–30 seconds'})…</div>`;
   try {
     const res = await getJSON(`/api/search?q=${encodeURIComponent(q)}${asOf ? `&as_of=${asOf}` : ''}`);
     if (seq !== searchSeq) return;
@@ -85,7 +123,7 @@ async function runSearch(q) {
           <div><h2 style="font-size:19px">${esc(c.name)}</h2>
             <div class="co-sub">NSE: ${esc(c.symbol)} · ${esc(c.sector)}${c.legalName ? ` · ${esc(c.legalName)}` : ''} · ${fmt.inr(c.stock.close)}</div></div>
           ${res.onWatchlist ? '<span class="tag">On the watchlist</span>'
-            : `<button class="btn small" id="search-add" type="button" data-symbol="${esc(c.symbol)}">+ Add to watchlist</button>`}
+            : canWrite() ? `<button class="btn small" id="search-add" type="button" data-symbol="${esc(c.symbol)}">+ Add to watchlist</button>` : ''}
         </div>
         <p class="small muted">${res.live ? `Live assessment as of the latest NSE close (${fmt.date(c.asOf)}) and headlines up to now.`
           : `Assessment as of ${fmt.date(c.asOf)}, using only prices and headlines available then.`}

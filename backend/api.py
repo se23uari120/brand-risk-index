@@ -15,7 +15,13 @@ What the server adds to the static dashboard (GitHub Pages):
     score any headline
 
 Environment: HOST, PORT, REFRESH_MINUTES, LIVE_REFRESH=true|false,
-SENTIMENT=auto|finbert|lexicon, DECAY_HALF_LIFE_HOURS.
+SENTIMENT=auto|finbert|lexicon, DECAY_HALF_LIFE_HOURS, READ_ONLY=true|false,
+MAX_SEARCHES.
+
+Public free hosting (render.yaml) runs it with READ_ONLY=true and
+LIVE_REFRESH=false: it serves the daily job's results from the repo and
+answers Company Search, but nobody on the internet can change files or
+start long re-runs.
 """
 
 import json
@@ -37,7 +43,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from config import API_HOST, API_PORT, LATEST_FILE, LIVE_REFRESH, PROJECT_DIR, REFRESH_MINUTES
+from config import (API_HOST, API_PORT, LATEST_FILE, LIVE_REFRESH, MAX_SEARCHES, PROJECT_DIR, READ_ONLY,
+                    REFRESH_MINUTES)
 from engine import backtest as backtest_mod
 from engine import evaluation
 from market.symbols import load_watchlist, resolve, save_watchlist, suggest
@@ -61,12 +68,20 @@ _engines: dict[str, SentimentEngine] = {}
 _run_lock = threading.Lock()
 live = {"running": False, "lastRun": None, "lastError": None, "nextRun": None,
         "refreshMinutes": REFRESH_MINUTES, "enabled": LIVE_REFRESH}
+_search_slots = threading.BoundedSemaphore(MAX_SEARCHES)
 
 
 def engine(name: str = SENTIMENT_MODE) -> SentimentEngine:
     if name not in _engines:
         _engines[name] = SentimentEngine(name)
     return _engines[name]
+
+
+def _writable():
+    """Refuse changes on a public read-only deployment (READ_ONLY=true)."""
+    if READ_ONLY:
+        raise HTTPException(403, "This public server is read-only: watchlist changes, labelling and re-runs are "
+                                 "switched off. Run start.bat on your own computer for those.")
 
 
 def _data() -> dict:
@@ -108,6 +123,8 @@ def _live_loop():
 
 @app.on_event("startup")
 def _startup():
+    if READ_ONLY:
+        logger.info("Read-only mode: serving stored results and Company Search (sentiment: %s)", SENTIMENT_MODE)
     if LIVE_REFRESH:
         logger.info("Live mode: re-scoring every %.0f minutes (sentiment: %s)", REFRESH_MINUTES, SENTIMENT_MODE)
         threading.Thread(target=_live_loop, daemon=True, name="live-refresh").start()
@@ -126,7 +143,9 @@ def favicon():
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "hasData": LATEST_FILE.exists(), "server": True}
+    loaded = _engines.get(SENTIMENT_MODE)        # don't load FinBERT just to answer a health check
+    return {"status": "ok", "hasData": LATEST_FILE.exists(), "server": True, "readOnly": READ_ONLY,
+            "liveRefresh": LIVE_REFRESH, "sentiment": loaded.name if loaded else SENTIMENT_MODE}
 
 
 @app.get("/api/data", summary="Everything the dashboard shows (same as js/data.js)")
@@ -143,6 +162,7 @@ def live_status():
 
 @app.post("/api/live/refresh", summary="Re-score the watchlist now (runs in the background, ~2 min)")
 def live_refresh():
+    _writable()
     if live["running"]:
         return {"status": "already_running"}
     threading.Thread(target=run_pipeline, daemon=True).start()
@@ -199,12 +219,16 @@ def search(q: str = Query(..., min_length=1, description="name, brand or NSE sym
         raise HTTPException(400, "as_of must be YYYY-MM-DD")
     if day and day < date(2015, 1, 1):
         raise HTTPException(400, "Choose a date after 2015")
+    if not _search_slots.acquire(timeout=90):
+        raise HTTPException(503, "The search server is busy with other searches. Try again in a minute.")
     try:
         return search_company(q, engine(), day)
     except LookupError as exc:
         raise HTTPException(404, str(exc))
     except RuntimeError as exc:
         raise HTTPException(422, str(exc))
+    finally:
+        _search_slots.release()
 
 
 @app.get("/api/watchlist")
@@ -216,6 +240,7 @@ def watchlist():
 
 @app.post("/api/watchlist", summary="Add an NSE company to the watchlist (scored from the next refresh)")
 def add_watchlist(payload: dict = Body(..., examples=[{"q": "Swiggy"}])):
+    _writable()
     profile = resolve(payload.get("q") or payload.get("symbol") or "")
     if not profile:
         raise HTTPException(404, "No NSE-listed company found")
@@ -232,6 +257,7 @@ def add_watchlist(payload: dict = Body(..., examples=[{"q": "Swiggy"}])):
 
 @app.delete("/api/watchlist/{symbol}", summary="Remove a company you added")
 def remove_watchlist(symbol: str):
+    _writable()
     wl = load_watchlist()
     hit = next((c for c in wl["companies"] if c["symbol"].upper() == symbol.upper()), None)
     if not hit:
@@ -252,6 +278,7 @@ def get_backtest():
 
 @app.post("/api/backtest/run", summary="Re-run the 12-incident back-test in the background (~3 min)")
 def run_backtest():
+    _writable()
     if backtest_mod.state["running"]:
         return {"status": "already_running"}
 
@@ -283,6 +310,7 @@ def eval_sample(n: int = Query(15, ge=1, le=50)):
 
 @app.post("/api/eval/label", summary="Store a human sentiment label for a headline")
 def eval_label(payload: dict = Body(..., examples=[{"title": "RBI bars ...", "label": "negative"}])):
+    _writable()
     try:
         n = evaluation.add_label(payload.get("title", ""), payload.get("label", ""), payload.get("company", ""))
     except ValueError as exc:
@@ -300,6 +328,7 @@ def eval_metrics():
 
 @app.delete("/api/eval/labels", summary="Delete all stored labels")
 def eval_clear():
+    _writable()
     evaluation.clear_labels()
     return {"status": "cleared"}
 

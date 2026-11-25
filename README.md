@@ -21,7 +21,7 @@ These five signals are weighted with **AHP** and combined with **TOPSIS**. The s
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-2f81f7?style=for-the-badge&logo=github)](https://se23uari120.github.io/brand-risk-index/)
 [![Source Code](https://img.shields.io/badge/Repository-GitHub-161b22?style=for-the-badge&logo=github)](https://github.com/se23uari120/brand-risk-index)
 
-* **Online demo (static: stored results, updated daily, no search):** https://se23uari120.github.io/brand-risk-index/
+* **Online demo (stored results, updated every weekday):** https://se23uari120.github.io/brand-risk-index/. Company Search can be added to it for free with a Render server (see [Hosting](#hosting)).
 * **Full app (live re-scoring, Company Search, validation tools):** run it locally with the two commands below, or host it (see [Hosting](#hosting))
 
 > Not investment advice. This is a monitoring tool for brand and reputation risk.
@@ -229,19 +229,40 @@ They cover:
 
 * **Daily job.** `.github/workflows/update-risk-data.yml` runs every weekday at **16:45 IST**, after the 15:30 NSE close. It runs the unit tests and the pipeline (with FinBERT on CPU), then commits `js/data.js` and `backend/output/*.json`, so the GitHub Pages site updates itself. Run it by hand from the *Actions* tab, optionally with `backtest: true`. Under **Settings → Actions → General → Workflow permissions**, choose **Read and write permissions** so the job can commit.
 * **Point-in-time.** Each day uses only prices up to that day's close and headlines published up to that day. The first run backfills 30 trading days. Afterwards only the last 5 days are refreshed, and past days stay frozen. Up to 400 trading days are kept in `backend/output/history.json`.
-* **Live server.** `start.bat` / `start.sh` / Docker re-scores every `REFRESH_MINUTES` (default 60). Open dashboards pick up new scores automatically. Environment variables: `SENTIMENT=auto|finbert|lexicon`, `REFRESH_MINUTES`, `LIVE_REFRESH=false`, `DECAY_HALF_LIFE_HOURS`, `HOST`, `PORT`.
+* **Live server.** `start.bat` / `start.sh` / Docker re-scores every `REFRESH_MINUTES` (default 60). Open dashboards pick up new scores automatically. Environment variables: `SENTIMENT=auto|finbert|lexicon`, `REFRESH_MINUTES`, `LIVE_REFRESH=false`, `DECAY_HALF_LIFE_HOURS`, `HOST`, `PORT`, and for a public server `READ_ONLY=true` (no watchlist edits, labels or re-runs) and `MAX_SEARCHES` (parallel searches, default 2).
 
 ---
 
 ## Hosting
 
-GitHub Pages hosts the static dashboard, kept current by the daily job. Company Search and the other server features need the Python server. To put the full app online, run the `Dockerfile` on a host with about **2 GB RAM** (FinBERT + PyTorch). As of November 2026:
+**The ₹0 setup has two parts:**
+
+1. **GitHub Pages** hosts the dashboard at https://se23uari120.github.io/brand-risk-index/, and the daily GitHub Actions job keeps it current. Both are free for a public repository.
+2. **A free Render web service** (optional) adds **Company Search** and the headline scorer to that page. [`render.yaml`](render.yaml) describes it:
+   * the free plan (0.1 CPU, 512 MB RAM) in Render's Singapore region
+   * `READ_ONLY=true`: visitors can search, but cannot change the watchlist or labels, or start re-runs
+   * `SENTIMENT=lexicon`: FinBERT needs about 2 GB of RAM, so searches score headlines with the finance word list
+   * `LIVE_REFRESH=false`: it serves the daily job's results, and every push to `main` (including the daily data commit) redeploys it
+   * it sleeps after 15 minutes without visitors; the next search waits about a minute while it wakes up. The dashboard itself never waits: it loads the stored results from GitHub Pages.
+
+**Setting up Render (once):**
+1. Sign up at [render.com](https://render.com) with your GitHub account. **Don't add a payment method.** Without one, going over a free limit pauses the service until the next month instead of billing you. One always-on free service fits in the 750 free instance hours per month.
+2. In the Render dashboard choose **New → Blueprint**, pick the `brand-risk-index` repository and press **Apply**. Render reads `render.yaml` and builds the service (a few minutes).
+3. Copy the service's address, e.g. `https://brand-risk-index.onrender.com`, and open `<address>/api/health`. It should answer with `"readOnly": true`.
+4. Put the address in `js/config.js`:
+   ```js
+   window.BRI_API_BASE = window.BRI_API_BASE || 'https://brand-risk-index.onrender.com';
+   ```
+   Commit and push. GitHub Pages then shows the Search tab and the headline scorer, and wakes the server when someone uses them.
+
+**Other options** (as of November 2026) for the full app with FinBERT, which needs a host with about **2 GB RAM** for the `Dockerfile`:
 
 | Option | Cost | Notes |
 |---|---|---|
-| Hugging Face Spaces (Docker) | PRO plan, $9/month | Free accounts can no longer host Docker Spaces. Steps below. |
+| Your own PC + Cloudflare quick tunnel | ₹0 | `start.bat`, then `cloudflared tunnel --url http://localhost:8000`. Works only while the PC runs, and the address changes every time. |
+| Oracle Cloud Always Free | ₹0, but needs a Visa or Mastercard credit card for verification | Enough memory for FinBERT. Indian PIN-based debit cards are not accepted, and free capacity is often unavailable. |
+| Hugging Face Spaces (Docker) | PRO plan, $9/month | Free accounts can no longer run Docker Spaces. Steps below. |
 | Google Cloud Run | free tier for light use | Needs a billing account; set memory to 2 GiB. |
-| Your own PC + a tunnel (e.g. Cloudflare quick tunnel) | free | Works only while the PC and `start.bat` are running. |
 
 **Hugging Face Spaces** (with PRO):
 1. Sign in: `.venv\Scripts\hf auth login` (Windows) or `.venv/bin/hf auth login`.
@@ -252,7 +273,7 @@ GitHub Pages hosts the static dashboard, kept current by the daily job. Company 
    ```
 3. The first build takes about 5–10 minutes. The app is then at `https://YOUR-NAME-brand-risk-index.hf.space`.
 
-Once the full app is hosted anywhere, set `window.BRI_API_BASE` in `js/config.js` to its URL. The GitHub Pages copy will then use it for live data and search too.
+With any hosted server set as `window.BRI_API_BASE` in `js/config.js`, the GitHub Pages copy uses it for Company Search and the headline scorer; the daily results always load from `js/data.js`. A page served by a server itself (`start.bat`, Docker or the Render address) always uses that server, with its own data and tools.
 
 ---
 
@@ -289,7 +310,8 @@ Also available as [PDF](docs/architecture.pdf) and [SVG](docs/architecture.svg).
 | Windows, news decay, outlet feeds, level thresholds, actions, history length, server settings | `backend/config.py` |
 | AHP pairwise judgements | `backend/mcdm/ahp.py` (`DEFAULT_PAIRWISE`) |
 | Signal formulas and their explanations (shown in the dashboard) | `backend/engine/criteria.py` |
-| Where a static copy finds the server | `js/config.js` (`window.BRI_API_BASE`) |
+| Where a static copy finds the hosted search server | `js/config.js` (`window.BRI_API_BASE`) |
+| Free public Render server (plan, region, read-only settings) | `render.yaml` |
 
 ---
 
@@ -301,13 +323,14 @@ brand-risk-index/
 ├── setup.bat / setup.sh          # One-time install into .venv (CPU PyTorch, FinBERT, FastAPI)
 ├── start.bat / start.sh          # Server + dashboard on http://localhost:8000, hourly re-scoring
 ├── Dockerfile                    # Container for Hugging Face Spaces / Cloud Run / any Docker host
+├── render.yaml · .python-version # Free Render server: read-only Company Search (Python 3.11)
 ├── docs/                         # Architecture diagram (PNG, PDF, SVG)
 ├── css/style.css                 # Light/dark design tokens and layout
 ├── js/
 │   ├── config.js                 # Where the API lives (for static copies)
 │   ├── data.js                   # GENERATED: scores, signals, history, headlines, MCDM, back-test
 │   ├── util.js · charts.js       # Formatting, explanations, themed Chart.js wrappers
-│   ├── live.js                   # Server detection, live refresh
+│   ├── live.js                   # Server detection, live refresh, waking a hosted search server
 │   ├── overview.js · companies.js · detail.js · compare.js
 │   ├── search.js                 # Company Search (server)
 │   ├── mcdm.js                   # AHP vs CRITIC, blend slider, sensitivity
