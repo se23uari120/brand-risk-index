@@ -1,6 +1,6 @@
 {
- "runAt": "2026-11-19T20:45:24+00:00",
- "sentimentEngine": "lexicon",
+ "runAt": "2026-11-25T02:44:29+00:00",
+ "sentimentEngine": "finbert",
  "windowDays": 5,
  "controlOffsetDays": 60,
  "metrics": {
@@ -9,43 +9,43 @@
   "flagThreshold": 30,
   "pairwiseAccuracy": {
    "index": 0.917,
-   "stockOnly": 0.667,
-   "newsOnly": 0.833,
+   "stockOnly": 0.75,
+   "newsOnly": 1.0,
    "sentimentOnly": 0.833,
    "mentionVolume": 0.833
   },
   "hitRate": {
-   "index": 0.417,
-   "stockOnly": 0.417,
+   "index": 0.583,
+   "stockOnly": 0.5,
    "newsOnly": 0.0,
-   "sentimentOnly": 0.167
+   "sentimentOnly": 0.5
   },
   "falseAlarmRate": {
    "index": 0.167,
    "stockOnly": 0.167,
    "newsOnly": 0.0,
-   "sentimentOnly": 0.0
+   "sentimentOnly": 0.083
   },
   "mean": {
    "index": {
-    "incident": 41.5,
-    "control": 10.5
+    "incident": 47.9,
+    "control": 15.4
    },
    "stockOnly": {
-    "incident": 29.5,
-    "control": 9.3
+    "incident": 33.9,
+    "control": 12.4
    },
    "newsOnly": {
-    "incident": 16.4,
-    "control": 2.1
+    "incident": 19.6,
+    "control": 4.4
    },
    "sentimentOnly": {
-    "incident": 22.1,
-    "control": 1.9
+    "incident": 33.3,
+    "control": 7.9
    },
    "mentionVolume": {
-    "incident": 26.2,
-    "control": 5.7
+    "incident": 28.3,
+    "control": 6.6
    }
   }
  },
@@ -70,90 +70,90 @@
      100.0,
      52.9,
      100.0,
-     49.9,
-     87.5
+     40.6,
+     90.1
     ],
     "stockOnly": 64.1,
-    "newsOnly": 23.8,
-    "sentimentOnly": 24.5,
+    "newsOnly": 22.2,
+    "sentimentOnly": 24.1,
     "mentionVolume": 46,
-    "negative": 19,
+    "negative": 22,
     "top": [
      {
-      "t": "RBI ban on Paytm Payments Bank: What the ban means for UPI on Paytm app",
-      "s": "Times of India",
-      "u": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQQTl5ZTFEVHk4WEdWYVF2WmRQRWxJT3dUeC1YX3kxMFE1ZXpVWUQzTWFPX3JzS042LUVlakc2WXRhOGpVVWxYOXZ1UHc4VFRXaHVDNDRxZ1RqelJrRU5WN01ZRU5EXy1LTkVKRkJybENqaWVBMVFIcDNld0lidExGN01Lb3J0Z0VEVzRoR3IwZ0ktMGdZX0d0ZmtVaV9keDRrNzZZbWUwYmNWc3g0ZnBDT3Z0aVFSMlVmQnVpZmsxSlREaWFWdGtZT1l2X2E3NUpFZHJpS0xHc2ozakdVTkHSAeMBQVVfeXFMTVBoQUxQdUhiWWZEcGF5Q1dlUWx4RGpPaEd2MUZPaVdJMS1wbUF4dzRTdnQ0ZkRldnE2VFZndVI5MXlIcTVYNnd1S0hGSks5OHhQT0tibFdnRWgyYXNRTm0zaFZCcFdmNTkzbzhYaHVZM2RXWi1PUmdQa0dLSHdBZi1EX2xfYlVFRkJFUktjV0hEWTF1SS1tNW5XQU9hZG5jYktnREltQ2xEX3IyUWZoX3NfQkgwX09lck9kZUNYTmpKNVNNVTVZNmxkTlVhVmtuS0QtN2ZvUWJkMVByQ3lJbG1vMjg?oc=5",
+      "t": "Paytm shares at 20% lower circuit for second day running, stock near record low",
+      "s": "CNBC-TV18",
+      "u": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOZDRuMjJ3alZ2bFNScDRWVzE2aU5ib3VrbnZjVjB5OV9ndXBrbEVhcVRTRExHeUo3c2k5aGJPdWJ2VWVPVkRJdWptQTZiVmRzMUV6NWQ3VkdwUl9kZURQMWJJN1NEQUU5WGl3VDF3UUNmN0dzYlZpOElfbnE4bThjWkd5Y3JOdXV1a001TnNOSVBpcmpoZDYyUE8xalRRdGpjZy1EaTBWN3ZueHRhNUJPenlKNno2QnN3dGdEMGpxSW1rLXgya1RN0gHMAUFVX3lxTE1Xa1pQWjVrSTdNblpxY2pxMG5MMkJzSUd6U3cwMU5zSEJMV2FKazZpLTVpMXFtUWlKcFJEQkgwejQzVDc3R1ZmcUFzYmJNY2R2T0xabEs0WVJ1WVFJV2wwU1Rib2hxc0xDYVBVeHBSM2R5enVtd0d5UUx6ZDFvV2JmVWRMNF90TWdfbGxTVkJpZlREcXpLS0FpUUNNVzF4TGlYUDJ6WEliR0ZQR0Z3djdrcUZmM0dVTjN0SUZlNUN4dWVCZ050X0I3ZTNxbQ?oc=5",
       "d": "2024-02-02",
-      "sc": -0.73,
-      "c": "Regulatory Action"
+      "sc": -0.94,
+      "c": "General Coverage"
      },
      {
-      "t": "Paytm shares slump 20%; hit lower circuit limit",
-      "s": "The Hindu",
-      "u": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxObVFRT2VkcTA4UklvNWo2djNSX051VU8tbUJhSlhJS2JSQmdncVBKeVc2aFEtMnp1S1BPc2FuY2Jwck5FMUtCMTNWRS01VTduQXFrbmFUbnNmbVJQNGpaUmFmNEFmSWZSRDU3R1NFQ29SWGM3NGFYN0J6eEtqSjNzRmxhZ2stcTlhdXdRa0RhNkppbGd6dk0xMzd2OVpGUEdSbFFOaG11S0R3XzjSAbIBQVVfeXFMUG9GM2Zid3pQSFl6ckdybkpzWXk3UnlHRWZJRGVNUTlicE9nWndkeE1DRFNmV2gtLXZMMEMtZlZtZWFTMDFucVRQQm1BbzQ1Ylc1SU8xOWZTbVdBcDZlUGtnQXRPSFo3ZmtvUTRPdlRlYVAwd1ljTEt3OVZTbUhfSWUyVzZSQ2Vybkg3amZQTGlRUW9pTXB1eHEtZjlNSTBhTjFzRGVaLUM1cGl5RmdhYlZhQQ?oc=5",
-      "d": "2024-02-01",
-      "sc": -0.73,
+      "t": "Paytm Payments Bank Crisis: Why No One Is Buying Paytm Shares, Fell By 40% In 2 Days? PaytmKaro Talk Of Town!",
+      "s": "Goodreturns",
+      "u": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxOaEprdHc1Z0ppdWF4bVIxTGU3RGY0SmtwLXZCSkVtcWZJNUZYVzdfcnNvTDJESUxYSS1CR2JJdUwwYXBieDZTbzUzSmxOVGJCdHp2cW5GNUVqWEJlZzgybmpIUEhVYWJwZ1NHeXBQSldjenRJUjRKVkprMlpqUkswcFNWR09lX01XOWNVeWJudGN3dmF6SDNEandwVlhVWmNZS3Fvbzl0bjFsT0FXNHZyWWNtTEtGMXc3R3lJbTRCV1BkMk5FWE02X1RoNUs4OWNhWlZWN0ZhMlF1ZjNDcHc?oc=5",
+      "d": "2024-02-02",
+      "sc": -0.92,
       "c": "Market & Earnings"
      },
      {
-      "t": "Why RBI lost patience with Paytm Payments Bank: Anti-money laundering lapses, related party...",
-      "s": "Moneycontrol",
-      "u": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxPVU9iU0lsbFIydFVEdV9pcGdCdnJoMGVPdWJXLXVKMDBwU1AwUnpneUg3OGNncnVmWVZjM245cmxQaFdMQUk0S1V1cG9KdjFEeF84dmVjc1NTYURSZXpobnhRQVBJb3ZpcWxSUXhEUHpzbTRGeE1IMVlGUE1MMDZ3Y3JqY19ZUjdaaWtHWXpaQkJEeHQ0dHN4VnIwX0NyQ1hDc0F4Wk5ZaFVMbzRnVmNJSGViaFhsUDA4Rm5DdmN4UmhIQ09uZm5udThfbzlDbkFrcGEzaUp4WU9IdEU3bzlBMmM3OXRsU1Y2YjZNRjRkZEXSAfYBQVVfeXFMTTMxeHNyRDFnVmpnUG5uaEk1ZmpLWUdmbVRIelF0WVVGY3Fudm1rV2VPN0FfZk0yVFhqdzRlUVl6dFFZc2lHanJqcG0yOHV5dGxUNjlYd2VKLXp1clRkTXVtVmVXczlqcVBSMy1oR3A4dkFEZHhHRy03ak5OYTA2eXR5cENpcnRDV2U3ZzNQejNLWGxEWGprak96TjhkT1JROEdOTjVWRUs2SVZDTmpIU19LS3Z6NzNSSFdzZm1HTENOOEVQWXVsb3lId25QdTRZei0yd2NSczRyRnU2ZHFubEtYMkczQjBZRnJsUEY0aFk5S0JRY1l3?oc=5",
-      "d": "2024-02-02",
-      "sc": -0.67,
-      "c": "Fraud & Governance"
+      "t": "Paytm sees ₹300-500 crore blow as customers won't be able to top up wallets, PPBL accounts",
+      "s": "The Hindu",
+      "u": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQd0EydGY1YnhITEJHVFVpVzF4TS0xVHNobWh5VzJzZXZYalFneGFQdFZGUkJrRE1vdUV3QzI3cldjM2xJWWw0MlBieGtLQnUteE1aZ3hqU3NsOXFCeDJjTXZsTGtBNllYOUo5U0dnT3R4b0VsRWsydjNCNkRyeHl3cFBia3JqR2pLdDNXUGIzRTZ6U0lIa2NET1d3aEZ3RGVqdUVHZHlkNTBhYzYyYmNYcXotZHhOM0h3LUFuZWU5RkZ2S0l3Q2RFUng2c0R0b193WWhaZzJR0gHcAUFVX3lxTE05b1FwU01UX0NvTW90SWdSWWVMeThKaldYN09iNUZPd2pWanMwWHl2ZXVITU5jU2Y5TzN2WHQ3UTNady1iNjI0XzVQU01yVzFQSjBlUzVQTjQ0ekx5a3lpeUdKVUptNWhSd2hZYUZLelloQ2t0cjE2bGo4S01JU3UwQm4yXzF4YWY4OEw4QUpZbDhsX1Z0d2NlTUdJR0E0WDFJRGUwUmFMUXI3QW1GZHcweWNoX1FaUnJLYVEzWFRRX0tiemlDVXpST0prc0ZzaWxOXzU3bi1MRmc2ZXM?oc=5",
+      "d": "2024-02-01",
+      "sc": -0.86,
+      "c": "General Coverage"
      }
     ],
-    "excess5": -0.3751,
-    "z5": -7.22,
+    "excess5": -0.3775,
+    "z5": -7.34,
     "close": 487.2,
-    "index": 79.4
+    "index": 77.0
    },
    "control": {
     "asOf": "2023-12-06",
     "level": "Moderate",
     "criteria": [
-     63.4,
+     62.7,
      50.0,
-     26.8,
-     16.4,
-     25.5
+     31.7,
+     29.7,
+     41.9
     ],
-    "stockOnly": 44.0,
-    "newsOnly": 8.4,
-    "sentimentOnly": 9.5,
-    "mentionVolume": 6,
-    "negative": 2,
+    "stockOnly": 44.3,
+    "newsOnly": 14.1,
+    "sentimentOnly": 1.6,
+    "mentionVolume": 8,
+    "negative": 3,
     "top": [
      {
-      "t": "A Year of RBI Ban: Paytm, Razorpay Embracing New Revenue Streams",
-      "s": "Dazeinfo",
-      "u": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNR2FkUzBBakRFSzM3TGtwa2hfS1pfUWpUM2F5ci1ESVM4Snk5Y0xuR3pBeExKdnNpUGloRFJfZXJkM29XRnY2Zm0weW9OVTFrajB2ZV9BT3FiZkg3NDVXcFBIb242MFRTWkRpUG5hODNPXzBRMmVaQ3RWTFF0QklyeWRzLURTQ2xiY2NtdUhtX2FkY3VWVEIzSXFHaw?oc=5",
-      "d": "2023-12-04",
-      "sc": -0.57,
-      "c": "Regulatory Action"
-     },
-     {
-      "t": "Paytm slowing down low ticket Postpaid loans by around 50%, accelerating high ticket loans",
-      "s": "Moneycontrol",
-      "u": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNRk1rc3dBTUtDa0lkQWhlWXNYZWVjS20zYURNRi0xVzVzNVlRVkttNXVvNW9fLVVUNUZFbjcxV2VmdFVTbU5xUW8wMnRVMFgzaXhGczh4NHVsQ1RlT05iR3NHcUVYXy1CekdxV3hJemp0YTZFR0RHUkdXdFdqUWl2ZkdQblVzbnhxbml5NzhSQkhCdlNkaVNJVFRXQ2lpVTdad19DUmRTZ3pFMm5pNlpESUdheGdkWW5DeGFj0gHAAUFVX3lxTE5xQkpQX3RFSE5vRW9PZnBzMjFSWTNQYmRsUWdsck5WTXBSVmQ0VTE1c2E2MXhZbWY3c2drOV96NG5JVnhsdzBzTjIwV3diZFRlbW5pR2duN2xiWXhobzc3LVp6Y0RmUzhiMi0xaVBUQm9ydVFySGhmUnc4MHVfYUFhZ3p3cEN1Wk1nSDl6UVdKMm5FUkljV3dzTWVYdnVpZG91MEVFSW8zQUV1dm5QTkF2VHZJX0NtOFJjYnpyM1FJcg?oc=5",
+      "t": "Paytm scales down small-ticket loan business amid regulatory hurdles",
+      "s": "Economic Times",
+      "u": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQYkszNGxmRDhPcUFHYXQ2eHBBWE1LYnhZcXhlcFE0NEQ3SnRHNDRObVJGVjZzS2REME1PSkdiQkxUcU56OVF2ZzVJSFhLbFFCV2tMUUxqRnRoRW9SYmVlTGdQRHNvdThaUUJRTFhlS254dE02bGo0bnlON1Rzd2VkRzViMm9rckJXdGJxbE9IaDM3ZlhSQk9icUhBLVZha3NtVEUwY2swWHlJWmJXeUZkZ1NuSEtGMUduLVo5ekZKQjY1WlRyYlZ4WWhKNzN2dTRJeldr0gHYAUFVX3lxTFA5Z0pGX1hEMVZpSkVUdHZwUEF6VEEyZXhlVVFocUVON05hWUN5V0h6dlJRVjEwNHVlVEM4UWRudDQ5X0dRN21NWE9wQTJwclg1WUpWa0NaR1d4QjA4SUI3VWl6VVJxNzRqT3hGYVhsWENPSzVRSGVsNExVTnR5VkxJZkVQSzBaaHNPLVhsREpIRzJPdWJIUkZ0QUJkUFQ2SkJRdTlPZzBCZWt1eG8tLWpGWWgzRWNUWTZvNkphMHJ2NS1VVWszU214ZUJLUWRLdDd5Z0pMVkswVw?oc=5",
       "d": "2023-12-06",
-      "sc": -0.4,
-      "c": "General Coverage"
+      "sc": -0.96,
+      "c": "Regulatory Action"
      },
      {
       "t": "India's Paytm to curtail low-value personal loans after cenbank clampdown",
       "s": "Reuters",
       "u": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNSGY2ZEdNMHFOSThZdE82X2ZESl9hVW11LXpxOVdRaUF3MHdvV0tFNjN1ck1fWFpua2tZQ25FYVZTSDF4dTdYS3hJeWtJc1plYkl5R1FQNEFZVHNVdml6TEw2TVFORlRueEtGYWZmbEloazY0TmwxMUZRSnowZkxieHFjY3c4aHNhTHh0Um84S1k3NGZleHVKbQ?oc=5",
       "d": "2023-12-06",
-      "sc": 0.0,
+      "sc": -0.93,
+      "c": "General Coverage"
+     },
+     {
+      "t": "Paytm to scale back BNPL as lenders turn watchful",
+      "s": "The Arc Web",
+      "u": "https://news.google.com/rss/articles/CBMimwFBVV95cUxObFBWYzQxNC1rclp4WWlfMmJpNGJUR1JEd3NlTmc3MzE4LU44SVRibzZZOWFzRzYwMUJWb0tiN3VjTEFaTThGNklKVk55dmVZQWF5YWQxZnc5ODc0VWFkY256SlhwM2tEVmx5MnZmcWl2bjdMSmsxUTl3cFJsQW9pTEctc3BaYUx0SmcxUlNhem42MHlKX3dvVGZkWQ?oc=5",
+      "d": "2023-12-06",
+      "sc": -0.45,
       "c": "General Coverage"
      }
     ],
-    "excess5": -0.109,
-    "z5": -2.27,
+    "excess5": -0.1079,
+    "z5": -2.25,
     "close": 813.05,
-    "index": 46.9
+    "index": 50.0
    },
    "detected": true,
    "separated": true
@@ -161,7 +161,7 @@
   {
    "company": "Kotak Mahindra Bank",
    "symbol": "KOTAKBANK",
-   "sector": "Financial Services",
+   "sector": "Banks",
    "date": "2024-04-24",
    "event": "RBI bars Kotak Mahindra Bank from onboarding customers online and issuing new credit cards",
    "listed": true,
@@ -171,60 +171,60 @@
     "criteria": [
      100.0,
      100.0,
-     69.0,
-     41.0,
-     76.8
+     94.6,
+     52.8,
+     88.5
     ],
-    "stockOnly": 62.9,
-    "newsOnly": 20.8,
-    "sentimentOnly": 23.7,
-    "mentionVolume": 39,
-    "negative": 17,
+    "stockOnly": 64.9,
+    "newsOnly": 24.6,
+    "sentimentOnly": 40.5,
+    "mentionVolume": 38,
+    "negative": 25,
     "top": [
      {
-      "t": "RBI action on Kotak Bank: Stock plunges 12% as analysts turn bearish",
-      "s": "Business Standard",
-      "u": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPcEF3aWR6QXA0bE1fRGdwMGtuUFlHQ2NjazlteUNPT3ZYZDIzdDZvR3FyTFNNV28xTXJZSi1PVDlKTHZOT0U4cUpPbVItSWdFYVdYb01QR0dXbU9Dbk9EUWhqWTBScndXR1pGbTdwcEdIRUo1RHA1SHRSVTdSOURIcTNGUVFfZzZJQXhjMWFDS2E2MHp1bDJqYTNNTmd0NlhVSTBROEVYVUFFN3FsVXpIY1hFdURnb1gxQmxJa0ZiZi16SDFLTjFiakRXTlRUZ9IB0wFBVV95cUxON2ZIM19TalU5cm90TEMxQmNNVEdxXzFUbnRYck53cjZRTl9XTmVNVW9sRVR6cGZQakpleVVlZ0oyeUhibS01RDNpNXF6Mk1YcFNMSUZGLV9VWmRsQVpqLThORTEwU0VlWjRRNnhZaW9feldzaEhPX3VoaXV3VUczVzZwek16MS12bDRsdm9ITGk1ZjJqTzR3VmcxTFFYUW5zUkJEYkd6S0V6VktqLXdUYzFrTEF6Y29pR19HRjU5eXZNRTdTUXdtOV9rU0lyTVhXVWNr?oc=5",
-      "d": "2024-04-25",
-      "sc": -0.73,
+      "t": "RBI curbs on Kotak Mahindra Bank to hurt retail business, stock may fall up to 5%, says expert",
+      "s": "Moneycontrol",
+      "u": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQSkd5RTFaMHBoQ0RPc3h0aWhqUUZyTzhxc1BiNU5HdFB0dFQ3dXJjZ0o4bEtXVkJrVUZoRkYtWnJ0UGM2ZTN5QWVfSDJPYi1VVWN1R3VrdVVPTmdwcmc4WTBaS3QxVS1QWndXR0xtN3hERmxRWGo0cThPdVRFcFJZeXBiSnFZMlhDaUczcFFWcUhSTXlRbWc4VGx3NXhhcFpSeFJuTzYzNVVIbzFJdzQ2dUc2ckV2M3NqdGhCNC1xYzhOa3NjRC1TeElva3hjckHSAdQBQVVfeXFMUGRHZ2dZQV9VYk81R3hGUDh4Tm1TalFOX3Rjb0hCcFVMRlkxZzlkWUJTVVZMa2JlZFJvY3ZhSFVhZXN1NHVnNjRHVWh5dkhfLVREZ1d2S0k1V0gzRFpHRzlOR1hRZ3Uya1VadDM5R3RqYTVfcXZiNG5wUUJfY2tfdzBScGZrRUZMNG1EMFV5YTg4cFVPbDJjaGNOSGpVZTF5ckZBMW91Y0RJeHp5bkcxb3phMUhoLUduMEwxOUV6UmtrZTFvNXhyeThGbmplaGRHVmZxdDk?oc=5",
+      "d": "2024-04-24",
+      "sc": -0.96,
       "c": "Regulatory Action"
      },
      {
-      "t": "Kotak Mahindra Bank tanks 13% on RBI whip, mcap dips to ₹3.19 lakh crore; Axis Bank now India's 4th largest lender",
-      "s": "Livemint",
-      "u": "https://news.google.com/rss/articles/CBMikwJBVV95cUxQYk1lTUR4THo1akJIQkVsbmVZUWZINU1GQno1Z2czTW5tWGVYeVVpNDF3QXBhOGZwdEhkUGZ4T0dYYWJXQUxTUWF5d1plZTB5dTZPbnV2ZkE5YlV3NmMwRERSU2I2eWlNWGJuSVNuRmRxMFNNLUFHU2I2bDFVY3dsOFJ0MEtIb2tXMlVPc09iemd3RnVYNlllbEJEeHBMM0xvLUxIOEI3bzVSZUFCS1NSR3p6ZGNiUXJWaV9vTzNUc1NlV0k1V2NxWkl5YXRmYkZBMUg5REx0cHVVSjdkR181VC1CTmxvdlNnUjN1UXExVlZEeW9Eb3pHYjdrNUJEWjFzRFVFR3E0Q1Q4NzRhcGJUMW11b9IBmAJBVV95cUxObkZpeDFtaHdhVXQtS2tyU2hZa3BvTVNsSzh5blpuc1Z4N1NJaGt4VUl1azBHd1lvZnp2S2V5Y1Q4dmE2ZnFnQzJkTHZ2Vm9QVTBTcmtESWRlMHc2QXhLQ05Yc3MzQUE5ZFRVajhPMk5OQ3RaMTRaeDdPb081amFiWG8wemltRFd4RDRDY2o1VFcyU0FOaXhPX1BmTTB6MndhaThPd3VWTjZwR3N6Ti0xWVYtR1ZSX2hKLVBwOU1HRmxwUjdIbHl6ODBLVlZ4QVRuT2dJeXk1QUl1QXJWaE1QVmFlRzJzc1dQMmUyaTlxQmNHM3M4c0ZUWmtZZnJNNjc0MzlkcjAzZVIyTlNGNmpQaXVFcmtXblpk?oc=5",
+      "t": "RBI action on Kotak Mahindra Bank may restrain credit growth, profitability, says S&P",
+      "s": "Upstox",
+      "u": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQdGc0RFNVcWVUV2JPT2k4RWpPQlEwak9IcHdFWjkzT2J6clNTczZXWW10UFNpVWJEX3VZVFdLZExDRlo5RGVoT3BVdVBNWTVMTl92X2pBa0NmS2dHcFA1NFZRTHo2VklVbWdsZ2dYTnlCSW1YMzNIcUtJZkVRVlFseHZOTVN6S25ocUtpczhqV0c3M3RDNnoxeVNxa2QycTVBdnpRUHh5UFhDbHRMeHM4dXYybFlIU25rVkU2R1JOMGlwSW41U1ZHTDF4UUZQalZJVlE?oc=5",
       "d": "2024-04-26",
-      "sc": -0.67,
+      "sc": -0.95,
       "c": "Regulatory Action"
      },
      {
-      "t": "RBI bars Kotak Mahindra Bank from onboarding new clients via digital mode",
-      "s": "Economic Times",
-      "u": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxOVEgyNTVyLXp2YWJqc2V5ejR0ZVFUWTlSbG1PaHFaQ05GVDhBTHYtVWRFRmN3QWM2aHFvVzctbHFYUWhacXpBUXdCSjJVN1NxNlMwdm94VjJhWnVrUThpN2xuZlFEQnVkNWg5LWt2SmNCM0xWRVFDWkRaYUJVZ3REbGtueDdoZ2w0d3lCOXFOb05KWF9wN2FTUzhBcWFvLU13ZnlRMDQ1ZFQxV1VNdm1QVExtMGlxejJLVnR3TXBBdTNMUklOWmdqMUNlOEFOMHVGTkNWcERRYkoyNVXSAeABQVVfeXFMUEF4SFoxZC1UVnlZZ2hUMUxUX21UZDAzTjlkZUg4YnBoNTl4eTdFRm1PZ2tJOTNEMEp0RFM3dElud1dQOHpZbWJnbFV1R3lPZzhjN2htNnY3Sk1rNk9RN1psVWtocVJ0ckRmWS0zeTBWaExUTTVqM3JOUGE5UnFsbmJ3WndfWkFLcTF2cnBGeS1LOFNjYmk1SVRFSmJveFBCM2p2b21QZ1FuMDZaLTMtVVFwa0t3QjBxeGd5YXBsRnlqTkhjRnRSWG9IMERFRUlRRkc3UGxzbHJxTmJGUnEzR3I?oc=5",
-      "d": "2024-04-25",
-      "sc": -0.67,
+      "t": "Kotak Mahindra Bank faces setback in credit card growth, profitability due to RBI's curbs: S&P Global",
+      "s": "Business Today",
+      "u": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxPekMzUXVTZFRRSV9ELUc0ejU5ZmFwMnJpYkFHTnpUamhld3pUTU5VaFBKTUp2VXJHLWZLczhxQ0NtV2Ryb19MRmU1M2JYV0F4Q1JxcDBKOGNIbDVIc2kxQUtPX2NpVEI4b01Cd25aNzlfcFBFcllUaTlSMTlteVdyeFFGOGgxRjNPc3VZZXJHQTVGOUN2aWg4cTBMZUtlT21DSU1TTE1pTjU1ZVdqa1duODh0OURMMURBSTZYSUxwVXY2SWxUS3NoZkJDVnFJdXJPYkxwN2RvUkhtRzhSS3BzZXRjWktXWENqSTVwMUZQUkNVRVhjOEJjdNIB_gFBVV95cUxPd0IwVzk5R0UtdXZUTlZzUzM1bzZCM2lWU0laXzNvVXdhZWxvQWtfcnhJVUdTT2JRbGM0Tmd5QkVMYk1SYUVuclpLcW1CdVJEdDNPUV9pMFYzdFlGSzBZQmhIbDlWZjJkV1lURURkOF83UGVLWGhBSFRyYXp1em9Gd3NfZ3hLLWVqRkJQVHhZQWI0bGlYTy1WOGlSb2ZzZVBvSVN3b3N4MmhfN0lTRXlLUnVIeHVYOXJvMU1zSS1wR00wQTlHYUNxS1FJRVNWQmhyWUZ5WjU4R3c1azZSLVZfT2FDbEZ3R0VXQWVLeHpXbldyNEtpVFdsVlBLYjJHUQ?oc=5",
+      "d": "2024-04-26",
+      "sc": -0.93,
       "c": "Regulatory Action"
      }
     ],
-    "excess5": -0.1097,
-    "z5": -6.02,
+    "excess5": -0.1263,
+    "z5": -6.82,
     "close": 321.7,
-    "index": 75.3
+    "index": 82.2
    },
    "control": {
     "asOf": "2024-02-28",
-    "level": "Moderate",
+    "level": "High",
     "criteria": [
-     68.8,
+     99.4,
      2.7,
-     37.3,
+     87.1,
      0.0,
      0.0
     ],
-    "stockOnly": 46.2,
+    "stockOnly": 61.3,
     "newsOnly": 0.0,
     "sentimentOnly": 0.0,
-    "mentionVolume": 5,
+    "mentionVolume": 7,
     "negative": 0,
     "top": [
      {
@@ -232,16 +232,8 @@
       "s": "Livemint",
       "u": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxObUI0ZlB0YlJtSTRVVng2QmNyLThONnZBMWJVeVJ4MmdMdWExbUhKZmZRSF9HTVduUFpmbllPYm0zSG03WS01bTRTV2U1Vk1xUEVZbWt2QjBSUUswUWhROFpwZ042N2JaeDhibzZCREpLeGlMOFJJdTAyODVTTkxIVjVkYkp4SlJIS0VpZFVZSWYwbE1lS3diVGd1allEYTM4Ym5EenVWVTFxLUw5LXJFdk85UWVtSUV4SUlxbmJad0Roc1pmbHJZd0FWTkNBZ0FBOHltdWRobmZXMVFPNktWTWIxZ9IB6AFBVV95cUxOMjExSm8xTEVtNkpKUENsVzAyaU01emZDR1lGWEpacElWTmpJY3Y1QlJWbEZibHJJdGFYSm1vRWQyYmozV2Y5YUJXUFlYZXFYV1E2U1h4MXZ6enF6UUR4MmdTXzdWZzFZQ2JmMHNNRjdCUnIySkJKWEJOY3FVYm9mS0RrUzZOTElzTFM2bUpPb0RyUnMtbGVXcVpNOVJTd2VMbXVjVW9SQmhGcHBmdjRNUlZ6NEhzXzB2R2ktRk84Vk54dEJaeHpZeWk3N2drUElicWZEQ01xbWxhcnNfTzB1aDZFcXJhWjBr?oc=5",
       "d": "2024-02-28",
-      "sc": 0.0,
+      "sc": -0.08,
       "c": "General Coverage"
-     },
-     {
-      "t": "Kotak Mahindra Bank revisits unsecured lending strategy after RBI alert, says consumer banking head",
-      "s": "Moneycontrol",
-      "u": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxOYW9MSTVwNWpETzFwbUVpWnNuajQ4aGloQno4ZnZobV9OQThNc0xpS1NDNDlLTVplRHNBMzZoRHdwWExmVDRMeWtYOFJ6X1BfYU8xdVd1bjFZWnNJSDgzOEw2U0xvVFBvLXM0REUxcXBlVXE0UnhkQm9SSDYxRlBYWTRMdmdVcDY5V3hreVpxdmp4aXl1QlpNdWNxeF9NVWFETUx5RHIzWjEwYll3d1FJUDJRTi1mN1V6VDRyQkQ5R1ZVQ29yRUZOekZhTFBtWkV4SmlEeDB2aTE5VjgwWXdWRDF6ZUR3dTVUeVl30gHwAUFVX3lxTE1hME1lbzlJQmxwc2xyMkVUTVprRThDZ3BUdVAyQmJZd1ptWXN1Ym13V0JhS0ljMURoRHA0clVPdkk2ckRHVFJUTFRpemhWdzBMQ3QtRUM0WVAtWHd0V0MtZnFqbVN3N29vY2VMXzkxa3pyT2JLX1JtZnhtbFcya211R096cUVRVGFyZEVKUXVZOFdXMWdPUEh0QVVvc2JuVXlxMThuakozcTRUelNHVnE1bWNPLWRhQWxSbUpCYlRnanY4cTEyaE1pbzFmNE9GYUpaSWc1S29BVC1aVUV4b2JHNG1vZ2p1TXhBajhVblphRA?oc=5",
-      "d": "2024-02-28",
-      "sc": 0.0,
-      "c": "Regulatory Action"
      },
      {
       "t": "Kotak Mahindra Bank appoints Prasanna Kotian as head of group corporate communication",
@@ -250,12 +242,20 @@
       "d": "2024-02-27",
       "sc": 0.0,
       "c": "General Coverage"
+     },
+     {
+      "t": "Switzerland-based Zurich Insurance to acquire 70% stake in India's Kotak General for Rs 5,560 crore",
+      "s": "Indian Startup News",
+      "u": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPMzlxbWZsSnVYdWxKZDhYalZIWnZMb1FqNm5lVVhENEZEM2loQjR2UzdjR3d3ZWd5Wnk4aXZOQ2xXTmd0X2lJYmdEYjk1QjJtemUteUF6VmhLaHlpc3B4NERIME9XaDJWTXhPQVNCRjZzY0laLXhTYkJPSUFuZ2VvSTFKY2drTVRXM1BkcFJuNHQyVnY0dE9BS1VpQ0dWQzZaLWJZbjFsQUU2cXdaMl9sbGZOQWtpUm0wQXotWGtIc0FvdEFSUmQ0V1E1UktWZFl6NmVydUZNWdIB1wFBVV95cUxPMzlxbWZsSnVYdWxKZDhYalZIWnZMb1FqNm5lVVhENEZEM2loQjR2UzdjR3d3ZWd5Wnk4aXZOQ2xXTmd0X2lJYmdEYjk1QjJtemUteUF6VmhLaHlpc3B4NERIME9XaDJWTXhPQVNCRjZzY0laLXhTYkJPSUFuZ2VvSTFKY2drTVRXM1BkcFJuNHQyVnY0dE9BS1VpQ0dWQzZaLWJZbjFsQUU2cXdaMl9sbGZOQWtpUm0wQXotWGtIc0FvdEFSUmQ0V1E1UktWZFl6NmVydUZNWQ?oc=5",
+      "d": "2024-02-24",
+      "sc": 0.06,
+      "c": "General Coverage"
      }
     ],
-    "excess5": -0.0292,
-    "z5": -1.74,
+    "excess5": -0.0213,
+    "z5": -1.26,
     "close": 336.72,
-    "index": 46.2
+    "index": 61.3
    },
    "detected": true,
    "separated": true
@@ -269,49 +269,49 @@
    "listed": true,
    "incident": {
     "asOf": "2023-11-19",
-    "level": "Low",
+    "level": "High",
     "criteria": [
-     26.6,
+     81.4,
      38.2,
-     9.1,
-     36.6,
-     51.9
+     51.2,
+     48.2,
+     80.6
     ],
-    "stockOnly": 20.9,
-    "newsOnly": 17.1,
-    "sentimentOnly": 23.5,
-    "mentionVolume": 17,
-    "negative": 7,
+    "stockOnly": 54.2,
+    "newsOnly": 22.8,
+    "sentimentOnly": 55.1,
+    "mentionVolume": 19,
+    "negative": 17,
     "top": [
-     {
-      "t": "Decoding Bajaj Finance Loan Ban: What RBI's ban may cost the business and stocks",
-      "s": "Economic Times",
-      "u": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxNSW1BRzE0eUtHaGVKSk5rU3BFemVvcFhKeENFU1JENi1XWEI3cjVVd1ZCT3oxTjhfX2pCV0NXTGdWS1lsd1Vlb3NjckpyZWc2NWlvSnJsRjFPOFZaUmY4ZXFRd0tERVhGeWVqZzJwNzdNUjdVcHBqVjdmVWN3VlVQQm04YUQ4eTk1bWtGOElOY2ZGZWxWTFJHaUJmUVotWG5nOFhUeWxGanNJOXhsMTctbk1mUTdlZEk2YmxjeWUzQzJ1cVdlVnVMQjd6MmRIVGhKSE1KVzRpRzM4ZGpVUHhFd2hhelNKa0Z4UnpqQi130gHzAUFVX3lxTE5JVk9FT2hFN3c5XzAxckduNmtVR2RLLTI2TmpWcll0Zk9XRFVXVzcybEVFRzBxcE9WM1c5RkttWVRSaVRfMmJFSWdZVmRaRzVsempWUllVNnk2UEtXajR0YlFWalhmM3ZXZHdzSEZZbXQ0czNkbXFBcHlkZk1qdTUtT3MyYk9JMWVJeFlGSG1EOU1FR2RySDljOUF3M1I0clJ4SlBZLUZRa1ZCTzB1cFhnYWo1dElPSDRkVnFOdHdwWGtsdlJvc2JiSEJ0ZjVOV3N3YXNrY01ZdWJGejRNM3hVQzh0QXNQM2haVnFNeUQ0bzN5OA?oc=5",
-      "d": "2023-11-16",
-      "sc": -0.73,
-      "c": "Regulatory Action"
-     },
-     {
-      "t": "RBI bars Bajaj Finance from offering 'eCOM', 'Insta EMI Card'",
-      "s": "Financial Express",
-      "u": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPWU9aQ09tOGhvYk9paTJTeVJwSUlFM3I1YXZ0WENINFFWQ283TEdHMlhnWEVPRU1ucU5qMDF1NVpwWnJFOV9sVVU1bGl5dWo2cm85T1VybXhBV21LbEZOanZzLWdDZG5iWXZ1T2ZkdklSOEszYWdsWHlZYXlSVGN1V3dsZ1ZYT3I5WjRrcXBQZ2o1RkZEdDUtckVJSkwtOFJqQUpubjFtVk9zV1pQNk51Nm1nT2dQb0ZtMzdpUW9KYVXSAccBQVVfeXFMTXhJY3RpZC1saTR6Wm4zaDJFYXI5QWhfS3FJU3BFVTN1TXlnZ0ZrVENnTi1wNmdZY3daanllazV6MEUxbGtkTlZmTll5dzVjcWZLZlZyWmxBRUhhZHh1b1NnYWp1LTRpalF1OXRFNTYzRmVQNG9ndUF4cnJ1RHRqMXlrRmdKZnRYMkFZM2hKS3ZXRkV1Q25Jb241UVV5RDIwd0VNRFM1TUZ5OWhPXzRObkduV1NIaWQ1Q25tbXZRNnppX1hsa3h4dw?oc=5",
-      "d": "2023-11-16",
-      "sc": -0.67,
-      "c": "Regulatory Action"
-     },
      {
       "t": "RBI Clamps Down on Bajaj Finance: Halts 'eCOM' and 'Insta EMI Card' Loans Over Compliance Concerns",
       "s": "Punekar News",
       "u": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPbmlhUEpDYUdMajc3cXJ6NTNpZzZQcmpNUFRpaG5VNFc4ZjMwQlF1SnB2N0lHd2JWSW1pMUVBZlZSTDNrb2JELUpzUUFTQUswWUFxczRnc1hCbWJNZ2VOY05FR014UEZLS1ByRjBOVWp4ZDM2MkZhVUVzXzIwaFMxX0FHNi02SWtQbWV5OUVRUzR1a2g5TkJzOTc1OThPX2wwaC00YXI2dWVTSEhpcnVaelZMdjhxMk9ZNVFzMERB?oc=5",
       "d": "2023-11-16",
-      "sc": -0.67,
+      "sc": -0.95,
+      "c": "Regulatory Action"
+     },
+     {
+      "t": "RBI Directs Bajaj Finance to Halt Loans for 'eCOM' and 'Insta EMI' Products",
+      "s": "Adda247",
+      "u": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPOEZGeXY0YThobjhvMmUzMjR3eFJ4LUVqTkViQ3dXY2s4SkNUUEtMRTBxNDY5X2JHWVg1eEFVMVJqaEJ6RG5Xc0dpbFdEYTgyTFUzNm5tMTZPT3ZHTmlMR2pfUWMzU3diRmZBYTY0TmxLRzFtMWNRcklhUzNTN1g1SHJicjhkQml2elZQN0hvVGpsVjBweDFyR055X3dET09TUGpJZ0tYVW9fNlE?oc=5",
+      "d": "2023-11-16",
+      "sc": -0.92,
+      "c": "Regulatory Action"
+     },
+     {
+      "t": "RBI bar on two Bajaj Finance products may affect retailers",
+      "s": "Livemint",
+      "u": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPa2ZRMmF0ZDVkUWU3RS02Q3c3dkp2SElKN1N3RG9NZDRnU1V1NGF2dkI1YUppaGRNX1IwUGFJZkNGd3FsYmtkQjlMOE43eWtCWWxrMzdVNl9LWkNNMC1IdVBSa2JRUGdiUmt2QVVySjdMcHBVQVdUUnFCdXpYWkQ5ZWhOcVBtdGpKcFlBTl9hTUp5LTRZWlktMUpuM2FVTjhERnJUUlBCdWtoX09wSkFDd3ROMmxyUktndkHSAb8BQVVfeXFMUEctLW9Cd29meFJUVW44MDVvQzVZdTBfYjBDTGtBa0ZLWVlBdHlLdi0zSVY5ZzZSc29hbG5aenFyVmFwcWc5b2VLV2dLbzdqODl6VGhrQ216NXJFSk1aWUF2SlBBS3dmS0I0NE9EMlNNZGtERVRaU2ZVN1hNXzJrRXBwalBOd1RMVmZCeThpWk9PUVl0QjdCZ2JSYVQyV202TW41YmVhNk5YRmxjVDdPazBIaDJ4V0V5UnJiZlFFRjg?oc=5",
+      "d": "2023-11-17",
+      "sc": -0.89,
       "c": "Regulatory Action"
      }
     ],
-    "excess5": -0.0341,
-    "z5": -1.25,
+    "excess5": -0.0658,
+    "z5": -2.46,
     "close": 722.1,
-    "index": 28.3
+    "index": 66.3
    },
    "control": {
     "asOf": "2023-09-20",
@@ -319,47 +319,47 @@
     "criteria": [
      0.0,
      0.0,
-     0.0,
+     28.8,
      0.0,
      0.0
     ],
-    "stockOnly": 0.0,
+    "stockOnly": 11.1,
     "newsOnly": 0.0,
     "sentimentOnly": 0.0,
     "mentionVolume": 3,
     "negative": 0,
     "top": [
      {
-      "t": "LIC Housing Finance, Bajaj Finance, Shriram Finance top RBI's list of upper-layer NBFCs",
-      "s": "Fortune India",
-      "u": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOWkVCNEpYZnEzWnlaM0s1RnI3QzdISVl1ZGlnSnNSNEdYQVJlV2N1RWRsd2NXZHZ5QWg0SVlFVXNzNVFvc2dDN1llUE9ySTFBcFFQSXBVZllJakYxTWp1Qkl1RUVEUTNYSE1SWjB2S1MyTUxXc0E4eUpzeTRWN3gzbFB5ZVlHNk1zZUR6eDVULUR0RWEzRHcwdXZZTE1kT2h6dWdkNTc4alpxZ0E0aUVtdkhWRjJvSEhUU2dINEJVc01zUdIBzwFBVV95cUxNQkVkNmdnQTBKMDJsOGY4Y0pDSi1NS2JZNXVGMTRvUHoyRGNxWGdoa2FObWRodTZwLVpjcGRnVXlOYk5tMWlRd1ZnTHdyMEZLUzhPcVVpSFd6Zm9LU3IwbWoxNXdURmFod194TzdHa2k0dEhPcDN0NkRmZ2JyNzlSeUV5RWgyRXFOSG5KYzJsbjZYM0xsbGE0eWktVUxYb2d4WTFBZUozVl9IcF9uUm5rYjJYcEo4QWlwencyd3ZwMVlwb0dVTjBHTXZoQUF6MGM?oc=5",
-      "d": "2023-09-15",
-      "sc": 0.0,
-      "c": "Regulatory Action"
+      "t": "Stocks that share market analysts recommended on September 14, 2023: Apollo Pipes, Bharat Forge, Bajaj Finance and Star Health",
+      "s": "Business News",
+      "u": "https://news.google.com/rss/articles/CBMilwJBVV95cUxPNDZJblhJb242WS1Xa0xJbFY5c05xZ2pJazFJXy0zYkQ2MzU1NkhDNV93NnhNZmlHUzMwNElCczNFUXBCTnBnVFBKd1h1WHhiU2o4b0lQb0JNelgtMERWdWpYR0FESGpMc2N2WHhCYkJpbFdDZ2JWMkRWSTh4RkFOR0N4bXU4VVFFWmItejlLbWx2S2NJNkVRMTVuVHJrdE1ZM3c3UG04R3huSmNyOU9xMHRyS0l5QWxhOHJtUHhPOGkxdkhZamExaDdESGJkX0J1UW8zaDZIcE1mcWdfbG5OdlFwLWVvaEVsbWhvek51RTdLRUMyUEl1bkhoaXNIRWJkUEhxa0dEbkk4RDVTYnpTbGhYZTY5eTTSAZcCQVVfeXFMTzQ2SW5YSW9uNlktV2tMSWxWOXNOcWdqSWsxSV8tM2JENjM1NTZIQzVfdzZ4TWZpR1MzMDRJQnMzRVFwQk5wZ1RQSndYdVh4YlNqOG9JUG9CTXpYLTBEVnVqWEdBREhqTHNjdlh4QmJCaWxXQ2diVjJEVkk4eEZBTkdDeG11OFVRRVpiLXo5S21sdktjSTZFUTE1blRya3RNWTN3N1BtOEd4bkpjcjlPcTB0cktJeUFsYThybVB4TzhpMXZIWWphMWg3REhiZF9CdVFvM2g2SHBNZnFnX2xuTnZRcC1lb2hFbG1ob3pOdUU3S0VDMlBJdW5IaGlzSEViZFBIcWtHRG5JOEQ1U2J6U2xoWGU2OXk0?oc=5",
+      "d": "2023-09-14",
+      "sc": 0.01,
+      "c": "General Coverage"
      },
      {
       "t": "Clash of Titans: How Bajaj Finance, Jio Financial Services stack up against each other",
       "s": "Economic Times",
       "u": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxPOWJlUTU0OWpoUUxxR1lqQlpvNk84YjgxLUxEdE1oQ3ZOSkpwZUdhWnZseHpKUGNMaWlCb0s1NGhtcnlCOExnMUhFT2VfdnV4aE50bkZMVDZxOTB5d2tCRjlVOVBjUzZhb2VJZ2wwYWpJV1k0UlJXeFRnRDFsNG9vNDg4bUllaV9Sc18wNktUMENFXzAzRHR2aUdfUGxUMWV0b181bEtfd3g2NE45d3pDMU9KRjd4VnJyUUhqRDktSnFTdEdDSzk3SjI3Q081bnFLdlRjU2hmYS3SAd4BQVVfeXFMTk56ZWdtT25fTGNXVTZKUGppRDJ6bmZrd2FqQlFTQlZSY2o1U3hUaHB0dUhENnJfZkhTQmFmZkl1cmpaajNJa19LVm1YQ3JhRUI5aGtBNDAzZzlaUEJaZVowTjRVOHMtY2kzLVdLUmFSMDFNaTFkMVRaelVUYmRfcU9vbEFxa05YVnA0QWhpalNuQjQ3QWpfTHlUa01BeTI0X3Q2eC1BS1FLekRqRW45QU16Q09pYWNxanBZU0JqNGx1a1NKb2l6TkFpa2NqVkY5RkIzNlFpbnZkOGFYekdn?oc=5",
       "d": "2023-09-14",
-      "sc": 0.0,
+      "sc": 0.04,
       "c": "General Coverage"
      },
      {
-      "t": "Stocks that share market analysts recommended on September 14, 2023: Apollo Pipes, Bharat Forge, Bajaj Finance and Star Health",
-      "s": "Business News",
-      "u": "https://news.google.com/rss/articles/CBMilwJBVV95cUxPNDZJblhJb242WS1Xa0xJbFY5c05xZ2pJazFJXy0zYkQ2MzU1NkhDNV93NnhNZmlHUzMwNElCczNFUXBCTnBnVFBKd1h1WHhiU2o4b0lQb0JNelgtMERWdWpYR0FESGpMc2N2WHhCYkJpbFdDZ2JWMkRWSTh4RkFOR0N4bXU4VVFFWmItejlLbWx2S2NJNkVRMTVuVHJrdE1ZM3c3UG04R3huSmNyOU9xMHRyS0l5QWxhOHJtUHhPOGkxdkhZamExaDdESGJkX0J1UW8zaDZIcE1mcWdfbG5OdlFwLWVvaEVsbWhvek51RTdLRUMyUEl1bkhoaXNIRWJkUEhxa0dEbkk4RDVTYnpTbGhYZTY5eTTSAZcCQVVfeXFMTzQ2SW5YSW9uNlktV2tMSWxWOXNOcWdqSWsxSV8tM2JENjM1NTZIQzVfdzZ4TWZpR1MzMDRJQnMzRVFwQk5wZ1RQSndYdVh4YlNqOG9JUG9CTXpYLTBEVnVqWEdBREhqTHNjdlh4QmJCaWxXQ2diVjJEVkk4eEZBTkdDeG11OFVRRVpiLXo5S21sdktjSTZFUTE1blRya3RNWTN3N1BtOEd4bkpjcjlPcTB0cktJeUFsYThybVB4TzhpMXZIWWphMWg3REhiZF9CdVFvM2g2SHBNZnFnX2xuTnZRcC1lb2hFbG1ob3pOdUU3S0VDMlBJdW5IaGlzSEViZFBIcWtHRG5JOEQ1U2J6U2xoWGU2OXk0?oc=5",
-      "d": "2023-09-14",
-      "sc": 0.0,
-      "c": "General Coverage"
+      "t": "LIC Housing Finance, Bajaj Finance, Shriram Finance top RBI's list of upper-layer NBFCs",
+      "s": "Fortune India",
+      "u": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOWkVCNEpYZnEzWnlaM0s1RnI3QzdISVl1ZGlnSnNSNEdYQVJlV2N1RWRsd2NXZHZ5QWg0SVlFVXNzNVFvc2dDN1llUE9ySTFBcFFQSXBVZllJakYxTWp1Qkl1RUVEUTNYSE1SWjB2S1MyTUxXc0E4eUpzeTRWN3gzbFB5ZVlHNk1zZUR6eDVULUR0RWEzRHcwdXZZTE1kT2h6dWdkNTc4alpxZ0E0aUVtdkhWRjJvSEhUU2dINEJVc01zUdIBzwFBVV95cUxNQkVkNmdnQTBKMDJsOGY4Y0pDSi1NS2JZNXVGMTRvUHoyRGNxWGdoa2FObWRodTZwLVpjcGRnVXlOYk5tMWlRd1ZnTHdyMEZLUzhPcVVpSFd6Zm9LU3IwbWoxNXdURmFod194TzdHa2k0dEhPcDN0NkRmZ2JyNzlSeUV5RWgyRXFOSG5KYzJsbjZYM0xsbGE0eWktVUxYb2d4WTFBZUozVl9IcF9uUm5rYjJYcEo4QWlwencyd3ZwMVlwb0dVTjBHTXZoQUF6MGM?oc=5",
+      "d": "2023-09-15",
+      "sc": 0.05,
+      "c": "Regulatory Action"
      }
     ],
-    "excess5": 0.0283,
-    "z5": 0.98,
+    "excess5": 0.019,
+    "z5": 0.72,
     "close": 753.9,
-    "index": 0.0
+    "index": 11.1
    },
-   "detected": false,
+   "detected": true,
    "separated": true
   },
   {
@@ -380,45 +380,45 @@
     "criteria": [
      100.0,
      100.0,
-     73.4,
-     51.9,
-     82.4
+     83.9,
+     46.0,
+     81.0
     ],
-    "stockOnly": 63.3,
-    "newsOnly": 23.8,
-    "sentimentOnly": 37.6,
-    "mentionVolume": 32,
-    "negative": 19,
+    "stockOnly": 64.2,
+    "newsOnly": 22.3,
+    "sentimentOnly": 33.7,
+    "mentionVolume": 30,
+    "negative": 18,
     "top": [
      {
-      "t": "IIFL Finance falls to 20% lower circuit for second day running, at 52-week low",
+      "t": "IIFL Finance shares fall 20%, most since demerger post RBI restrictions on gold loans",
       "s": "CNBC-TV18",
-      "u": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQMEkwaG45OGJwX0FnSU1mYzdjelpjWEZtRW40TzhPVWxWRVRpLTZyNEFYTngtc1Rlc05rWWVSSjJhd2FqZDN5ajVpQTlTQWNDaHA3WXFPeV9fZUVtLTB0bkc5dWJvRTVzRXVTM1BTSjYtLWdQQmFXbzAxaXk0dnkwdmZqVTlIUDNHOUpQTmhwOC13MXJkYTBfM1k4cU1IMmdxbk5DUklJUUI5X1BFak9Fbkd0cFg1OVh1WWNoN2FqbzFOd3JzM2N2Qm1YRktReGhPMmlxUNIB2gFBVV95cUxQYzZyS2ZpcmQ2OTZTQl94bHhUT0NORXd1OWswU0lTSEJ1a3BtMHlhRHhOalJoc3k3Vmc2YmY1MVVCM2h6ZERHaDB2UzdxTjRPUFlROGVrRWtuQURDaEVZTGQ4M1JRS2dKMHpfendTV2V3QndKamNxeHVlVGhlXzJ6VHVLd2p1ejVYZEU3V1B0TGxXYkFScm13eUNiU3V0NEF4MGRzN01IbkY2d0NsNFYxRWUzeE9iZXJFTTVoQUVVdUo0TEUxQjRENUo2bUJmM2JCU0RfVjdMR2IyQQ?oc=5",
-      "d": "2024-03-06",
-      "sc": -0.77,
-      "c": "Market & Earnings"
+      "u": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNZDIwTTVRU3Y3RjFHQl9tS1BtUEx1dmY4REV6WlhHZUxLdWdTS1c0ZnVrWnYyVERqRkRaSnZOOHhvOEY3VnVzNXNGSnRZTVQ3aVJTN09LVXF4bGV3emhFODlfTnY1MW42RUxDMWlmX3lXRi1FWFRwMEFEMXNNdk95b21qbXlHYzV2UmEyNWt1WE9yQTlwZ2d6Wm8tbVliTnBRdlFoWXlVUk5vTWpBR01XVlFXeXhrWVM3Z3BwU2owWUNFQdIBxwFBVV95cUxNS1I3RmtXUFJ1cWRyTlI3dXJ5OHN4Y2pmeGdpYTRLOWlNb3Jrd09OQ2RTdnplVDM5MmE4WkQtSHNxdkZiX2s2bHdOR194cldFRjFkZExfMVpUMFlnekdhemdJSXQ1YWc4MXBOc0dIUDEwZFY1bDc5YU5oU2VkX1pZY05FazF0SG5JNnc5cnF1RlVFY2U4V3F1UDB1Mk4tMG5qT1B3QUxMaUtjdllpbm9rbk1nQzNoOGYyaGJ3WWQ2WkpYanF1UHA4?oc=5",
+      "d": "2024-03-05",
+      "sc": -0.97,
+      "c": "Regulatory Action"
      },
      {
       "t": "IIFL Finance share price down 20%; Jefferies downgrades the stock ratings to Hold as gold loan ban may hurt profit",
       "s": "Livemint",
       "u": "https://news.google.com/rss/articles/CBMijwJBVV95cUxQNWpmem1fQzVZQmQ0dTFhMkIwNUhudWFpMG1lVnBJUXlLY0lPa2dfSGxPQXlEdDhRdHB3V0lvclk1T2ZjZUpaRUxmQUZoS3M1UDU4TVJFeHZKTlVIVXhFMXRxT1YwbTlpWnBadXlIeWd1dF81UTN3WnE3d19UdEE4cS01ZDI2b0duSUQ5YTI5YVN4Q0ZUcDA3azhMWUxYNTdOWXhsRkpXbHhHN3BfWGcxbVh4MEMtQmg5ZzRNTWJ1WWZJNTZmVFEtV0lVWkZLa3N5eXBqTU5aMXBMdmVuZDRBNzJCNDlsN0JCaDd6X0hUMEZSdS1rQTg5SU1wRXlsaGhRUmt2TUxBOGVBdGEwVFN30gGUAkFVX3lxTE9JMW1SbzM5N3NhLTBsWHJlU0FhZU5tckxWMDBxX21Sc2QtelQxQjN2czIwZmI5NVNxaUlJZWVVclppQThkOTZOczZqUjlDTjVEU3NLaDRqUm9QaUEtNGhLckNkSnl3bWh5Z1BmTTNINHZnb05EYlpXVFBWc2JCcWxiSF9fVXpETTZzbU9EVWpwS2FUS2xLRUdnaXBDekxUdkZTRmZ4Zlh1X1ZXNXJMMmM4QWtaTjdSUGF4MExBaEdTNE90UTRSRkhnMUFoQk5Pdnh6eVlvdDZoOGd4dWI2SkVIWlVwbDJBMkp2c2xSdzlWRVdvQnBsVFRZZE9YUHJodkJpaG13TFJwamI3d2VaaWM5SUZBRg?oc=5",
       "d": "2024-03-06",
-      "sc": -0.77,
+      "sc": -0.96,
       "c": "Regulatory Action"
      },
      {
-      "t": "IIFL Finance dives 20% for 2nd day after RBI's gold loan ban; Jefferies downgrades to 'hold'",
-      "s": "Moneycontrol",
-      "u": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPemZCUmtLQVRzMmVWbU5WN2dDckhOSDcwYUJqdmFaOVBhd0JOVEJSTDdIdGpVaUszaS03MkFSZ2FoeDhFQkg3NjJLR092d2FzRkhtYi11TS1PRzJIVjcwZXFmZUlVR244WDFjX3R1Y0dlXzZXQ0Vienl4RWp0cDlMZEV5N2F0NWpJUnFocklTaF9qSEYtLWdRSUhsdGRBZlgwSG1GMHhJX0JJYy1kWlNUTnZNREt4US1TUC0yYW01aE5CcnlReHBaWU9EUm8tLXNKZ2RfbS03ZTV2TnRZTWJFbTZRanQ2bG5fbWI40gHwAUFVX3lxTE5ZejBwYTc0dGVMZ3E1WUVQLTI3UGw4Q21hLTUzWDFOLUo3QVQwQ0NlbHZfSnlVUFY3WVRDbFBFQ3BBWi10cmRDYmE0N1dVSHRHWWYtYjJCYTJJWU1NZWNXdVgwQUZ3THdhanRjdnlqTTlPVUFTWXlRS3c4R2RaaC1ZUE1NUjZYUmhwMUllNGE2czlSLTRXTkkxU1hDMVdjR0pPclBNN2w0WEVfMGx4enRxSUxBVEFOc3p0Zjl3SUlyV2NhTmZXZjBzMUJsdHRVNHU2MFFTSXZJSVZ5QmlzbVh1NHBPU3lmSGo2aTFETWdPcg?oc=5",
+      "t": "IIFL Finance hits 20% lower circuit; Jefferies downgrades the stock to hold",
+      "s": "Zee Business",
+      "u": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxPUTdRcFV5NTBoUFUyZXh0QU1DOFE0UUdCb0F1bW1LSDdHbnEyMGRCUDV1S3NQU1puV0JVUTN6WnhiLXZ1YU8zRnh1cFZTeHFXSDFZTWpkREtHQ2pDc3BOT0pmT2tsRHdMTzJOeFNVVzB1RnBmQi1HZElYN0hWelhKZlowUjNBbGNnVDU2NnVvaEp6MVlrQnpDX3JHdVFkMlpCeHcwTzFJckFEVWREWHBsZ3NGSHMtT1pFdVk5T18yRG9rV3Nhb2dVd0ZONlVxYU02c0dNWWdmdlZzVEZUVWRiVUZJM0I?oc=5",
       "d": "2024-03-06",
-      "sc": -0.73,
-      "c": "Regulatory Action"
+      "sc": -0.95,
+      "c": "Financial Distress"
      }
     ],
-    "excess5": -0.3047,
-    "z5": -7.44,
+    "excess5": -0.2792,
+    "z5": -6.78,
     "close": 420.25,
-    "index": 79.1
+    "index": 78.9
    },
    "control": {
     "asOf": "2024-01-08",
@@ -426,20 +426,20 @@
     "criteria": [
      0.0,
      12.5,
-     0.0,
+     4.9,
      0.0,
      0.0
     ],
-    "stockOnly": 2.7,
+    "stockOnly": 3.4,
     "newsOnly": 0.0,
     "sentimentOnly": 0.0,
     "mentionVolume": 0,
     "negative": 0,
     "top": [],
-    "excess5": 0.028,
-    "z5": 0.59,
+    "excess5": 0.0175,
+    "z5": 0.37,
     "close": 621.25,
-    "index": 2.7
+    "index": 3.4
    },
    "detected": true,
    "separated": true
@@ -457,45 +457,45 @@
     "criteria": [
      100.0,
      94.3,
-     75.1,
-     28.3,
-     27.3
+     84.6,
+     37.3,
+     41.0
     ],
-    "stockOnly": 63.3,
-    "newsOnly": 12.3,
-    "sentimentOnly": 27.2,
+    "stockOnly": 64.1,
+    "newsOnly": 16.2,
+    "sentimentOnly": 47.3,
     "mentionVolume": 7,
-    "negative": 3,
+    "negative": 5,
     "top": [
-     {
-      "t": "Adani Group: Fortune of Asia's richest man hit by fraud claims",
-      "s": "BBC",
-      "u": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE9nNHV5Y2RrY2p5ZzdXNlZUaDQ1amFXU3NxSTlUUjVpZlhmY1RyV2JKNXRlaDNJcG8xall6TGdjT2lNbC1NMkxnajVERktLT0tSZUVEOA?oc=5",
-      "d": "2023-01-27",
-      "sc": -0.67,
-      "c": "Fraud & Governance"
-     },
      {
       "t": "India's Adani Group loses $48bn in stocks over fraud claims",
       "s": "Al Jazeera",
       "u": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNS0I1enNPMW55LW81TDlwSk1ETzJUMEtub0xuUDdYUUo4RHdsMk1pMWc2VXVRcmFCamk1eWZkN0YzYnBCQnhzVXRwMDFDVXVya1JYaTlHTnBRQ2cySVJGZEZ2ak5JcVdCUUZOWDBkUVBvZUx2TDVReThwSDRZMlZJWVIwTXRLbmpwbHpVWHlSY2dncEZUUlc4aGlkZGRWNXN40gGmAUFVX3lxTE9lazkzTlp6a0FLZklHRjFvdy1seHlieElfN20tZkZsNHpxTzgtSHF0ME9CZTBFQjhoRnZpajliOWRwc0xPUFM1VWlmaWhyWVlaN250LXJJNTc1QWxtRHotX3JUV25tZ1ZVYnhlTXpCRlFNMk5MQWl4SE9kVVh4b3ZxUFdTbWtIbVBUM3FOZXZvODBiV1oxaElzRk1yV1hKWnpTaEE0QVE?oc=5",
       "d": "2023-01-27",
-      "sc": -0.67,
+      "sc": -0.94,
       "c": "Fraud & Governance"
      },
      {
-      "t": "Adani Group: Asia's richest man hits back at 'con' allegations",
-      "s": "BBC",
-      "u": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE9LbHMweFpuZnpWRTI2ZE5DYWlDQnBXQWVFZFFlRXlKRlQ5RERkcm80R3VTMlNCQnNCUkpxZFhNUVJ3QnpvNXBxejZOZXpRZVBESC1hbA?oc=5",
-      "d": "2023-01-26",
-      "sc": -0.57,
+      "t": "Adani group loses $48 billion since January 25; FPO takes a hit in light of Hindenburg report",
+      "s": "The Hindu",
+      "u": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxPZnZQZVVNVEJiT2hLbTBKNTZPOVZrYkdEcjdPeDlaSGhuSkI1RkRfQ1c2WmNsR3hOZG1rV0I5TWkwZmRmdEhzeExvZDlEaEJGcFNINGFrRktNdy1pTk5Qamp3THdHMDdtQThDd281Y2hSYkllb1lEV1NLZkVvZ0pYa09mSURCY0VwUjV2WTAwNlVyN0VlTGVBX0ZmRmRTRURSVDVJdlVHSFlLZ1RUc2o3bE5aNTBFVTBBQW5OU0FTUktYMS1wSFJqRE95WVhQMHpfNmNha1p4dGhob3BmWEQ1VkNUOW1EVEtOV0x1U3NRd9IB9gFBVV95cUxOU1FuOVJYTkRfNkxEZDNWT1I1eEl1Qzl0TERoalpteEtvdGJnN0xJNXFGRTVXUkRncHRkZUZjLXNfTDd1YkMxRF9IX1VRSUx0OUhNNHo0eV9LaDdUSzI0RmdkMGN6OWVqVFZvaVM4WEZzdmFOQ1FSdGxmNmFLU0JiLVBuU2k5b0lKOHAyNG1OMkhuM2ZJV0wzSVhleW1LLW90YnhPU2k1TTV3V0pKWTVaYXV5VEkyZDluVU1ELXg2ZTRlb0l0UFM2R3EzaC0zb2FTeVNhdUlUXzliNVpYbmQwcXBlY0swOXZDSWNPaXpTamRXbWFHbXc?oc=5",
+      "d": "2023-01-27",
+      "sc": -0.94,
+      "c": "Fraud & Governance"
+     },
+     {
+      "t": "Adani Ports, Ambuja Most Vulnerable If Adani Group Rout Extends",
+      "s": "Bloomberg",
+      "u": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPRDI0SURwZzBuSDJiSFI0djVsTWR4YkZBVGU3N2hWSUhORmtJLTlOY3l2c1dYR2U4YnRFREM5cTFaUFl3Z08ya0ZhYUUtRXhmQ24tajVDclR6M3M1eGt0dGpkOUhiYV9odFFySlJRNXVJcDBUM1RRTGZvb3VqUlZZWkhzMXFYMGc1ZERPOUZRMW1OZy16RHdib2FkTXFyZVV6RDZYajNwdXcyLWdNRU1UQjNFRQ?oc=5",
+      "d": "2023-01-25",
+      "sc": -0.66,
       "c": "General Coverage"
      }
     ],
-    "excess5": -0.1767,
-    "z5": -4.3,
+    "excess5": -0.1734,
+    "z5": -4.25,
     "close": 2761.45,
-    "index": 70.4
+    "index": 74.4
    },
    "control": {
     "asOf": "2022-11-30",
@@ -504,44 +504,44 @@
      0.0,
      0.0,
      0.0,
-     3.4,
-     16.5
+     15.1,
+     37.8
     ],
     "stockOnly": 0.0,
-    "newsOnly": 3.8,
+    "newsOnly": 9.8,
     "sentimentOnly": 0.0,
     "mentionVolume": 21,
-    "negative": 1,
+    "negative": 3,
     "top": [
+     {
+      "t": "A $900 million port project of the Adani group has sparked violence in India",
+      "s": "Quartz India",
+      "u": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5wU1RtT2N6ZDJ5cHBEektjaXRrU0ZocEV3NEZMMk5RM2dsT3NUT3VxU2Rsc2FLR2lrRzJWWGtRSUN3TDktb2ZsSXVXcXU2SWlqTTlwb2FaaURHcFdRNllXWjdLVmxodU0tU2tBcFNrRWRSanlDaFdDSDRUY2tabmM?oc=5",
+      "d": "2022-11-28",
+      "sc": -0.83,
+      "c": "General Coverage"
+     },
      {
       "t": "Ravish Kumar resigns from NDTV India after Adani group acquired over 29% stake in NDTV Ltd",
       "s": "OpIndia",
       "u": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPRXhBenN0Y2F5bVBiTlE1NVh1TF9NREdzdHROWGpnY2hqR2hOb3dVYkIwdWZOb1hfS0tqUVdBMkFCekJmdi0wUkh3dC16S0hxeGh6aFpiNTMtSXJlU0hIUXVWSkVFSVpvT3NfUEpGYm16cTk4SnJiV2NMeFVTM012blMtWjFORVpiQV85NWNuWkFFUXA5UE9NLXBFcw?oc=5",
       "d": "2022-11-30",
-      "sc": -0.4,
+      "sc": -0.78,
       "c": "Leadership Change"
-     },
-     {
-      "t": "Is Adani Group emerging as the next Tatas?",
-      "s": "Business Standard",
-      "u": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQemFWenZsaHlHRExEVFBuQ1hqNzlieXFTSHdDZjRpd3hKVS1LTUVTQ3RHb1NtN3BseGVKNEo1SU5FRUlLREdlck5yMGNSMnAwYW5tX2JKZ3E4WXNzN3RjYkdodzJkT211R2lCdklHby1sZ011OG1uSDQ3OWRLTkRXdGdxNWJIZVgyT180bS11VVVUamJjTFRibHlIUmlSQkpveVEtSVJYbFhpeUxuZngyN2Y3SdIBuAFBVV95cUxPRHY3MDZjV0ZhWkt4WEd6US1zclBWSGJTRlBHZFZTbUpfVGE5a3VZVGNjcFhBZUx5UlI0TGVVU1l6cXhjQmlmYU56MHBVVXBVdEUwNWJwWERwN19ZX2FwRVFrTGJzTUN4cnlJTHJtUm1ZbVJLY2QxZWotUzFSTnNId3NDUlB4MDdIUFZWTG8wVkhLX0J2bnQwTU00dGhSRGJLUVpJTllmOEM4dmFSd1l2a2dZbjFRSUhj?oc=5",
-      "d": "2022-11-30",
-      "sc": 0.0,
-      "c": "General Coverage"
      },
      {
       "t": "Prannoy Roy, wife Radhika Roy resign as Adani Group nears takeover of NDTV",
       "s": "Deccan Chronicle",
       "u": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOSEtzN2Y5dlBRdURPUHRJMV9yQlZjS0dlNWlERHhQcnlSVTY1N0ZWZG9pOWd1LTVySG9ZcDlWVDFBOHlidDcwaWJNZldNNEM0Y054RldFSTI1QTJrNHZoWVh3LWJKQVFGd1dER3NTRUZtb0FEMjJmMUhjekxhMlRCSzk0UXBvZ0VIQUl3VG9BczlkOGR3VEZHY25iTVFSclhDTE0wQ1hHckdJNHZmcmQ2WHl1UkJNR0x6UXhmSXRPeEZpUTVXa0w4UHV4bUdYRjc30gHWAUFVX3lxTE1kNTRyMDk0VkFWdlpNMEJnRnBzWmRtWHFpT0NfR3RxTnBFZ3BhREw5S1BmSEYyMDNfMG5SRzhVLXlweE5mbEVHSW9FVmIwWW9LS2NVMzlaSzJZTjBaVnhEZ3d1QVpqaGhVUEs3V2NleGhpdnJmcXhiUEVMSDNycllYZGh3aVR4LWtDQUxOVTVEclVxaTcxdlBqOVIxdGFERzZMcG42ZjEyY0thZC12SnRhZGw3NFJERnZheFYyUUtOR19FZTBscWNFS3hfblNXeEFaX19FVkE?oc=5",
       "d": "2022-11-30",
-      "sc": 0.0,
+      "sc": -0.72,
       "c": "Leadership Change"
      }
     ],
-    "excess5": -0.027,
-    "z5": -0.62,
+    "excess5": -0.0253,
+    "z5": -0.59,
     "close": 3917.9,
-    "index": 3.8
+    "index": 9.8
    },
    "detected": true,
    "separated": true
@@ -549,7 +549,7 @@
   {
    "company": "Adani Green Energy",
    "symbol": "ADANIGREEN",
-   "sector": "Energy",
+   "sector": "Power",
    "date": "2024-11-21",
    "aliases": [
     "Adani Green",
@@ -566,44 +566,44 @@
      100.0,
      100.0,
      100.0,
-     45.9,
-     72.4
+     19.2,
+     15.0
     ],
     "stockOnly": 65.2,
-    "newsOnly": 21.5,
-    "sentimentOnly": 25.0,
-    "mentionVolume": 43,
-    "negative": 18,
+    "newsOnly": 8.3,
+    "sentimentOnly": 20.0,
+    "mentionVolume": 6,
+    "negative": 2,
     "top": [
      {
-      "t": "Adani Group stocks plunge up to 20% after Gautam Adani's indictment in US on bribery and fraud charges; R",
+      "t": "Adani Green Energy withdraws $600 million bond offer following US indictment against businessman",
       "s": "Times of India",
-      "u": "https://news.google.com/rss/articles/CBMilAJBVV95cUxQZFMyX1doQTZ2Tk5lbVgyS3BEeDZEMUZWb2V5YWF5TUI4NWFUdGR1dVF5ZmZuMnU5UmJTeEFiLUVQQXhNTmJ1dnM0MmJrUjdNTEt0ZFpQck5zeFNkQUFFZ0RrSmo1RnVrSFNQUUEtRHpjN24wdzZ1MGZHcm13ZVllbm91bklfbnN5UXVhRkh1SW43TlF3dmlQX2NyYlpuX1ozRmRIenVVYjdWcGJjOTRkWHJzSGpPNEliazlHMGdnQm9kbk1YNzFCbGh5MHBUcERLel80aUc2MXVMSmpYVFJzVm1yYjQyd2RnQ3htWTVfRm9ETk9LdzFDdndMNkF0NUtXMlM3SUJpQVZVUWdIWWE5ck85aFnSAZoCQVVfeXFMUEhsWlZEWGNORmdKU1BDcm11QUtsamt3R0psQ1NkNXJ3WmxjZlJ5dThzdEpfeHJhaFdUWF9mTkxQSkdJOHYzY1duMHZaY1g4MVE3NkRsNEJ5U0hyQmktcXd4Q0pRWWxObW51Uk1wUlludWlFZ2hub1ZVR192T1N0UDg4STZseXBGb0psMm5jQ0RRbmwtTXU4c3k0QmtYcUJ6MzRZQXFhZTcxcHRtOGV3QnNXcUV5b21mM0NOdi1VSzFHdXZJWklscm1SaU1teTdhbS1UNXJjWjRkVnJULTZwR05DSW5BOWxSNmV1NWxuZFlobklBaW1pZllaMEd1a0UtYmxYeGwxLUE5cU16M3k1MjdJT2lwNDhtRG9n?oc=5",
-      "d": "2024-11-21",
-      "sc": -0.77,
-      "c": "Fraud & Governance"
-     },
-     {
-      "t": "Gautam Adani US Indictment: Names of 7 others accused in the US fraud case",
-      "s": "The Hindu",
-      "u": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxPMkEzUktfeVNTb3FmblNNeGpzV09GX3hfbms2MGttYTVzTHN5UmJUUURkN0V1a29BTm00RDk5SVp3TVVHRmFtLWphckN5NXNuX0NiT3hoLThYRGw4T3IxSXI0a2pYSHhnczRSR3g1VFNnZ3ZoRjVURkdMQ0JERlh4YUY3ZEdIbmF1TzVqbHRuZmhvWEhZSjVEOFdrWmdsMUN0OFI2akdCUElkOVppTDhINUw0ZFpiZ2ZhdHd1ZUlRQ1hDZ3ZLRUdSa2hFN2xoa1N5Rk9GY25VQ09talExUHRHZkNn0gHoAUFVX3lxTE5TUEUxUEgtTW1EaVp6eHVsMXNzNEJsbHN0ODFwZDdReE5nd21vS1AyYTVJRVhyRloxbXVmSWdvMmwxSUFJVmczZTI2TzJiLUJjMzc2dWxDdk9XUFhueEhQaHViN0dSd2o0SnRndkxHeHRpOGFhQXdiaXgxci1BcExzVXNJM1ZLcFlwMWxXajNVZ2pPLVRtN3g0UTIyb2poMjdXZUx6LTFldXE2YzhXajFENWRLMDQ1Rlk1eDBhTng5c0Y4LVB6NExHb2RLejlLeHBHcFJ1UVQ2QmxCdXJhcjUxbTlQWVlnSmM?oc=5",
-      "d": "2024-11-21",
-      "sc": -0.77,
-      "c": "Fraud & Governance"
-     },
-     {
-      "t": "Indian billionaire Gautam Adani's business empire at risk amid U.S. indictment for fraud, bribery",
-      "s": "PBS",
-      "u": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNNnAxN1FFb3FOMldtS1NmTjhDbktjRVV3SkVtVGlnbDhSWmV2YVNlWWtyMEJEQUtIeV9CTk1QVmRMV3RPc1NpVW44bEQzMkpSUGEyT1hZUlFjYy05M0FuMHpJcTVSZDNYM0lfWkRGTG95a1RuQ3dQcWdRR0kzOHJYRGFfZFE2bkYwTFcwenI0TDFtYzJNaHRhcjctY3htZm5IRWxTMDJQNHJ3VzNhMEJGTG5FSHctZUhURXIzTDlmREdYckxaV2hPUNIBzgFBVV95cUxOUFBfaW14THVKUEltclRWaV9zSi1uY0swaEV6eU15UHFfaDE1M2NHZUhLNmUxVUhhSzRITEduVlpQUkRhcGRPdXRWOVpmTjMwV0lKcXpyVmpiMGxINGlqNkIxMk9Ea3ZWVy1GU1ctQ01IQU92LS1hc2g5TFZMbDBoQlFHSXRMX2x4bFE0TFFsQkRBSWI3YkRvTlluQXFsN1cwZksxYk4xc1hLWGo3SllfS3d3ckpXZEZGWjNDcTZZY1ZSVWJxQ0FlODN5bTRjUQ?oc=5",
+      "u": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOdTlkenFKc1R6TTQ1RDlqNkZjZWF5dWJkMVVtaXQySF9XNWpZdHhwZ0dERGk3VkNPckRpbEpHbllfZ1dNWE5RUzJTWE1MU1pWZWoxVzlwUE5JbVpqUFdYQl9DbVMwNWh5SDkwb3hGdGVJR1RENjhVWVFVdHNTOTYySXZuVW9BS29Bak9JQVRrLXB0QU1sUkctTnFFanZaM0RJSHJvWGFTbWZpdFhwWlQ2cGFBVXBaS2g4Sk1ITGRSRmlZbm_SAcgBQVVfeXFMUGFOVnBZTkZxOVVFWThuZGtGRVNna0RySmdfOGxZdU9fRVVTbXVLR2k2UHZfZ0o5ZWsza0x5YWdGSlpfc01BY1Y3aThmXzVvVGNDRXBXSUZQbFdNRVltUGNlRllxLVBUUXFZdS11V1ZrLTV0bE82VEEzdmJBUEtRczE2RmJEY1JiNkMxc0l0Y1Z4RGZFQWFkWldQTkI3d1ItWEZJWlhzUF93VmtGLV9PNHBFbGRLX0lDQl9YSmRfQ2VTN3Fubkl4Q2s?oc=5",
       "d": "2024-11-22",
-      "sc": -0.73,
+      "sc": -0.92,
+      "c": "Fraud & Governance"
+     },
+     {
+      "t": "Adani Green, Adani Ports, Adani Transmission: Why Adani group shares are falling",
+      "s": "India Today",
+      "u": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQMTNJZ1Fjd1dfZ1VDeGg1NFhsRTNuZzkwLWtGcDFnTWhtNmJHOE1ERWkyS0Vza1lETUxQdXJidkNtdWJXUjRJMVRMTUpGbFg2b2pocDAzQmRUZVN5TUN5LUxpcG01RVZ6QUNVb0hlRGNkeGlIM0EyYjNwbU0zOHo1SWxwT05IaXlnUWZ5Y08wZWN1TE05WlNsUTdRRGxZUlF4LVJZY01icndNRk1GdU9WNEFTdzAxUzJub1BSNGFQUzgxcXNkN1M3dkRTLXNfRFdTSkHSAdcBQVVfeXFMUFRTZllEU2NHRi1xNURzRXRPWTh2ODFxbFhlMlJiT0piSUFLeXk5dU1HcklqOFY5RWZNRmNPcTJRclQ3bmhXRm9IQ1NCajBMazlRcGpXWlFkaC1GLUd1OVFEU09ya082ajZwSC1haFRWNGl4ZGtWOUQ3VUhHTkNVRjFOUHBZOUJYbTIydXdGdVRuS2dEYkhCNG82ejNlRFlKeVMtbmcxRHZobVp4YWcxRTFReDdsUHBXVnBWQl9nTlMzVFYxQU5IQXFJNDhhdHE1TUtHXzZOZGs?oc=5",
+      "d": "2024-11-21",
+      "sc": -0.35,
+      "c": "General Coverage"
+     },
+     {
+      "t": "Adani Green's US fundraise & Azure's NYSE listing: Two reasons why the US is taking action in an alleged bribery scam in India",
+      "s": "Indian Express",
+      "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPUlJLQ3F4ZUVEUUI5UDFqMGxZMUpiLVJ5VGF1Z2NxMUlzMlJKenUyZVVHcTlUTEI4SU53Q1VlOFNUMmJLLW1WTjVtWGZFeUszaEZIenlsemltNDR3MEd3OWZMSWtPYU5fY01VS3JLNHdZU29FWVh0TUZvYnU3WU01d1ZROWFtSnRUam43eGwwc0VBMWJaRS0xVk9Sem3SAaMBQVVfeXFMTWd6dFVNRTRmb2NCT2xwb3NWUEw4TDdIUDVnb0xVdFIyWFpHWjd5MEc1WXFUeGt6V1NVNlMtQ0ticlY1RWFzeE9EWWRCQlV0NFpMUmRkVU9DQzBsUVRhamwzeDAxeXU4QkxNTkJHNU5tc3dVeDBrenZSRDA2VmY0MnVUZ3NvZzVLUjlhb1ZkbjVtWTNHeHZyWG5HZWtHVnlFNVYydw?oc=5",
+      "d": "2024-11-21",
+      "sc": -0.01,
       "c": "Fraud & Governance"
      }
     ],
-    "excess5": -0.3784,
-    "z5": -11.37,
+    "excess5": -0.3088,
+    "z5": -9.32,
     "close": 968.8,
-    "index": 79.7
+    "index": 69.7
    },
    "control": {
     "asOf": "2024-09-26",
@@ -618,28 +618,11 @@
     "stockOnly": 10.1,
     "newsOnly": 0.0,
     "sentimentOnly": 0.0,
-    "mentionVolume": 2,
+    "mentionVolume": 0,
     "negative": 0,
-    "top": [
-     {
-      "t": "Adani Energy Solutions, Adani Green Join Utilities For Net Zero Alliance",
-      "s": "NDTV",
-      "u": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQYU9tTjZYWVh4dkhrN0NrYlZNVUo0ZEtPWjBnUHphbWRDT0QyTHQwelFUNG9sdFNQRUlKN1N2UjBZYjVmR0hDRWtpZnZldXVFSEVmYVNOaDZ4MWJQT2NSWXFRQkZsVnd2Y1h2VEkweWVjdjJwWEE0WU1uVWpVWWlFWndVODlvczBhQWxQbmtrdm9tbWlhbFlUUWRYc9IBowFBVV95cUxOMlZZWmpQRnpoSXg0eXpsSXpreWRFajlaaEtiQV81WE1pcnVoTHVvZTRMYnNVVGxqS2F5Sm1naXBVUHpfY0taXzlRbDZ2eFdsMWJKMVMxbHhKVlVKbndCclhYLThWZ1RqaU45R2s2cHZ0UTFOaEhhQzNCb3lCYXJFZVVUT2VOM3R4Q3B6allQeXYwM0pBODlScmtfOWNTeS1JUWtn?oc=5",
-      "d": "2024-09-24",
-      "sc": 0.0,
-      "c": "General Coverage"
-     },
-     {
-      "t": "\"Powering India's Aviation Growth\": Gautam Adani Meets Bombardier CEO",
-      "s": "NDTV",
-      "u": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPclkya0l3b3VqRW9hSzNyd2d3ekF2bzAzalI0ZmJ0ZFQ3U2Q5OXcwUWFxbTJjWnVrWElWUVp6YTVNRlFiaW1nNzR0LTJuQnNERnAzQ0p3NGhKOHJuS2hvOHc4b21JQ2g3MjhNY2FXSmx4X2VlYTNqcUVZZFhVTW9KWDdoRVhKb25oN0l4d3BwOGJZTmgzNGlZLU9ObzBZdmI5LVgwZkNwSUpRejQ00gG0AUFVX3lxTE1DUUM2VXNJTElGVzlqZ1NRY21pd3lKV0d0UTAyWnMxREhDRE9qNjRpQ29PeXJXZ05JN21nOWlyVFhlZ084OUI4QXowcFltWnJkaTV5UERWaWlVRmwyM05LdXQ3MGlXcjE5R015b2tERnd5eEF0bDVtV1dFY212R0d4S0ZtWnFsUVFXd3Bjd3VPbVJKWmRqUGRPcG8tdTFNMlFzMDRJVUFobjdCYlZ3NlczcDZjQw?oc=5",
-      "d": "2024-09-25",
-      "sc": 0.4,
-      "c": "General Coverage"
-     }
-    ],
-    "excess5": -0.0098,
-    "z5": -0.24,
+    "top": [],
+    "excess5": -0.0161,
+    "z5": -0.43,
     "close": 2057.85,
     "index": 10.1
    },
@@ -660,44 +643,44 @@
      0.0,
      3.6,
      0.0,
-     10.2,
-     23.9
+     18.4,
+     36.4
     ],
     "stockOnly": 0.8,
-    "newsOnly": 6.5,
+    "newsOnly": 10.4,
     "sentimentOnly": 0.0,
-    "mentionVolume": 29,
-    "negative": 3,
+    "mentionVolume": 27,
+    "negative": 5,
     "top": [
      {
-      "t": "Zomato Pure Veg: CEO explains need for fleet after backlash, no change in uniform colour",
-      "s": "The Federal",
-      "u": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOMTlLR0d3MWp4ZGJCWGxaNDM0WE9EenhrQ0lRYkdVVE9NZm9kR3REdUVBbXpJd2VJNWxiRTJwZy12b1JQT3plQkhGNEdTUEp5YkhRdmJNUnJVSmlicks2YlJNWWtIMzNjQ1M5R0JhVEMtbjA0NHlQNkhFQzYxVDlmVmg4NE1HN0hVNS03ekJUaktxYkVFbzBTcDNpcEllUWVEQU0tUktKZ2dBdjZTdXdBcVBLT1JhdlYtU3p3a0dQN3ZLLW9haW4wWkFqcmp6N1E?oc=5",
+      "t": "Zomato brings 'pure veg' fleet, draws criticism from public",
+      "s": "The Hindu",
+      "u": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOOVh4ZFNKLTJtS3pKRWVJenAwdmRyZ09URG9nZWc0V0tVSmxlU1BXbGpoQmdKTXdTNVpqSHB3WXdUVUVudmJwcmFBd2tFcWJfUG1MX09GTl9hUk15N2VRVGhPN1BOZkJROHFJcWoxNFJfQkhjc2VYUk1fcjN0ZUU5bDNjbzFKZXM4MzFiQWVsdGNiNDVPYmg1SHRMTVNkcDY4NDA4ZkdJRlFYR2F4Z1FwUFNsS0dqNktEU2g3LVNoV20tVUtISWFsSkhqVlVLMEZjMG55YlpDcUhrN2xh0gHjAUFVX3lxTFA3M2x5WDlhN0VjQXdsNkg0WW9tUTV2TWdvMFN0NndGVHdKVm5XdGozWko4ZHIwZFRnaWxTY2tfZU00c2xlNGZVTzZwMHYyOGIyZVNiX0tsYk1XVWh0THJyaE8yNFhBVVVocE5TOHlRSk0zcDlJX0VHeHB0bW9RdWkwOGQxM2hoVEozd1IwQzlOSGV6YjZKMXdyLUw1UWttdU1tZW5lQmZST1BycFp5eTFtZ1ZJVjc0OEZqcDZVMXlUN2VjeEYweEtYdEY3bjZ4WGpuakxfV2tOZlZZSllmbk9IVjFz?oc=5",
       "d": "2024-03-19",
-      "sc": -0.57,
-      "c": "Labour & Protest"
+      "sc": -0.92,
+      "c": "General Coverage"
      },
      {
       "t": "Zomato Drops \"Pure\" from its vegetarian-only feature",
       "s": "The Hindu",
       "u": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPVkxCeVpEY2ZCNnRyc3l6WTFQYnRremVlRUY3SGdqNUlsU1lOVGFJUExWS25PWlhwbGpjSzd3d3B4THVvcFVZQWZzS3U1VlVBNHZkT1R1OTlRajl4dzZlb3ltbE1WeEt1cE1vek5JU2l1eFlpdG45T1NVcENlZkRlYWhfNUtEQjh4bDlCMldIR1dIYUtCUWs2dUMwS2hpYjlFTEJxTUN1TFBmSnFURlHSAbQBQVVfeXFMTm05RXRkT2FzX1ptYkdnMUE2dU5NdDBvSFMyUHZnRUV4bVpteTgtZ0JMcjltWkotNU1rZG9MSFdINno2RVZqWkY3bHNLc3liYWxNakh4LWw2Mm1fODlDanpZRUd6MzEyR1UtVjlrbk5HM2k1aXlUY1BqSUZoU1c1ODZLRzBkWldPaDVTRkIwRl9CaDNDeHR6c19TSWoydGN2Ymp0MEd0Z0lKSFlKYkd4SWo3YjRp?oc=5",
       "d": "2024-03-21",
-      "sc": -0.4,
+      "sc": -0.71,
       "c": "General Coverage"
      },
      {
-      "t": "'All riders wear red': Zomato drops green colour from pure veg fleet",
+      "t": "Zomato axes colour-coded veg fleet day after launch amid row: Explained",
       "s": "Business Standard",
-      "u": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPdjl5Wkxha0NlelJTeFp4eUhXcW5vWlVjSVVxLTY3Si1KYlRhX0F6dHRqR1V2RTdsd1prM3JVLVRLRm5MSHo2SnZKMFNBdDRZbkttTDQtMmJCZ0szUWtCN01VdDh2NW50bkM4UlhPWnA2ODV1SWo2T1J0X2M4YUx1MXp6OGFRR2F0QlU2dUxvMWx1TDZTQ1FISlpKRkROM0Y4MW9aUEpfNHJHR3p0Yl9odHJKaElnS1RBd05IM2lXN2FpZTZsc2FFQnNGZWo0elXSAdQBQVVfeXFMTThQVzhkVlh4ZUdSNE5TSzRYU18xSG1CUU9zR2g3VFkyNzI1Vkh4LUFFME1wc09wSFNVWkNWdG5nY3FKcVBBRlFrZXJ1NmQ3MWxPVlQ2clUtdHdrOUlndWhfNmt6UXhsWXZtODNUNDkxVVRERjcxUFhtUWxpTFVGQnlseEtwOHdHU2Fxa2JyQ3ZyVWQ0YkdPM2JTSEp4Y1BGSTg0TjRMWm5jREdROFhZbzRqYkIxS1REbGdNT2U0eFhVdjFyTTJNaHA0U3YtUm1MWnZjZFI?oc=5",
+      "u": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPYUhEY2U0NDNCTFFSekp3V0dXYmhLSmliOEFDWnFqOFNuUXdwUF9aNy15eG9hcVByQUlKQXFrMVVERFhZYk9OdS1aMFNtVUFiR0VMdVczWmIwOUw4RDF6S1dyVk5wb3lmNHVqcS10NzhRSl9vNThRYVRKb1BkZUp3U3lQS214SlhkVk05WEtGMV9TbHRQWkwzbUxiN3VqdE9Oc01qSTllakVnWXJlU0JhSUlmakFsX0tObEhwSHVMRGFhV0szYjd5UFd3Sl91MVQyeHdIWjE0WdIB3AFBVV95cUxNb2NUWHRfa3hSVzItV0VBYkhabUdvZnZIYzZ2aFJXUUVhRFBtSEtqOWhjVTFhRTQwak4wS3dPbDZnSlJrRE9PdlJjTXhjZ3pYNkNzUnR1UVY3Zy1YRWhlT2ZPNnZodFpXOXlCRlpab3lIekF4QUtBZWN4RzctazhwRUZXQ0pLVGV1YUtZa0VGODRYX29qTzZmbmJRcXJqSzFBY1REMWlZYl9PcGZIWF9aOElsUVJzTThNaUdvbUtrZEhTUWZIR2dLYUkwUDZ4UlU1LW85MFFicDIxNllw?oc=5",
       "d": "2024-03-20",
-      "sc": -0.4,
+      "sc": -0.6,
       "c": "General Coverage"
      }
     ],
-    "excess5": 0.0877,
-    "z5": 1.78,
+    "excess5": 0.0751,
+    "z5": 1.54,
     "close": 174.2,
-    "index": 6.6
+    "index": 10.5
    },
    "control": {
     "asOf": "2024-01-23",
@@ -706,44 +689,44 @@
      0.0,
      25.9,
      0.0,
-     20.7,
-     39.7
+     22.8,
+     16.5
     ],
     "stockOnly": 5.5,
-    "newsOnly": 11.4,
-    "sentimentOnly": 13.3,
-    "mentionVolume": 6,
-    "negative": 3,
+    "newsOnly": 9.6,
+    "sentimentOnly": 5.6,
+    "mentionVolume": 4,
+    "negative": 1,
     "top": [
-     {
-      "t": "\"Cancelling You\": Internet Reacts As Zomato Temporarily Halts Non-Veg Delivery",
-      "s": "NDTV",
-      "u": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNa2g1bE96bDg5TEdQWC1XX0ExbkJ0WnVQWUdNMXR3VmgtSlpfZFpkUmdHczJzRzVIbkQyUFQ3UjdJbkpjc2tXM2lISTVQZjZUSVlmNVhKRFRKNjUtdmJBTGZDSUZubnM2YUxNczE3X0VFbHE3S0xFSmx3bDlFYk9OdjI0YnpuNDlBQ2VxalVFYVRXaTVrakRZd2NIdmF4V0d0UERiQ2ZYaXVObTgtdGfSAbYBQVVfeXFMTTJjWlpXTnZuVHkxaEFXb1dmT2x2ZlpiRzQzT1JxSUc4MDZhdmJLSTdWMmdxNjdsaWJLa3BHeHdpOWVxdjBESUlqNlBmMEhiYUxHZHBheG5rdTc5VktsZ19SN202VmZWb0ZUcHNjeEVGZ3VtYTQ0VGVsRGVTUTlYbHBtYXVqekx6NHczOEp6RVFGQXF0OTBIcWZmbWxyQUZJcG0wR2JYbmk4a3EyUTVWTGo5bVhqdFE?oc=5",
-      "d": "2024-01-23",
-      "sc": -0.4,
-      "c": "General Coverage"
-     },
      {
       "t": "Zomato Suspended Delivery Of Non-Vegetarian Food On Ram Temple Event Day",
       "s": "NDTV",
       "u": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPYTlmcGRONC15M3lvaWdwVDVHLWFtdWs3NzVHbVJfVG9XMlg4cEZsQXRQbDBFTVNxZ2pReXctX0ZLX0c1b0M0Tl9xNU5vemRZai1Oa09YaWlrVFo0X2o4VDZZWHdvYzNob3lORWVjbmNSUTZKZG5RRGN4bUZ2Yjh3MFUtYlMtWDRmTEIzVTVMN3VXTFBmZlNNbWJ5RkttNEYwRktZUHNnWERLZnNXS1BfVkhVYTQ4M3h5M1dz0gHDAUFVX3lxTE94Q29qVnlQd25rU2ZBcVdnd2tKS1pucEFzMmlLTFloTThGU0h6c3UyckhvaUE4SEFOWllXN3lfQWgwS0RBYXZfcGxCQU0wbWZnYTQ5NFRfOEhXRG44bFJLRk9VTElZdzQ5TDNEQmpKNXJzOVVFdWlxam41NkdTYzE4Q0Z6WmE2R3F0ZTlMQ1EyUHUzWmFHaWdQXzd3WldSd19keWVLV25vX2E4SXdlRHhremdwMUo3N1RQZloxUGt2YWlRWQ?oc=5",
       "d": "2024-01-23",
-      "sc": -0.4,
+      "sc": -0.8,
       "c": "General Coverage"
      },
      {
-      "t": "Zomato suspends delivery of non-veg items in North India, says this is due to govt order",
-      "s": "India Today",
-      "u": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxPSldISlVBVHhsRHpnTjJOdnZsRlAzbks0MEZxT0RtZ1dmaWc4RXQ0aGFWOWphaDc3Z0FCN3N2ZlotNDFhNW1CT3BSRzRBSVhxbE1FU1hyUGFGQkJXWGxMMDRMRXp3ZG1FM1dxMW94Z2RWWGZYVHlKd1FrdG1zdkk5dzRSc2VLNlVGRGdudUg1d3Zjal94TzNMN1ZDSzdoQkdsMF9xOEJUWDFMTzE5X0c3X2ZNU04xV2QtNXNmNk8taW0xcFJ1RmpYcjRjdEZMZVRyRjlHWUM1TzBFNWg3WkdBRjNYVFNrbzY4ZEHSAe8BQVVfeXFMT1pnNU5FZXphVE9NUENwRVlGWm1kNzlwN21JNUF6TWVNcHpBaVJUVGdhSE1zcUZIUVpfb2ZDRDY4bkgtNFJCalVfMmxodThacDRkeWRJUEY4M1RQSEd3NVhjazFhR1Q2OFlQbHVKekczQWZoMWI1S2FkbEhCUFJIUmVwMWNsNUs0MlVQTndtSDQxRzJXcC1VMF9xclFEWFVkQ0JpVHpSanNhNFFfNGlqM2lvVGxvQnBnaXZETThYS3pDSTdQdkdvT1B6eXhFX2VrZ2VSa1FMTHYwWmJIVkNWVzhBVnNPTmhVeU02ZTlVeUE?oc=5",
-      "d": "2024-01-22",
-      "sc": -0.4,
+      "t": "Former Zomato exec Gaurav Gupta launches startup",
+      "s": "Livemint",
+      "u": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPNUN1U2ZfeEQzaW01R1FWQkdIdXFNS3M5My0zZkhzSHVZZG5fMXl5aE4zUHQ5Wmpac05ZbGY4SWxWOEtaWWFReDNRTTdackpKYnZQcTB3MmFKUGVCd05FTmhhN0JraWM3d1JiaHBPcFNlRnhvUWFLOTBCWlpXTTNsTmF0V2lXeVhyV3JpeWEzeFpjOWRCQmFVVGZlYVRiS3J4b2poal9B0gGrAUFVX3lxTFBZU0t6UXZiOVBFZmlHbm9MVWF4eWV3RDZwTGJ1UnpId21LSXRsRUpwcVlLMGhuRk5zajExV3E3c3ZUXzYxbXlxamNQT1VYRDNJX0NKTVNuNmR6cE9maWFBTm1qMEhNQUZVekZnY0dCUDNNNVNsVE9UY3dlTUpMMlljamY0VThFeWwyMUNiaTRMQ1IwN3FFREhpVlFCSHVZYkpLc2ZYM2ptcVlCcw?oc=5",
+      "d": "2024-01-19",
+      "sc": -0.01,
+      "c": "General Coverage"
+     },
+     {
+      "t": "Zomato takes over a Mumbai Metro's PSA system",
+      "s": "afaqs!",
+      "u": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNaktPbERvcVl0SUthTDRMTW9OajNObmRHQ0s2NzlqODZPa3NjRnZzM1pMSWhVOUpjLV9hQV9SUUE0TVZZN2ppVlpESHBCZXRGVzhPV3lmVXRaQ0J1am15TUNHZzFnLUZfZkQ1YlVYbndkZWp5em1Jak1xbkx6N0c5Zkx3?oc=5",
+      "d": "2024-01-20",
+      "sc": 0.06,
       "c": "General Coverage"
      }
     ],
-    "excess5": -0.0257,
-    "z5": -0.51,
+    "excess5": -0.0174,
+    "z5": -0.35,
     "close": 130.1,
-    "index": 12.6
+    "index": 11.0
    },
    "detected": false,
    "separated": false
@@ -762,44 +745,44 @@
      0.0,
      0.0,
      0.0,
-     29.2,
-     44.0
+     43.2,
+     40.8
     ],
     "stockOnly": 0.0,
-    "newsOnly": 14.2,
-    "sentimentOnly": 26.4,
-    "mentionVolume": 15,
-    "negative": 8,
+    "newsOnly": 17.9,
+    "sentimentOnly": 29.5,
+    "mentionVolume": 14,
+    "negative": 6,
     "top": [
+     {
+      "t": "Infosys shares fall in trade on Friday amid GST notice row; check details",
+      "s": "Business Standard",
+      "u": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxNYWVxNUxfM3pCeEhEallTb3BaY29KNHR6WWVmSDFYNjFWYXpkVXVxM1VMVlh2TzR1WmZNbndWS0xEQS1hMmdTczFhaVRuZG1xb0ZRbU5rZVFxQU05T0NSakZRMDM0ZG1JT1FvbnRCOFFKZWpYR3J4SVJtSWlQMUd6RFNwVWZna0xSX2lSbE9fcDR2SUxqNy1sVl9aRkkxTUthcndlczNvT2VTTzRDMFBpMUxidXhEMUFXWUI4V29YT3dOQ2c0Znl4QWlEUVVEMlZIX3pra3Bn0gHbAUFVX3lxTE9SQXlYRksyZmwtWGJJSmVJbFFxX0JScklsbVpoQzRaRHVoOGppbDRxZUZCdG5SbFpxdXpjWGtqTXhxLU9VMERrT25kRlVNSnNBZ3ZpOG43ZF9rdGRfZUhNRTNPeHB0ckVzU0xpRFJmaU1Xd3JyNURVWm5vYl9SanhMaVBOT0ZiajJZZm9hUTNCTHJ1N0hsVnBBN1U3SGE5eG5yVlg5MVV2c0hqM0dlU1R4dlZDX0s1V3VNLTBOZ2N2RC1TZ0JVbGRJanJkcGRSM0xRdml5VWUxR1JBcw?oc=5",
+      "d": "2024-08-02",
+      "sc": -0.96,
+      "c": "Tax Dispute"
+     },
+     {
+      "t": "Nasscom defends Infosys, says ₹32,000-cr. GST notice shows lack of understanding of industry model",
+      "s": "The Hindu",
+      "u": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxONGxnVUc0VHFLWFFBZTNKRXozaGVHeHNZMXFDbDFaZ0JBM291R3M5Nk9lRXVhdVRQaGZSWjh1SFEwOC03RU92Qk9ab3lheWdLYzg0OUg4Sld2Y0ZtaHVFczZnUS1FWTdUNEZyOWdXMFo3d1lZckpEX2c2dDZBUnI4cjZyZnR4dXZmaUEwR0FCLWFMaXV2QW5UYjdmS3BmdG0xRzRHa0UwcWRhbkRrY3k0SzItd1ZSZkt4M1ZlWHpSZ3lOOVhuc0JGb1B4ZV9qX2xYemdzSmtuTmJSU1g4WTZiUjJR0gHoAUFVX3lxTFAtdmdIaWlpSEdCQUxkdHlCcXJIeXNZWkNmTHFiQmh4a2hHU2Q3RXVhRjVubWdtdTBkNXJwbUNHWHE2ZmkwR2M3cDg5ZWE1djRhNFF3Z3lOZWRkYV9GcWNMUW5lb3A4NmpDazRWZWlraVQxMm9KV0NTY0hpUGdtUFozWjRYSG9HVXlXZDFOd3U2NWtDTFJOQUIzRUU0NURCRzFNdlkzdFRuV1laMVZLdXdiM0UwNmh4dU1uMWo1X3o2MjlhQW9uSngxMUlTSm5sakdpQzA2TXhGLTluUm5DUmVaNVNzUTZzaDI?oc=5",
+      "d": "2024-08-01",
+      "sc": -0.93,
+      "c": "Tax Dispute"
+     },
      {
       "t": "Infosys Gets Pre-Show Cause Notice For Alleged Rs 32,400-Crore GST Evasion",
       "s": "NDTV",
       "u": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPdkp5TDI0czBXVmwzQllQalVlQUJtRHlUUnY0aTZnaFhvY0ZnNnE1UUJHSGp6V1VPdjB4bUdFRU5vM2tqVVA3MmJSdmtCczF3OHJKbXVoUHU4RUxlSTZSZlhWdlQwbHFYTG5mWkNYLWJrbndfNFNKWlZ6UV9qUUxPWFYzVlRUaWNfTzFMWFN3MlBMTm5GR0Z1WXZSd09CbEhTY25MQ2U3OE9YNHpEYUg0MzY1ZFB2OXRU0gHAAUFVX3lxTE56QlgybkQwd3c4SUdJbktBRWVtOER4dTd4X0VUa0RkaEltOHlSai1LZEFQRUpsNXVUanRxTEhrWGd6a0JHU3ZBRGZaR0FKdnpFbDM2QXJsZld6WjlLUjYtZURFTjhJUEFORzFMd0g4aUx3LVR0V25wNWRwQldEZE5Sdm1uQ2hsMWdtbjhNSU5oS2VFUUVDQkNBZURfSWlNbjNnR0FuTml3Tkd1eEF3dDhpVlIzYl9TeXJOWDE0SnM5eA?oc=5",
       "d": "2024-07-31",
-      "sc": -0.73,
+      "sc": -0.88,
       "c": "Regulatory Action"
-     },
-     {
-      "t": "Infosys has received notice for alleged tax evasion of over ₹32,000 crore from Directorate General of GST Intelligence, according to a document viewed by Moneycontrol. The notice said Infosys is liable to pay IGST under reverse charge mechanism on supplie",
-      "s": "Instagram",
-      "u": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE9Gcy1fLXRSR3RmTFpoVS04NlZ1R0U1M1AtcU1TX0xUUXR3YTFaUnRLZmd6YUFyZklsU2pjSFBWUzVjUnB2ZjEyd1ZidWJNNm45OWc?oc=5",
-      "d": "2024-07-31",
-      "sc": -0.67,
-      "c": "Tax Dispute"
-     },
-     {
-      "t": "Infosys accused of Rs 32,000 crore GST evasion",
-      "s": "Times of India",
-      "u": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOQW9TWURpVkhkTWZBUjkyQ2VSeGI4c2pYbXh2MDdWRmQtbHdFNXBuWnI4YThoTjJmZ0JiZlVUVkZBOTRsYjBaZnNZZkNyNXhpZHNiakJwUURDZ18xdUtXSUc4YUM3Mk43UEJRNlNxUEQwV0NqdGg3WFVzdnB0clFqekR1T1kwVXpvalhDV1V3MEhDWFhiNDVmd01tYTN6Z1NQVmwzbktsTjFoLUNxM3U4dEhnRUJNd1dZWDcxNzZYWjVzM0JPcG000gHMAUFVX3lxTE4yQmhoZ1dxeUZ4RVRJZXlUVVZlQ3Nrdk9OS1BXcXBFMFJ4NFhoX2pYNjd6R0lTNkNmOUF3b0hnTGRFZ0JpWDhSV2tzYnZubUV1a3ppZlh0Yk0xcUxDSHdsR2tNX2d3UUw2amwwcWlTYWYyandzMTZyMVpLZzFoVTlsMmlpUWFUTlFHbFF5QTB2WHFEd3pHLWh6S1NjM2xhLU9mdlh5NUdTLWxQXzBiVE01bUR4MzhnUFNJdkI4UTdmRUpURzNXSFZyMGZQNA?oc=5",
-      "d": "2024-07-31",
-      "sc": -0.57,
-      "c": "Tax Dispute"
      }
     ],
-    "excess5": -0.0055,
-    "z5": -0.3,
+    "excess5": -0.0004,
+    "z5": -0.02,
     "close": 1821.2,
-    "index": 14.2
+    "index": 17.9
    },
    "control": {
     "asOf": "2024-06-05",
@@ -808,19 +791,44 @@
      0.0,
      8.6,
      0.0,
-     0.0,
-     0.0
+     16.3,
+     24.7
     ],
     "stockOnly": 1.9,
-    "newsOnly": 0.0,
+    "newsOnly": 8.3,
     "sentimentOnly": 0.0,
-    "mentionVolume": 0,
-    "negative": 0,
-    "top": [],
-    "excess5": 0.0141,
-    "z5": 0.75,
+    "mentionVolume": 14,
+    "negative": 2,
+    "top": [
+     {
+      "t": "Infosys campus hires drop 76% to less than 12,000 in FY24",
+      "s": "Times of India",
+      "u": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxNendBc2ZKZnl1WmxlcWUzZjlaVXFhcnZwTnIyRWpfc0psM09VZ2xFdFh5Ul9jMnJmSXBJWTVEcllTWGN1WjdBaDVibGZwNFFsZlhVYkVwOHZJd21yU083R25NZk8zdlpQcG9MbDNmaWQyVEZtelN2dktaYjhtbm9vRVVTZkcxUHB4NWtBRS1Td3JqcXFBWGJHQ2tldVpzNENoNXFTM2FBbEZCc09LN0VUVURoMEVIbHpxcjZVRmY2VHg4a1daOG5VbGR6UFRQc3pic0M4TtIB2gFBVV95cUxONVEzeVNyZC1TcEF0REw0djZjY05GYWFhYjZQUFdBRmVXQ0p1MS1FbklTUDV3ck5kSlp2emItcF9YMkRXaHRsdHBmOVVQM2FDcnFQUHUtZ1BUZmYySjdDZy11aExyWDJfeFBjMi1HaGxVRTdINGRTWW1YU195S1RtU3ZKSm45dGhIdlozMFZtUmxtdTFfTFlHUEM5Uy0wMmIwSWZ5MzVXMlNrTTIyNXRSd0VqYVZIbkVsZExQX3JqdnZYM29hSkpKSzlHb0VDM2FfN3ZNTW5xNHRmZw?oc=5",
+      "d": "2024-06-04",
+      "sc": -0.97,
+      "c": "Market & Earnings"
+     },
+     {
+      "t": "2K freshers await onboarding as Infosys delays joining date",
+      "s": "Indian Express",
+      "u": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQQWdSb0pCbUd2WFpMbWVjeFNZUThtUG8weTYtWHBMcnk2amlFSUlveEMyWFVEMzZIUlFadmpzSUxwYWFhVW52U3JISUpLWTFwNWhKRjRuRDdaS0wyQnNiMTV5SmF1aHI0MEFaRGptM2RNbWxCaDRFSzBqR3pBTkhQOXVETFdlX2J2cWY4VUJJX2JYUWNJUXhXTWVlOTFpVGlTV2RCMTZmcVg0YUZ0X1poenZnWdIBwAFBVV95cUxPdDZxdVVseG83R1RlZUJKd2ZCWGdITUxpYTBFUjBXU1lwSDZkNlZDaGVMLVhNeUt6OWFia0FaYWJrZWV0akVCckctZVZXcmhCTHF1NHlqalpPYVhXamZYTnNXM2xIcFc5MFFOVVQyaVhJUkNiTVZXSXNnYlNSalJ5VkNWZEZwTDkwWGFGaVNhbUVNZ2xnQkxCbUlORVBWVC1JYUcxb0NuRUlhNDVrNmJoR2RyN0Etb1NpY1VZV3RaUnU?oc=5",
+      "d": "2024-06-04",
+      "sc": -0.63,
+      "c": "General Coverage"
+     },
+     {
+      "t": "Meet Sudha Murty's son, left job at Narayana Murthy's Rs 582000 crore Infosys, he is now working asa¦",
+      "s": "DNA India",
+      "u": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxQQl9ndHVINS0wVFpjLUF4cjdNQ1hBellEWlhSckdwNFhiOFhXMHBhUS0xTk1OeVZfN2YwYl9zT21mXzJtaGRpR1NDN3VuTl9Ed2s5U3RLR29GczVjMXdOVnoyUUlYYnhsWWVweTIzcG1BQXYwWG9VXzNLa2NRS0lQWWRxc2Q4OF9aSWNXbldGdVZSMERjSXdNZGxKYXc0dl9DRDA2UXpQQ1BxdjRwajlEcWFuQzhuX3NKUjRSc2dLQkEzNTNoa05IcGlETjdBZmZKb3ZJdGgzRlltLU5pdFRV0gHkAUFVX3lxTFA1WUg2M20zRjIwcjA0RWJrbkx4cjVoeHR0NmFtOFFyZi1lT085S29qYjdlSlY0aEdwbGJJdFR3c2dabkg3N2tJalRWRkdjR24tNHQ1R2JnQVNvUVRJaDRnMlZ2eHAyd0Y2SUtkeHNkNTc3X1pSSEZnaWVxZ3Zvc2pkS2ZhTndlalNDNXAzLW52b2xVb09iV2cxYl9pamRsdzlObms1QS11V08tSjRuNU5FY3ZCMmVTV29NVF90NHpxWEVuRmZiRzY4dEJGZFlYRlg2a1ZodDkyOXFPdjAzbVJ6b2g4VQ?oc=5",
+      "d": "2024-06-04",
+      "sc": -0.04,
+      "c": "General Coverage"
+     }
+    ],
+    "excess5": 0.0205,
+    "z5": 1.09,
     "close": 1430.1,
-    "index": 1.9
+    "index": 8.5
    },
    "detected": false,
    "separated": true
@@ -846,41 +854,41 @@
      0.0,
      0.0,
      0.0,
-     51.9,
-     89.0
+     63.7,
+     88.8
     ],
     "stockOnly": 0.0,
-    "newsOnly": 24.4,
-    "sentimentOnly": 36.0,
-    "mentionVolume": 42,
+    "newsOnly": 26.9,
+    "sentimentOnly": 49.5,
+    "mentionVolume": 37,
     "negative": 24,
     "top": [
      {
-      "t": "Go First files for voluntary insolvency: What led to the crisis?",
-      "s": "Indian Express",
-      "u": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOeHZ1RWNVREx2dUs3ZTE1cXJZbWdIbTdSbW02RFRJOUpwS3l3R19RRUxaSkFBd2YzQ2ZuTmZyc1J6Z2k4RGF0ZFZ2dTI0UGt1THA2TlBaajhzRDRIYlpQbEYzZmZhWFM0a0dpRzF4czNHUTRDS1lIaElNTW1QeUdrUDF2cWhDY1RvcTVLNXVQUTdGVndVWFVTQ3BCM3VoRXgzTHZwbmFmTXh0cWJ6dkszYVh1OGJsQdIBvAFBVV95cUxNYWJBUVpZdWJSeThJSW9sS0E2SHRmM0REQmppRXJORW9VLXRZRk92ZFVRLXRwT1loajdYRlNHSTNxS0VXY25zb0ZLMllkVW03cUdGMXptcW9GNU0wN2k2ZE96UjBDOHV1ME9GZzhPUGI3TzBvRDhQSl95NDZkelVua0EyMmE4MXpERDd5U0hBZzlRZXdSXzEydEU0TXlFZ2Nuc0kzQ0h6TElpbGVPaDFJdVB1cDNWX1p1X21zSQ?oc=5",
+      "t": "Go First files for bankruptcy: Passengers left stranded amid flight cancellations",
+      "s": "Gulf News",
+      "u": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPY1dQcHRMMnZVUFJIcENBQWpoS3N2dVp1UjltRDVPMnZjYzRTMW1iUXA1SkRRdjJDTkRxRFFYYXRGMS1relRXT2Z3VDRNWno0MkFDNFExUUVaVmk4VmgzZzNPazd5MjA3ZmtVT2ZzMTY3QjFyamwxb0t6b0h1c2tPUW5VY0tncGUyMDhBWkRuYlU5cWRMM2FNeW92Y1VPWTFVdmtYZ0lkNDh3dFhtdWhkd2NTTWl4OHY5XzBZVDBtMkxMT19sLTlPSlF5NnFQeTkx0gHjAUFVX3lxTE1FanVGTEhlcnNqWTIxMUNvTkpXa3liYTRDbzVEcGRjQVVCQjRrajRBLVVaLUpURVQ2c3gyVXFkdFdMQ1pwaXA4b1lfbjlkeHZVNDZJOWd0X3ptdXBBTGtKM1Iwa3Y0QVI0WUpma1dUVmx2c2YwZVp2QTdnS3E2eEh6Y0Jna2JxRklJam1nN3pXYW1iTDFYLTdzRU1lWGgxdlRMV09udmEtWkZGTjc0TTZoZWFWamhFZFNCWGpyTjVBWEdWYW84WmMxTEdrMzRjSDFjRzM2SjNRNUt0Vm9RZmEtUkVn?oc=5",
+      "d": "2023-05-03",
+      "sc": -0.96,
+      "c": "Service Outage"
+     },
+     {
+      "t": "Go First cancels all flights till May 6, leaving DGCA fuming and passengers in a lurch",
+      "s": "Dailyo",
+      "u": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPeTM4Zk16cFNoLXdIUFpjRzZuWVBQQkl6VHpDdW1RcmZoWUZ1b0FickZtMEVIa1FQaV9mX2E1a1lHbF8xSm4wQzk3Mnk3ZWxpb2ZqZGNhQVVMMUdFMDhkTUZCeTRoTWVEOUNZenBONDc4VUJndkFGelg2a3hXSnFxTmttOHNxdXFHUjd3VVBmZ2oydDdmYkNqMGNIYm1LdU55UXluVERMVnIxb0xHUXY4ZWZlTGllUDRhYWfSAb8BQVVfeXFMT0EyaDNiTktHaFNQcldfanRnb1BmQWZqTE9XWWwyUTZ6b2drNWFTLVZjVUd6VllFZnI3di1UaHZTS0x3alhJTXRJclBmc2E5aEJYR19MYlJqcUhwelNGN0RiaVRVRUY1NnRvY2pVUU5RWkdtdC05enU3T040ZV9uYUxKdjdGQTNvQXBHNkQ3eF9xQ2NVNXlvVWt0eEY4WVN5ZWlvZUZQVUdZYXR6bllHaEhQT0YwSWhncWdRUXBTaXM?oc=5",
+      "d": "2023-05-03",
+      "sc": -0.96,
+      "c": "Regulatory Action"
+     },
+     {
+      "t": "'Go First didn't pay full refund,' customers vent anger as flight remain suspended for second day",
+      "s": "Livemint",
+      "u": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQcC1QcUlhSDhOa1dNb3FVUnBuOGNrWDVHV3RfSGF1SnZMdGZ1WXd6a2F3TTBPWnlCaUItYUNKRUMyQzdVV25tYllyX0pKNXFqa2NYZXJ4OUJhMnZWQWIwc2ZWeUVQbWV4eEE0RGx4ZU0xdDJ5ZXMzRDN3UTNpQUhBZkJGS29vS1Y1WmhRUEQyYm1fYkZiREtrR09qZXVDRzlla0RRbHZyLUVOdFBwdnVFMV9fNmNmWF8tdDFEUmc0ZFlKTzM2ZDFrMXZzNFJxWnpaQ1lPV1d0YW91OXpsZEh0MWZaTW9maVnSAewBQVVfeXFMUEJZcElqN2h3OTN3UGYtZUZXTmxwa2hQbGpUeEFHX1BMaEtuTDlBOXptUGZyNkV4aFNsbHR6R0gtWXRqR045SElwTW5FZHVMbmZLOHF1VXRNZVFmbVBhcXJwTXJIYmxyaFZhbDZjNVlJZWdUT3hTSTdoZE5uTHZLbkxIeWh4d2hZUlJZdkgzZXh5cjZIb2ExQ2dYOWYyMjIyTEE1MmNKV0N5blRMSkpVLUZjaFU0X19TM2ZRSUdGeU9mQnRrX2Fhcm5xOWdfVERwYVA0bWFNTUpmZ0M5VTZlYkR5MmtHZTVrQ1N4SHI?oc=5",
       "d": "2023-05-04",
-      "sc": -0.77,
-      "c": "Financial Distress"
-     },
-     {
-      "t": "Go First files for bankruptcy, suspends flights for 3 days",
-      "s": "The Hindu",
-      "u": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOTVhxNDdlcmFlTW1UWERkTkxFbEx4RHpQbTg5emlYcTA4NHMzbkJVQVhzUEU5NUpQQUVTY182OWZ3Ty0yamZwaTJHalZIam1TcUdOM1p1U0ZHdFppbVg3dHdaQzM3VnR3VTlZTzRfM3J1VlhoSUFFc2xyVE5RN3ZyTWRGaXQ2bU1VNmlIN1FUWDl2NV9oMnlTdFphMG93eUR5NGVNZEExT1lQZ9IBsAFBVV95cUxPbnFXRUthVVRsbFhwUFpqelEyckRCdFQzbFhEM05HUnJ1a1p2TklFek9DSWRGWTJieVp0akpTRDdHYVpSRzRkbC1JbmpHaFBWa1lxRzZWSFNOTGMyOXVEYWFCbjJsT0ZFdlJqTWlNdGFWWkZiRFByU0haSWt0WDBZbmotV2xmclJQRXlYMDNXQ1hwdTdrNElJVUk0OHE0MVJxQ0N3dW1IUl9kREk0VnJrdA?oc=5",
-      "d": "2023-05-02",
-      "sc": -0.73,
-      "c": "Financial Distress"
-     },
-     {
-      "t": "Pratt's snag-ridden engines take Go First to bankruptcy court; airline suspends all flights from May 3-5",
-      "s": "Times of India",
-      "u": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxOX1g2OGVRVDhwcVpfaUR0UzhabldRMHc4cC1aemtvRjlxRWEzdjVuVGdxV25RNEEzZGdPNmtnYnVMSkdCdjVxOVNLTDNPQ0lWOE9FTnB2dHA4aW5FV0dYV0F1NkxNRHk0WHZLVGUxWmdvMWVoOEJRQm9iR05abzRucXQwRGQzd2Z5NWQ3aDN4QVJKdXI4cmI4eGYzOTl3SmNRRlJTV1NOZUY2akJkY1ZGTkMxVnJyU1k2aHRFSUNFWWNvVFJTLUF1ak5vQTlLcXYySTVrVTV2Yy1XYU9hUEJFVmRSOGUtMmtYNjY2Y1cyRU5Dd9IB9wFBVV95cUxNS01VMkc4UEZVOWJZd2EzZzBQTmpNbDZJU2ZNT1VSMmZyeXoweTdJQjBRazF5bUZ5b0hNeVpVRFR3X1dFb0lweTRYcUpJZnZFZ1kwVkJSdE5TMkU2bUhzS1Q1T09wemhHdG9hZV9tR1BFcHUxRkVVYjE3N0ZNVFZjRkZkTUluTG80djVLZmpwR3RmLWFXQU5tSUprYXZkcDJyMXZJVDB4ZkhfQ01hbU1MbEw1WjBiT3RQMVFUQ0o1b004dEJIbmdYa1Q0MjF4Q0xjTjFFXzJCWXZ2cklHTVRORlVtZWhZUHFBTElqSXBic0tkMlRlRkZZ?oc=5",
-      "d": "2023-05-02",
-      "sc": -0.73,
-      "c": "Legal & Litigation"
+      "sc": -0.94,
+      "c": "General Coverage"
      }
     ],
-    "index": 24.4
+    "index": 26.9
    },
    "control": {
     "asOf": "2023-03-07",
@@ -889,25 +897,33 @@
      0.0,
      0.0,
      0.0,
-     0.0,
-     0.0
+     19.2,
+     10.5
     ],
     "stockOnly": 0.0,
-    "newsOnly": 0.0,
-    "sentimentOnly": 0.0,
-    "mentionVolume": 1,
-    "negative": 0,
+    "newsOnly": 7.9,
+    "sentimentOnly": 88.0,
+    "mentionVolume": 2,
+    "negative": 2,
     "top": [
      {
       "t": "World's most 'loved' and 'hated' airlines revealed: India's Go First is most disliked overall",
       "s": "Daily Mail",
       "u": "https://news.google.com/rss/articles/CBMitgFBVV95cUxORHg2ZjBKWDBOc29HajZlMXhlZWVSNmN1Yll6VjdwcEFVekdtMXNfeDYtZ2JMX2xRX1hCQVQ3VXZCYUg3NzZmQXpTY21BVldpSDFvLTRMblh1d3RVZHJ5OFBQMUhzTi1EYUgwSDgxVTVSRUJ6bDBpa240SVd4ZXltd09sZ2otNmVEN3JuVW5Wd3RWeGlicEt2UDVlUnk5M3BQWlVXcHJqUEVJRkFLQ0UxTkpoTk9pUQ?oc=5",
       "d": "2023-03-02",
-      "sc": 0.0,
+      "sc": -0.92,
+      "c": "General Coverage"
+     },
+     {
+      "t": "Shocking! GoFirst Airlines Refused To Pay Rs 5 Crore To Employees, Vendors | Find Out Why?",
+      "s": "Trak",
+      "u": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQODcxTVJrWjZSd2U1SkJ4VUJqNGdBTGgtWlJFcjRHVllrWlVOQXU5VkhMNXdVQ0t1cUFFRk9nalM2NXJjQ2lUaHZoa05id0tyaVA3UFVvVkxHQTFwbEc0Rm05Rnk1QUxtbzVJYjZnNzB5NnJEeVNoRWUxdHlzRlk0UTlwZGZzMDlCX0VyZllITFRlaUpWT2s4XzhiekdSdUxIRElrYlJhcVhWWmhUUnQw?oc=5",
+      "d": "2023-03-02",
+      "sc": -0.84,
       "c": "General Coverage"
      }
     ],
-    "index": 0.0
+    "index": 7.9
    },
    "detected": false,
    "separated": true
@@ -915,7 +931,7 @@
   {
    "company": "ICICI Bank",
    "symbol": "ICICIBANK",
-   "sector": "Financial Services",
+   "sector": "Banks",
    "date": "2022-12-23",
    "aliases": [
     "ICICI Bank",
@@ -927,97 +943,97 @@
    "listed": true,
    "incident": {
     "asOf": "2022-12-27",
-    "level": "Low",
+    "level": "Moderate",
     "criteria": [
+     4.9,
      0.0,
-     0.0,
-     0.0,
-     44.0,
-     54.0
+     41.5,
+     59.7,
+     87.7
     ],
-    "stockOnly": 0.0,
-    "newsOnly": 19.2,
-    "sentimentOnly": 24.6,
-    "mentionVolume": 19,
-    "negative": 7,
+    "stockOnly": 16.2,
+    "newsOnly": 26.0,
+    "sentimentOnly": 70.7,
+    "mentionVolume": 18,
+    "negative": 18,
     "top": [
      {
-      "t": "Cbi: Videocon's Dhoot held in ICICI Bank Rs 1,700 crore loan fraud case",
-      "s": "Times of India",
-      "u": "https://news.google.com/rss/articles/CBMiigJBVV95cUxNTFA3WnF4WE41Z0lVTXJOdGlCMk45TndqNGpqbnV4RnVpbzhTYkpSMVQ3d0hUTEVQaVpwYUYxb3hoTE1IM1pOUFVqaEpfYm54ZURoYlZ5RkduWFFpQjBFX3VTaDBfbGdwUkFmVW13NXFob09EQWNNSmo5bF9EckFMUHhpcnI5VndaaEIteWNyM0hLNmJQdDVidW0zMWd5Sk5tekV6MVhLTzEzNW9UZlhST2g0a2luUU9VUXFhNExFR2JDRjFpU2Y0Rk9TX2gwby1fZTZYR21qM3lQbEYtVGpkSDBldllqOUZ1OVdSaXVYMFA4b2J0QkJiNmZaYkhGamN6eFJ0djYtWFpQQQ?oc=5",
-      "d": "2022-12-27",
-      "sc": -0.67,
+      "t": "India Arrests Videocon's Dhoot After ICICI Bank Ex-CEO Chanda Kochhar",
+      "s": "Bloomberg",
+      "u": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOYXF3TVV2RWFwbXg2OEdUanluRXR6MlQtTVExcGNXLVRheXNXNmp1NjlKSWFVbEViSVo5LXNvMHBYNGpVRXZNOEtQVXZTenFsN2RwRjFXcjNpV1FaYURSOWtDSGY0c1FLcThXYVRqU2tjUnRvNGxUVGVWa3lQWlFiRlNFa2VVVVJOQjJva2h2M0hrOVF0RzVHeUx3eTV6T3FZQ1hYSW1oMWh6empMUDBXeA?oc=5",
+      "d": "2022-12-26",
+      "sc": -0.88,
       "c": "Fraud & Governance"
      },
      {
-      "t": "Loan fraud case: Ex-ICICI Bank CEO Chanda Kochhar, husband approach Bombay HC against their arrest",
-      "s": "Mid-Day",
-      "u": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxPZld5YWstYlczWWoyU1NfY0lRRGRfLUx2cl9PWHhUMWpyVXJ1dnhhcGM1bm43WkNYZ09LM00tWDFiYTVBSGNlMmtkSzJVaC1SUFlEUXhsdFVHYzc3RldWYVdXRFUxTC15WW5RWTZxN1h4Q3Q1cEJtamRhMnlOTDliV3d5enFObDBTc05LeGpWZk1oNEtjMm5sYXg0RU5ub0g2bVF5REJRQ1AxODE2LVR5SXVVR2lVQ1l3MTNabk1QZzZPYkVweWhzdzczYzFEZ3NsR1VoRGJqeDFSVDRDcWJOblI0Y1JBRnVGcmc3cTFhaURoR2NP?oc=5",
-      "d": "2022-12-27",
-      "sc": -0.67,
-      "c": "Fraud & Governance"
-     },
-     {
-      "t": "Ex-ICICI Bank CEO Chanda Kochhar, husband arrested by CBI in loan fraud case",
-      "s": "The News Minute",
-      "u": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOd092b3BGU28zNnprbGl1UmtBN3cxTEZwVWkzZmtLTkZlQnNJTGRhY0kzMVRrOVRXZHZXUDNZeHVNSHZaV0NOaWl2eDZ6azRuUGI0Zk5kbWsxZ0syUjdRZnNaRDh3aFN1T1FIblZYMXhuQzQzU2NsaUItdlJybGEwdzIzNjl4QTFQX2FCSjV3Z0Y0UDYxT1RtV0xwY25icm1FanhscFR4WnIxYkRiQkpletIBvgFBVV95cUxPejZVeE55M1l3dWZrOVlDc0FSUnRDa0pINUV6WExyelpadVZlUXhVV3RIMWwweVZZTV94VUR1M1dMM2dBc1FIU2tpbnZ6MDhNS3lTTmZhLWVxd3UtNGNWazlqY3NROFlCRmJDNlU2bXRybk5qZTJZdlozV045UjIxQXZMXzl0NnJtSjdqNTJMRm1yNzVXUmwxSjA5ZTUtMC1BM1VsSzJMbDFIdVhsMzBCaHRBM1J5TWozM3pCdE93?oc=5",
+      "t": "CBI arrests former ICICI Bank CEO Chanda Kochhar, husband in Videocon loan case",
+      "s": "Scroll",
+      "u": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQZC1zTVRoSGg3VGhWU0plWXkzWUd1WmFMUDYtZExhWUJGaTFta3lLMzc2MHZrYjBkRy1IRXhaNXlPRHQwamhGY3hfYWwtTXZ3c1ZTaHRPYU0temZ5Vm1YMlZnV0RzSndYRWNJZHdveFMtNXFvbi1HSXR6bkpRY3dUZ2Z5cEVLUmdaRC15cktrb2N2YXl6a0hBY1ZMamdkZmpoWFZXUWd1X3lTY29wbmlXcNIBtgFBVV95cUxQc3FqS05ZZ05vUWkzeVR2T2tfTFdKVEdnRFhhb04zWks0QVRqTmpyczltbGdFOUlnY05xcUpJN2RiRlVVUi04M2ZLdnF6cHl4MTdtb2NjY3hrN1ZYaVpHX3ZpUm92dFo4dWNIMTFJSzhXQldLVkpaOGI3bFEzcEQxR1VQaUNpOXJVZi1ZdlY1Y1JvRlF3NnBEbVZBd2IydjkwU1J6dnZ5REh3b1ppd0xPQXpleG03QQ?oc=5",
       "d": "2022-12-24",
-      "sc": -0.67,
+      "sc": -0.85,
+      "c": "Fraud & Governance"
+     },
+     {
+      "t": "ICICI Bank Ex-CEO Chanda Kochhar, husband move HC, call arrest in fraud case 'illegal'",
+      "s": "Moneycontrol",
+      "u": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxPZWl0NnVZRnlKYm53cGtQMi04YUQxVE9Yd3MtWkw4M2tmWnE2X21QS1k0dEZHNTlTMjU2S3E1T3Z6d0ozWF90akJkeTZMNnp2QVFwZndEQ0U5NzRkTUUtTE83SE5mdmpDTnJjQzdpeEswSngyWlRHQXlZWWQxVkd5djVQUnhBSFE1VUVrWHFqOW9yRkR2YVpLREZmVERWNkJCMTRDY3ZPb3VaeWZSZ1MyMTE1MkliUGo2QUppa051LUhMV3FYTWlYWDVPZGZjcEwyQ0I1bEt3dngtTWVnR2fSAeMBQVVfeXFMTURGck83dWozS1pabFhiRFlHVC1sOEtVM08wdkh1WDI2aENpVzdhRXkwc0FzZmxjYjBvc0xCczQ0WUdDZlN1OWVpNERWeHNCMGVCV01NeERVek14Z1BQVnk3Mi1SMkdLa18zcG1MZklJdDJYZHkwbDZlOHRIWWtURUk2TU4xQUh2a0FZV2xjaFZpU0ZPbzZBZG11THYwLXhpT0g2QURMTk9xNFBrRmlkTHNHVXd0T1h6UE1ubmJ5VFZFNTI0Sm93RUNkSUMxN0JlLXh0UHBWV29SaUtjTUNMTU9PaW8?oc=5",
+      "d": "2022-12-27",
+      "sc": -0.85,
       "c": "Fraud & Governance"
      }
     ],
-    "excess5": 0.0076,
-    "z5": 0.38,
+    "excess5": 0.0094,
+    "z5": 0.49,
     "close": 900.65,
-    "index": 19.2
+    "index": 31.1
    },
    "control": {
     "asOf": "2022-10-28",
     "level": "Low",
     "criteria": [
+     9.3,
+     3.4,
      0.0,
-     0.9,
-     0.0,
-     0.0,
-     0.0
+     6.4,
+     9.6
     ],
-    "stockOnly": 0.2,
-    "newsOnly": 0.0,
+    "stockOnly": 6.9,
+    "newsOnly": 3.3,
     "sentimentOnly": 0.0,
     "mentionVolume": 7,
-    "negative": 0,
+    "negative": 2,
     "top": [
-     {
-      "t": "ICICI Bank revises FD rates: Now get up to 6.50% on a tenor of 1 to 3 years",
-      "s": "Livemint",
-      "u": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQV2dXak5SeVo0UFZTSTZWQ2pIRzROb3VFelR3NVZCTWhzUTJzTjNXNlYxTm1ZdDl6bTJBQkYyUzRSUmRYMUJ6X1hKcVRscFVKWVVqaFVDRktOS2dCLXFpd0t6UEJHM0ZaQ01Cek9TdTBCODk4S1JVZ1JfWk9WLWZ0THlMZVV0d1hvYW44bE11eWR2eWZZZVdlcFZ2STY3QlgtYWtkYXJIa0lkX0YzOWtaNXlmZVRuLXlKUkladk1VaFlLUVZBcWNsQjVFQ25oVDhhZHk1VTVkaVjSAd4BQVVfeXFMTnJyTFI4V3hIeVJLTklJb096VzVrWWFoREdoTHZXRWp4dUh2TjBCTmViZ1RNNHhmVkZCUk12bkROd1ZIVU1tMEZxLV9MVVNYZlNtOTBVdURkLTNFS21oRDlUMUlKbjJMOTdybXNlVjdGX3c1bWZJMU1OVTVNeG90eWV6c0gxU3RwcjMzQ2w1YXZsLTZEeG0ta3BfWWY3R0dDVWxXdENOQ1BocTkwaGx5SFhwam5HajlERW5zNHlJQTUxWFV4RHdYbllWTjQtVEFYRndLVG1zTzJJWkVCZklB?oc=5",
-      "d": "2022-10-28",
-      "sc": 0.0,
-      "c": "General Coverage"
-     },
-     {
-      "t": "ICICI Bank cited by OCC for BSA/AML compliance failures",
-      "s": "Compliance Week",
-      "u": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNNWdGdXI1QUJUWjRjUjlVSHNtU3Btcng0enN6eVJ3YUpCQ3F3MXdwdk4zZGdERWRPMGJuam9mY08td0dkMUtIcWF3dmxzblRaV2ZMbVFUQmQ4WnZfTGY0cE16Q2xZQ2V5UjM5bzR0NFZzUUFWekFyTmh1bjhlb3BEM2dJN1c?oc=5",
-      "d": "2022-10-25",
-      "sc": 0.0,
-      "c": "General Coverage"
-     },
      {
       "t": "ICICI Bank hikes service charges for NRI savings accounts",
       "s": "Livemint",
       "u": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPWHFiTHdPZW9xN2R0QWxNOW10OHhvM3JocExtR0E5Mk1vV3g1YUk2VEQtOUhwQVh0d3pxYWdTYUo2akZVUi1YTHl5UHlYYjNzTG95UUlMQWVKdU15WFpQX2hGMWxwV2h5N1F5dXBfZ1FnOHFwbEloVFRGbElKcUdqTVZlZnlQQi1taFF3SDBoNFFiWUdkeVozczJRWTN4SE1ZTkFHQ2dDdzBza3ZJV2VTUmRDZk9uNnNSWGNR0gHAAUFVX3lxTE1vWnNOcnZjVWZ6WXo3cE8xTFc5MVpfNE9xMXJBZkJUSlZDdUp0R1l3TzlhYmt2ZkRLeU5UbEZTRTVZdGl2aVVib0Rsbm9ncHF5QVRmbTRibTdha1ZVc2lmU2NqS3AzRkliMXExZ3Z3dkhUSE1RMmJLczZuamlXbDkxUUhJMTRqUmMwUXlSbjFFa0lnY2tSV2xtcy04SVpCMzV5N1B1Szd1cDJqOWdnZHZHdWdqNGwxMFVDeVFoOGxqUw?oc=5",
       "d": "2022-10-23",
-      "sc": 0.0,
+      "sc": -0.68,
+      "c": "General Coverage"
+     },
+     {
+      "t": "India's ICICI Bank net profit jumps 37% as bad loan provisions drop",
+      "s": "Reuters",
+      "u": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQc0FXWTBUMDNCVGNWZDE2bkZES2h1OVhTSGFtMVFmNG9xRERJQlR0MTNJSFVQTUFqTUJCSkMzWXROMWNEc3BKTlhjSFkyVDBVenRRMVRoS2xMa1BCZGtJVHViMWlvSmpObGhhS1pSSTNJanBiZ2Q4YU9HU2cyNUtndmR1QUZMUkFTWGdRMkRBbE04ZG1SYzZXLTRfdnJlVWhoclFfLU9GdVlHTmRGRTZVRmhROTBBZw?oc=5",
+      "d": "2022-10-22",
+      "sc": -0.24,
+      "c": "General Coverage"
+     },
+     {
+      "t": "ICICI Bank board reappoints Sandeep Bakhshi as MD and CEO for three years",
+      "s": "Moneycontrol",
+      "u": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNVURFU1lUWU85alRlN3hjQ1NsMmtnTF9NaEJzV3cyZmVhVmlJa3dVUDZPRjdyWi1qUGlsWWRUVVVpWWY3ZDNNZTFGVm5tajUwSVdESW1LUkdTUnJsNVMxQXg3Y0FadE9IaElCMWxhekpqZlZKekRpWDVCZ2tQeW1mR2c1ODBiSVliLUhmemY3UkdKeGhZSXFHUFc3U09qUlQ1NzJqSWdWeHZCbEdqTmhNWm04R0FYb2hiM1lWMzZhZnZlSlRWQURNa9IBzgFBVV95cUxPWTJNazdkdURoMFpfU3kweWZuZW4xQWhwelpfbHBPR3hWODNBVHM1WkRGQ0c3bXFqV0QxM0g5bkl6cTR6WFExMk0tT2twQlA5MUlWY0h4aDVabEhWaXVuQW1XdlAtNVJnREVZbU1lNDhEX3hidUlKV2VHMWZ1Y21ZNkRjMFZRcFhMMmVkUnFMODFtVHZkWlBjRXgwdUl2dGNtTlN1T2dCZW9CSURvenZvWEpSSXk5bFpnMWRyLTZwQnRpeGR0dTROdmdidS1QQQ?oc=5",
+      "d": "2022-10-22",
+      "sc": 0.03,
       "c": "General Coverage"
      }
     ],
-    "excess5": 0.0184,
-    "z5": 0.92,
+    "excess5": -0.0127,
+    "z5": -0.64,
     "close": 907.85,
-    "index": 0.2
+    "index": 7.7
    },
-   "detected": false,
+   "detected": true,
    "separated": true
   },
   {
@@ -1033,91 +1049,91 @@
     "criteria": [
      0.0,
      0.0,
-     13.8,
-     0.0,
-     0.0
+     23.2,
+     51.9,
+     99.0
     ],
-    "stockOnly": 5.6,
-    "newsOnly": 0.0,
-    "sentimentOnly": 0.0,
-    "mentionVolume": 6,
-    "negative": 0,
+    "stockOnly": 9.1,
+    "newsOnly": 25.4,
+    "sentimentOnly": 25.1,
+    "mentionVolume": 83,
+    "negative": 42,
     "top": [
      {
-      "t": "Tata Motors to pass on Full GST Reduction Benefit to Customers",
-      "s": "Tata Motors",
-      "u": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPVnBPOGhsNURHdEphRHhIZFA2QXI1Z3FoSWtKRXIxbkFXVUx1eFlJeXNtUlF1ajg3TFlNZm1MZHlDQVczZ25ud2ZxRXBJbW5pYkZHVGRjZ3hvSW9tWG8xeXdOMVVJdldYLWxtam9YNlFCOXEwQ2J5Y3FtQ1lYVzlmMTB6XzBMWEI0WWdYb2l3Y2Z2RjBpSFNNdWNFRW41ZEtTV0pqTm9mWnU?oc=5",
+      "t": "Tata Motors' Car Sales Drop By 7 Pc In August, Retailing 43,315 Units",
+      "s": "NDTV",
+      "u": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPQkJhYi1GZHdQMlZhWHA2LXQ5M1ViQjVQaEZNOFlhbG0xdnc0MkgyQlVybDdlM2hLeXVCbDRwckxnVVFTWEZZbHlLdFdCRDlyeEN4RGFrMzZmWjhwakpWN2hhLUEwWE5OQmhLekdMQl9QcERHS3BMVjkzYk5GcXJZazZLak5LdkExY0J0YjZmUUtrZ2xpOXJSNE04WjMtd3BsZUcw0gGrAUFVX3lxTE1FUmxyZDJDWS1jS3Q0dXE5eWxkejM4SEk0ZEVJZG1NTE9xODM0OGJCekMwUUxvMDhlMThMZjBqRmR3c2ZSZDZ2QU02T1R2R1NKLUFVNlN5QmVKTVduSkRYTkptcmFLSFpSZWdBb3Z4NkNoT3pRQ1NrVFF1eWxYYTVETFp2MEhVZHBSb3pMcUdKai1EdnliYnBZZHNBd2hwS1lIbjZhQUJsNEJhMA?oc=5",
+      "d": "2025-09-01",
+      "sc": -0.97,
+      "c": "General Coverage"
+     },
+     {
+      "t": "Tata Motors August sales drop 2% to 68,482 units",
+      "s": "Economic Times",
+      "u": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNTFRlZklBUWJFSzJzTDIyRUY4d1Q5QUZTNEphV1pvMUJ5cXlXS0Vub3UtTlExWFRvam93NUZfV3hzZWRSR3NBQ2QzV1FGcTlkUVhFX0dvOGh1TFc0YklNM2Q4bzFCWm5PUGpCZkR1M18zeW1jQVZocHhPNTE1a1BJSUM3SVJReDQ0c09yYWFaeDFKcm5ldDRuNmNEc2lBTFViSnRXcThIM0xUeWw1VTNsUjI1UVVmczZtSjVOZTJrUGllMEdYTUFlTTU0SDlpeTlD0gHWAUFVX3lxTE5SejZPUDVVelNoT3VSYzByRkFpbzBuZXJDQlZ0THJDSHdiMDhpS0hXMXNWa3JjTjBKV1h2b19jOEZJbjhXNHB6RUNlOThNellfXzQtUjNKdzJmWGVyZDlER2Rlc1BNUnJrSnJLWEx3SkhTN2VSVExzZWYzeEt4Wk02NTN2SmFadk9LczNWdWhrX2p4b2R3dlB3VWNjNjY2WHAyNVhjVWVSTE0xcGw5aHRsRUlScjV1bnJMeEdwTkV2dVoxdVFmWktkZ0lheXdTZTJlRTBkbnc?oc=5",
+      "d": "2025-09-02",
+      "sc": -0.97,
+      "c": "Market & Earnings"
+     },
+     {
+      "t": "Tata Motors to pass on full GST cut benefit, prices to drop up to ₹1.55 lakh",
+      "s": "Economic Times",
+      "u": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNTjl3Y3hnN3loMzI3elMyQnZqZmxOY2lUM01NMk9rTEg2TlZsZ3FvLXpvSUh5aVpCN0Rpb0J0TnpNR0RtbThPQW5uU2hnMzlnRG10QmstWUJKTFFHTlZ2WTdHQ2FwOWFCdHhSRTJLeGp6Xy1QSXZmYlcyUXpHRGJYdThqd3RDV1dsaWhXOGtQM0hJMF9NaGoyVm1JNEtfa3hia05CZ1AweHZrME9lNkJPM0kwNTZOd0ZtY1Uwb2Z4b3ozcDN4X1hhLWJVVXRWR0xjVURz0gHYAUFVX3lxTE9EUEphOFhnNGQ0SEhPeXA4TVZ4SFdQYUZxTzFGOW1kRXhqVlV3aE15MEYzcWt5elFvOVVQeFRPOHpWRUVTVzhoOTlabDJmSUNyY2p0elI0NVV3ZjZON2NrdkIzQUd1SkJiUHRKdkFqMFpXQ1I4SnNiVXBOZDR0aWptY1RaQW5aakg0VjZUVEFCU2UxeEs2aW0yZHhCS3g1dWVkZE1mYTdaX09NcGM0WFlxQU1ic2tsV3J3aEZZUUo0X3V6LWFTb3dJbFNKbU80ekY3R1huQnZoSw?oc=5",
       "d": "2025-09-05",
-      "sc": 0.0,
+      "sc": -0.96,
       "c": "Tax Dispute"
-     },
-     {
-      "t": "Tata Motors' Aarogya Programme Transforms Over 6.6 Lakh Lives Through Healthcare & Nutrition Interventions",
-      "s": "Tata Motors",
-      "u": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNSUlrUk9wSktTQm9pd21aOWs2Rm1VOG12aHRlT0szc2tTdkxXT29wdVZUWnRXa080dmZmdk5pWnpvc3gzbGNnSFdiRG5RRENZb2YteVAtZ1JaV0pkWlJEakNrLWswLXMzTlV4elptWmJlWkVPenY3ak84OS1uR19uQ3RVUkZud2stdlA1VzZOc3Z1dWhNX3I3TUNjNV9tQl9HZWFJ?oc=5",
-      "d": "2025-09-04",
-      "sc": 0.0,
-      "c": "General Coverage"
-     },
-     {
-      "t": "Tata Motors Stock Split 2025: Demerger and Record Date",
-      "s": "EBC Financial Group",
-      "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOdnYxR2dzNXBwYkJyT0tXNW1MdDhSeGdIUmhaN1RUTmV6T0NRU0Y4RmZKUFdGUTIxRFR6czhuTVQyeFdJem0zWFlXWDNRdUN5Q01mNTFMRnFGbURRZkY1bV9WNnpKWE91dXdRcm9vUjVLNnA1cWlIN3htV212QUNJX05CcmdvVkFQSnJPLQ?oc=5",
-      "d": "2025-09-03",
-      "sc": 0.0,
-      "c": "General Coverage"
      }
     ],
-    "excess5": -0.012,
-    "z5": -0.35,
+    "excess5": -0.0052,
+    "z5": -0.15,
     "close": 691.7,
-    "index": 5.6
+    "index": 27.2
    },
    "control": {
     "asOf": "2025-07-08",
     "level": "Low",
     "criteria": [
+     5.0,
      0.0,
      0.0,
      0.0,
-     3.0,
-     4.4
+     0.0
     ],
-    "stockOnly": 0.0,
-    "newsOnly": 1.6,
+    "stockOnly": 3.7,
+    "newsOnly": 0.0,
     "sentimentOnly": 0.0,
     "mentionVolume": 10,
-    "negative": 1,
+    "negative": 0,
     "top": [
      {
-      "t": "Tata Motors PV Sales Decline 15% Year-on-Year in June",
-      "s": "autoX",
-      "u": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPaldLdXlDVUdod0RsNTJkNmtTNUdJQUp3QUEtemNmWGVIWGRQZnRSUjJqeHJDWlZjVC1ydzVERjFFdjVhaDFnOE5GSVQ4SmVWQmZ3MnVJTUxwbWVhNEkwOHRKSXNJQlpXbUtwaDhSTXg0anExRWp1ZUNqaU5HTzFXQXhMbFhDOHltWXN5TE9JVU02UlB6SDVIVzhLcmtTQzdnNWs0?oc=5",
-      "d": "2025-07-02",
-      "sc": -0.4,
-      "c": "Market & Earnings"
+      "t": "Everyone Knows About Tata Motors, Tata Elxsi, & TCS. But Here are 5 Tata Stocks Flying Under the Radar",
+      "s": "Equitymaster",
+      "u": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxNMGQwalU1Ny1jXzRJOG1ld1l1NEQ2QnpEbHppZHlYbXhCeHF4b2ZDc3l1a2pNRnd0bmdaY0FxcVpYdXhrLVl0RmExN1V6YmZ1ZlAzTmdNNGNvQ2dlNXdXalVfRXV6cGxLTmM3b0QxZnpOVlZTdWhTcFltaXlMcXJ4bHhCYnVVTXlfVV9OejFqTmZ5RjJ3aEctcWgwZWt3YjFvMGE1T24xWkNyRTRma0NpQUs3R3hSR1ljNk9FSk5NSVpHT2tIall0MnlUYWRQZ2NXbUdYVEZ6LXhNMGZUOE1TY3BBVFVISnQydzJtSTRBQnRtMW5zanRHVWZONTc?oc=5",
+      "d": "2025-07-08",
+      "sc": 0.0,
+      "c": "General Coverage"
      },
      {
       "t": "Tata Motors Group global wholesales at 2,99,664 in Q1 FY26",
       "s": "Tata Motors",
       "u": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNc0pxbnBYZ04yeHZxTkRYWVlvZlA5NFp4MlEwUDRBRy1qbGd1S0FCQWxxRmhGelZwNnNOSEk5R3ZvYTRoREZ6bXp0X3l5SFZfQzFvc3d3aDNxdkJLdmlUbk82ZUpma3BCRElXa2ZtR2RfQXpmM2htSWw4UFowVWNSYXhmUlBOTWc2ZFNVbk1Mc0xDc1lTNGRnTm1yLXliUHdX?oc=5",
       "d": "2025-07-08",
-      "sc": 0.0,
+      "sc": 0.01,
       "c": "General Coverage"
      },
      {
-      "t": "Tata Motors & Dolby Bring Dolby Atmos to Harrier.ev, Redefining In-Car Entertainment Experience",
-      "s": "Dolby",
-      "u": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNM09oNDFTQWRFNmxLdVI5YmpDM1BGS0FGazdvcXM2M2hFVTBTUk90dEVTUEYteHVqcGpVS08wR3pkbVh0Z2hvaldNMGRReTJzZUY2SGRDSWtia0U4M3ZpajRVVEhhSTdMcklRTzI0N1lqY3FUQ0hoQUlJRWFacjVvN1ZtQmFQTlBYYUJSUjFycVM3LV9mWENET001N2tKZ0d4b3FQcTRseTBjQmdieDZaSUdKb0NRakk2OFVxcDJUc0pRcmZnUjE1Qg?oc=5",
-      "d": "2025-07-08",
-      "sc": 0.0,
+      "t": "Tata Motors opens bookings for Harrier EV",
+      "s": "Economic Times",
+      "u": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNaXdUSDdwSkVJbDNKekVnRWZxTk5zS09yZjRPWHFmZWVMMXpWRGphb0pxcDJCSkZtbTFVUDJvUUVFUllOWmNlYXlQVmRLOTFRVEtLc3JjMDVYd0ZSNEJ6d2tKVmJqdjM4VTZXc2E1bzBRcVUtdWFGd0F3VE1LdkpnNlFncDFXTjRkUkFPM1k0eXlxSFBYLURObHRtOTVXMTU2dURoRU40bll4OHIyRmtybUt0alJIaFRiWUFQMFdjZXlGd19yNk1iRXJ1REFBN3YwT25QT2xBNGExVl9k0gHiAUFVX3lxTFB4NVoxMkpYc252SVVqbVNlXzJqb0FEcktuU3RrT1NOOUVVR243Slh6Z09vSUhwcVBFZnc2azk1dXV3VG5TWEk0cEVGYVFpZTQtY3VRZlNqNWVZWklLX0hZYmE0NW9McGRuWkZJWndZTWdlN0JZZjNaTDM0VUpLdVVlM09HSk9JN0ZmUXMyc3ViRFpUMllyby03dVowTC1wWklJa3ZyX05lRlR4ZW1kVFBLQlJ2enREbEJZZ2FzYkIxdVY5dVlhNjZ0UERZZS1iUGZUbXl0WGNtSDVsVUZEMDNSSEE?oc=5",
+      "d": "2025-07-02",
+      "sc": 0.03,
       "c": "General Coverage"
      }
     ],
-    "excess5": 0.0159,
-    "z5": 0.39,
+    "excess5": 0.0148,
+    "z5": 0.37,
     "close": 693.2,
-    "index": 1.6
+    "index": 3.7
    },
    "detected": false,
    "separated": true
@@ -1139,47 +1155,47 @@
     "asOf": "2025-07-13",
     "level": "Low",
     "criteria": [
-     9.5,
+     0.0,
      17.7,
      0.0,
-     26.5,
-     42.5
+     22.5,
+     40.8
     ],
-    "stockOnly": 7.9,
-    "newsOnly": 13.3,
-    "sentimentOnly": 17.0,
-    "mentionVolume": 19,
-    "negative": 7,
+    "stockOnly": 3.8,
+    "newsOnly": 12.1,
+    "sentimentOnly": 3.8,
+    "mentionVolume": 15,
+    "negative": 6,
     "top": [
+     {
+      "t": "Vedanta Base Metals CEO Griffith quits amid debt, short-seller woes",
+      "s": "Mining Weekly",
+      "u": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQX0otczg4WTFTMG1LOHNfMlpsc2Y0T19GcUJrQUhMYVRIQnRVMzBFRkp3ZTNPVHJRakFueVlndGk3TzBGMldCVWZmcGMtU0laSFRjeEU1Y1l3Z2MzeWxPS0hLNmpWRzVldjV3ZHkyQW5fZDJwVk5Zc1NZekFZZjd4Y0FmMC1FanBzLTVrdXhBRHM0STd6Q09sclJFZzd0akJ0MG80V3VjLXpzWGFUSnY0TnFKWTk?oc=5",
+      "d": "2025-07-10",
+      "sc": -0.92,
+      "c": "Fraud & Governance"
+     },
      {
       "t": "Vedanta under fire: Allegations of hidden debt, off-book loans ring alarm ahead of AGM",
       "s": "Livemint",
       "u": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPazBLbXJRRVo3OGdUckFibWlTNWhxcjctWUktUU9vLXF1WlVOdlJJSVM2YUpMZFliOUVkX05oQ0VvdnV4QlQyV0p6czZ3dkJHRm1RY3lEZXp4SkJCNTVtdkNsU2JQUUo5WXdzY2pZLWFMRFZ4OGNGUm5YdldaYUs5a2VnaWx6Q0owM1ZfS1hJem1DRmVTdDBjenU5RE1tdFBkM2pRU0FOYm1reUJ4c2Q5akh5TGkwREdYU1HSAb8BQVVfeXFMUEdxRllrSlRZZVd2X2RiMUctMmN4QmVLVW9yajJWYlRUTjNrM18yYV9EWFVvUU9mbXhzbFZlRE1tZWVnQTJvbmU0VTJNZHdLbTBIbGlRSUxFN19NQ2xpWVZDWUlBdDZ5NGdneDFZMjBmODJwZnNFZDkxQ1ZDYTFhd3hFWFdQdnNwdmZFcDVPTE1TYnp1VmJJVFlqMHJSUEVOMm5QRHJYcC1GME4yMlJ0dENsT1VNdF9GTklvc1FyRWs?oc=5",
       "d": "2025-07-09",
-      "sc": -0.67,
+      "sc": -0.91,
       "c": "Safety & Product"
      },
      {
-      "t": "US short seller calls Vedanta financial unsustainable; group refutes allegations as baseless",
-      "s": "Times of India",
-      "u": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxOSlc1TUR0NTBKckZnRU9qRmlTUHllc1RwNUh4TkUzSFppVzhWSUtJclRyZlFJblFORDhKRkNVd0tNVFR5VzhlM21za00wV1FCU0JmTmZKUnhGOWZWRi1YUEZRaHp0Vk8xdTg4bnhVTVFfbEtsYkJVY21UUVlWdjZTNEZ5NDVqY0d6SVJiNjlQQnUtTVJTWDlRYzF1SzAzLWRMa2J5dUJ0eVpuU2laV1NFdkhINHQ4Uks0QkM4WlQ4cU1ZaTdzNWhSTnluRGxqbUFQVXlJbTJiNS1JUjY2TXFhTTdhTzFTa2hEWnRBX19WZVJRYU9meUpQazNsNzZnbnlfZ3ZVeG1IcXrSAY4CQVVfeXFMTTlBY3l4SnRYNUtkY1N4UE5JOVFZWTBpUnN6UjI2SVduMGRDcU9RbTEwam5HdUM4b1QzQlNFTDFVMks4Z0VuUkdPQW41MWtXYndVa0g2Z2ZMUnl2VV9FdHIwdE5rZGw5eThTU1dvRjRZN0ZjZHMzc3NES1JONTlZTHBaa2hYbFRIczZVNkhETlotb3NPSUk4R0dOLWZzQ0JlQU53QlhDUHRoaDBQc3VRZWdIbC1fYTJhVDdfMk9KS3ltc1RaUWotRVFSdVhFNWI2YVdxZFJWTEVkUWtkbVhGdWtZSXFsYzF4S3FOM18ydGw3ZV9jc3dhNU5odTY3VTBsbDZwdFZmSnVkYk1iaWtn?oc=5",
+      "t": "U.S. short-seller Viceroy Research makes scathing claims on Vedanta Group",
+      "s": "The Hindu",
+      "u": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNb0tOdjBoU3ppWUtCeUFjQjVlblZMdXBIbmJTcVhRY1hheGFqMGtLUHdBQkJ4X3VkMVNWVDFSazdRblNvVGZRdG8xNDVzSEh4akMxVFNtNEdvcmtWOXhKTUhwXzB5a3dFM3BYNm4wblpZczRhYV9NeGJpSzhHQ1kyQTctQzZhVzlRQXltODJTdGFVdGtZcndrUk9yY1BtUGFuM2RTYXREMEdTR1N0TDl3a2I2enhTOUl1QWVxZmhtUHNBTkxFMmVCb25ETzZiWVnSAdYBQVVfeXFMUC03eGRRV3JPakp6NnoxYmIxdDlXQUtFUzBqbWtDTFVvb2Z1QUdfVFVZSmVzSjQxMDdJRnBHNHpSaTVyd0I5OWdCYmtfMFl1OXZjUVRRXzVNOUlWLXJQUHZ1dTRsSEFzallRdDRURlpVOHY1X21UdFN4ZFBGLTF0VUJVbDY3VjhJNGozd29NWkw3eDJuSjRuZDFVaGRlYzVPZlhmeGRfbk9Gdy1NMWpWRzJWYmV6RElKRHBxLUZDQUdwanFVQ0VQS2dRbVV4UVQzMmpmT0Zidw?oc=5",
       "d": "2025-07-09",
-      "sc": -0.57,
-      "c": "Fraud & Governance"
-     },
-     {
-      "t": "Five big concerns flagged by Viceroy Research in its 87-page report on Vedanta",
-      "s": "Livemint",
-      "u": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxQNUpSWnMwRWRBa1NZY1BOVUdVdFE0WUN4Y0NJQXA2RVBmMHZRb1N0clRKV2lwWXdURlFFTHdYRmlVOUFiWlplRFB1NGlObzNmc3F6X3lRZFhIaTkyeUo2T1lEendVV3l1TXd4Q0tFbVVlWThmbUQwTGZxY3ZGT3k1eUp4dHVsSW5CeDRyRC04ay10R3R6dzhlREt1cVZSS3B6U0VfSkh5NVBPLVRQRW5xRWUwdFJzcFhScl9DWEtUZlZNQVlNcktMT0RJVTUyY2U5TFJBeXd2MzY0NnNMeHFKeUtpdmlBdFFDQldadTZ0Skk0YUtNemMxaFl30gH_AUFVX3lxTE1XWXVYeW5ldnY5bjFjajNmU0NEX0N0YkRLZGN2UVJxR1VPdllRbTZlLUxyc2R3c3g5NXFWeWhURUEwekFHekJoa3duTmtsUVlKOGtOYTNtWUp1anRfSUxHN2tWUFRkdkcwY2xTU2VYbFJkeEVvR1RidnRrcURlR3FtNTVWOXB1NjNJUjhMelBPU2NZZ0oxdlUxOXZxdHpwdzJOeGRYSzNRa3RmR0xBeWZIM1V3TmIta2hTNE5PX0htTVZNaVd2UDNLdGRBeHFtUzVlQjNGU29LM2MwUGF3eDJCQ3JHb1hULWoxUVhRZy00ZGZJMXlfTXJiM21LeDU1TQ?oc=5",
-      "d": "2025-07-10",
-      "sc": -0.4,
+      "sc": -0.9,
       "c": "Fraud & Governance"
      }
     ],
-    "excess5": -0.0139,
-    "z5": -0.52,
+    "excess5": -0.0101,
+    "z5": -0.4,
     "close": 442.75,
-    "index": 15.9
+    "index": 12.6
    },
    "control": {
     "asOf": "2025-05-14",
@@ -1194,15 +1210,23 @@
     "stockOnly": 0.4,
     "newsOnly": 0.0,
     "sentimentOnly": 0.0,
-    "mentionVolume": 7,
+    "mentionVolume": 3,
     "negative": 0,
     "top": [
      {
-      "t": "Vedanta Aluminium announces breakthrough in recoveg graphite",
-      "s": "Construction Week India",
-      "u": "https://news.google.com/rss/articles/CBMickFVX3lxTE0zdV9rMDRoVk5EOXJvVkZiWWtJTVVHdDhLOWp4WXdfcXVjY2U0ay1JQXctekV2OUF6VDJ5V1FtbE1yWTE0WThEdE5fY0lzX0paX3B6ek92WDhrbUNiaVZudDdOMUVqTWZxU3pUaXhLVTU2dw?oc=5",
-      "d": "2025-05-13",
-      "sc": 0.0,
+      "t": "Pros and Cons of Investing in Vedanta",
+      "s": "Equitymaster",
+      "u": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQUmdmQzJqUmxYLW91MjhGMDUwZzkyaXNXWGttbDl2V0pwMTc2REdYeFlDcU9JaHY3NDlPX0F3LTRYQzhJTU16alR2SHdFOUJnMWJtZk5XWnNnUHp0MUc3R01iUDI0ZW1nWjQ2Nmk0VkZyMWtDYk13N29fTmZ3dGxHQmFYN1R0LTVGUjhaSUNxYzZ2ZzMyUzJJLWRDQmpkT0c3OHdyaUJHWXlteEU?oc=5",
+      "d": "2025-05-10",
+      "sc": 0.04,
+      "c": "General Coverage"
+     },
+     {
+      "t": "Vedanta exploring critical mineral assets in Maharashtra, Rajasthan, other states",
+      "s": "Economic Times",
+      "u": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNWEFwXzYzaEREWkVvZ0hRTXpsbVVhcTZreUZHbEN1a1VZbkw4aDZVaEZ5YmVCa2EyNnJuUUlmZzVpXy01M0RaYXBrUlRoMl9fako3Z24zN1FyQlR0NHVUT2V5djYwSGdoZFR4aThQQXY2QzVFREpQaC1nNl9HalJfODBWQUVrTDkzbzlNNWxpWFBGQ1lqU0o4bjhHcFo5bTY4QUh3YjdtWVdyWExFUktDZVdJR2hxRWE4Yy1pMmtWY0E5TEZOcFpuRDlKVUs4ZmRHWmQydDNtT3dGN3JFRnfSAeMBQVVfeXFMT2U5dzU3WkxPUmtTZkloX0xsZjBFRXlMYkQ1QVVuTGcyWHpuOG10QnpJMjhVdG5sbG51Q3lkR3pTNjdpOUFSY3JLWndaLW5HWHVGS1JSRmNYZjJ1NHlJc3NYTHNURWxiQzhsR1EtVE1VcXNnUmYtVG84Mm0yNHp1N0pLbDhIbGNDdWViYkJGcXlfQUN6dmZSRUFzbjRKc25RQmZuejJ6M2JPaVpLb2stcW9GalpmM1kycUxSRGlSbi1VMWJDRmx2QWd3ODJkeXBpVGQtaGh4V005aWdWMnQxd055Qzg?oc=5",
+      "d": "2025-05-12",
+      "sc": 0.14,
       "c": "General Coverage"
      },
      {
@@ -1210,20 +1234,12 @@
       "s": "Entrepreneur India",
       "u": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQRktCdFVMY2NUQm00SzlJeVliRFItWWpPWWZKY2k4QS1hSkxMajR1ejcyd0RWcGdRamQzREpUZDFzUnhSNkNsSzZQNDBSd3FKM3EwdnBuWlYzdEp4X2ZKVURYV0tKSmZTdmNDbkVqWEd4YkVHczlwdGNpTzJ6eTcxMGlzZ1NrR3Jhd1NnYW4wd0ZMVms4WkVtSjI5azNyeVE1bFpxM24xc2YySjZ3VERhMWhlZ0FNZXVyQ0JVYkxzUng1bG5qdzhTNzV3aw?oc=5",
       "d": "2025-05-13",
-      "sc": 0.0,
-      "c": "General Coverage"
-     },
-     {
-      "t": "Vedanta Aluminium Develops Process to Recover Graphite from Aluminium Industry Waste",
-      "s": "Autocar Professional",
-      "u": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQUnhWOVhhLUtIcExiR1hYbU81aHNHaElESi00cVJSMmpQLUhrZGlFLXVURHl5SnBJWWszZ19aUFVFTG9rNGJib2ZoX0p3Ml93RE5fMjdYTGVLMU05UXFLb2FLU3owZUtsaWJCSkxZZ3BFRDEwMVMtQmpzeDBsdU1VQ3RkUGZST1ZyR2pVLXl4U0xoS3hFX3hfckFQYUFEOUZCNFlERkwzZkVmNWx6bkRWdUpuSDVLSC00NWFiY0lEONIBxwFBVV95cUxOTThnUGVxODVBekpDcFpXd1JfS19YWFRlUW1GUS1BZ2Z1R3ZqQUwwd3JlTkktQzVjV0djdkRNR0V1QVFZbGwtR1BhNTd6ZFpVRjRLZkJCRm4tNllOZVdYem1rX1JUaHFRQWx3bnpzQWRVaVl2NHRkZkd4bm9vOXl1ZGU1alY2MkZVc2x0bEhISS1BWU9TNkxqVU05XzA4aHI4X0V6WkI2YU4tM3ZPNzZ1ZzRnNlpUNjJTcWJuc3A3MXpxLXF2VXZv?oc=5",
-      "d": "2025-05-12",
-      "sc": 0.0,
+      "sc": 0.38,
       "c": "General Coverage"
      }
     ],
-    "excess5": 0.0255,
-    "z5": 0.77,
+    "excess5": 0.017,
+    "z5": 0.56,
     "close": 442.7,
     "index": 0.4
    },
