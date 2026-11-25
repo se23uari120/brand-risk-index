@@ -180,29 +180,39 @@ The weights are the principal eigenvector, with λmax = 5.0133, CI = 0.0033, RI(
 
 ## Robustness and validation
 
-**Weights (MCDM tab; FinBERT sentiment, NSE close of 19 Nov 2026, when the 50 NIFTY 50 companies were tracked).** All rank-agreement figures are Spearman ρ with the AHP ranking. The figures change with each day's data; the MCDM tab always shows the current ones.
+**Weights (MCDM tab; FinBERT sentiment, the 100 NIFTY 100 companies, NSE close of 23 Nov 2026).** All rank-agreement figures are Spearman ρ with the AHP ranking. The figures change with each day's data; the MCDM tab always shows the current ones.
 
 | Weighting | C1 | C2 | C3 | C4 | C5 | Rank agreement | Low / Moderate / High | Companies changing level |
 |---|---|---|---|---|---|---|---|---|
-| AHP | 36.9% | 10.9% | 20.6% | 20.6% | 10.9% | 1.000 | 46 / 3 / 1 | 0 |
-| CRITIC (objective) | 11.9% | 12.4% | 24.5% | 20.2% | 31.0% | 0.913 | 36 / 11 / 3 | 15 |
-| 50/50 blend | 24.4% | 11.7% | 22.6% | 20.4% | 21.0% | 0.972 | 37 / 11 / 2 | 10 |
-| Equal | 20% | 20% | 20% | 20% | 20% | 0.966 | 39 / 9 / 2 | 12 |
+| AHP | 36.9% | 10.9% | 20.6% | 20.6% | 10.9% | 1.000 | 93 / 3 / 4 | 0 |
+| CRITIC (objective) | 16.8% | 25.2% | 16.3% | 22.9% | 18.8% | 0.920 | 90 / 8 / 2 | 7 |
+| 50/50 blend | 26.8% | 18.1% | 18.5% | 21.8% | 14.8% | 0.974 | 94 / 3 / 3 | 2 |
+| Equal | 20% | 20% | 20% | 20% | 20% | 0.952 | 91 / 7 / 2 | 6 |
 
-* **The ranking is robust.** Moving any single AHP judgement one Saaty step keeps ρ ≥ 0.996, with at most 2 level changes. Changing any one weight by ±10% keeps ρ ≥ 0.998; even ±50% keeps ρ ≥ 0.978, with at most 4 level changes. Over 1,000 random weightings around the AHP weights the mean ρ is 0.987 (worst 5%: 0.963). Tata Motors PV and Titan are the top two under all four weightings above.
-* **The levels are less robust.** CRITIC, the blend and equal weights put 40–51% of the weight on the two news signals, against 32% under AHP. (CRITIC weights each signal by how much it varies across companies and disagrees with the others, which today favours Negative coverage at 31%.) With FinBERT, heavily covered companies such as TCS, Infosys, ICICI Bank, IndiGo and ONGC carry a lot of negative coverage while their share-price signals stay low, so 9 to 12 companies move up from Low. Jio Financial and Shriram Finance, which are Moderate only because of their share price, drop to Low when Market reaction loses weight (CRITIC and equal weights). AHP gives the share-price reaction the most weight by design, so read a score near a level boundary together with its 90% range and its signal breakdown.
+* **The ranking is robust.** Moving any single AHP judgement one Saaty step keeps ρ ≥ 0.995, with at most 1 level change. Changing any one weight by ±10% keeps ρ ≥ 0.998 (at most 1 level change); ±25% keeps ρ ≥ 0.992 (at most 3); even ±50% keeps ρ ≥ 0.972 (at most 5). Over 1,000 random weightings around the AHP weights the mean ρ is 0.979 (worst 5%: 0.950). Tata Steel is the highest-risk company under all four weightings.
+* **The levels hold for 93 to 98 of the 100 companies.** The moves go both ways and are explained by which signal a company's score rests on:
+  * Tata Power and Cummins India are High mainly on *Market reaction*, so they drop to Moderate when that signal loses weight (CRITIC and equal weights; Cummins also under the blend). Jio Financial, Moderate only on its share price, drops to Low the same way.
+  * Polycab and Bank of Baroda (*Trading stress*) and IndiGo and Wipro (*news*) move up from Low to Moderate when those signals gain weight. CRITIC weights each signal by how much it varies across companies and disagrees with the others, which today favours Trading stress (25%).
+* AHP gives the share-price reaction the most weight by design, so read a score near a level boundary together with its 90% range and its signal breakdown.
 
-**Back-test (Validation tab).** There are 12 documented Indian incidents. Each company is scored point-in-time at the end of the incident week and on a control day 60 days earlier, from the same data, alongside four simpler methods:
+With only the 50 NIFTY 50 companies (19 Nov) the levels were less stable: CRITIC then put 31% of its weight on Negative coverage and moved 15 of the 50 companies to another level.
+
+**Back-test (Validation tab; FinBERT sentiment and the NIFTY 100 sector groups, run of 25 Nov 2026).** There are 12 documented Indian incidents. Each company is scored point-in-time at the end of the incident week and on a control day 60 days earlier, from the same data, alongside four simpler methods:
 
 | Method | Incident scored higher than control | Hit rate (≥ 30) | False alarms | Mean incident / control |
 |---|---|---|---|---|
-| **Risk index (stock + news)** | **92%** | **42%** | 17% | **41.5 / 10.5** |
-| Stock signals only | 67% | 42% | 17% | 29.5 / 9.3 |
-| News signals only | 83% | 0% | 0% | 16.4 / 2.1 |
-| Average sentiment only | 83% | 17% | 0% | 22.1 / 1.9 |
-| Number of headlines | 83% | – | – | 26.2 / 5.7 |
+| **Risk index (stock + news)** | **92%** | **58%** | 17% | **47.9 / 15.4** |
+| Stock signals only | 75% | 50% | 17% | 33.9 / 12.4 |
+| News signals only | 100% | 0% | 0% | 19.6 / 4.4 |
+| Average sentiment only | 83% | 50% | 8% | 33.3 / 7.9 |
+| Number of headlines | 83% | – | – | 28.3 / 6.6 |
 
-These results are from the word-list sentiment engine. Detected incidents: Paytm (RBI, 79), Kotak Mahindra Bank (RBI, 75), IIFL Finance (RBI, 79), Adani Enterprises (Hindenburg, 70) and Adani Green (US indictment, 80). Missed: events the market shrugged off, such as the Zomato uniform backlash (rolled back the next day) and the JLR cyber attack. With 12 incidents this shows direction, not statistical significance.
+* **Detected** (30 or more in the incident week): Paytm (RBI, 77), Kotak Mahindra Bank (RBI, 82), Bajaj Finance (RBI, 66), IIFL Finance (RBI, 79), Adani Enterprises (Hindenburg, 74), Adani Green (US indictment, 70) and ICICI Bank (Chanda Kochhar arrest, 31).
+* **Missed:** events the market shrugged off, namely the Zomato uniform backlash (rolled back the next day), Infosys' GST notice, the JLR cyber attack and the Viceroy report on Vedanta; and Go First (27), which was never listed, so only its news could be scored.
+* **False alarms:** Paytm and Kotak Mahindra Bank already scored 50 and 61 on their control days, 60 days before the incidents.
+* News alone ranks every incident above its control day but never reaches 30 by itself; combined with the stock signals it does.
+
+The word-list engine with the earlier sector groups gave 92% / 42% / 17%, with means of 41.5 / 10.5. With 12 incidents this shows direction, not statistical significance.
 
 **Sentiment check.** With the server running, hand-label headlines in the Validation tab (the model's answer is hidden). Accuracy, macro-F1 and the confusion matrix are reported for the word list and FinBERT. Labels are stored in `backend/data/labels.json`.
 
