@@ -16,12 +16,14 @@ What the server adds to the static dashboard (GitHub Pages):
 
 Environment: HOST, PORT, REFRESH_MINUTES, LIVE_REFRESH=true|false,
 SENTIMENT=auto|finbert|lexicon, DECAY_HALF_LIFE_HOURS, READ_ONLY=true|false,
-MAX_SEARCHES.
+MAX_SEARCHES, REFRESH_ON_VISIT=true|false, STALE_MINUTES.
 
-Public free hosting (render.yaml) runs it with READ_ONLY=true and
-LIVE_REFRESH=false: it serves the daily job's results from the repo and
-answers Company Search, but nobody on the internet can change files or
-start long re-runs.
+Public free hosting (render.yaml) runs it with READ_ONLY=true,
+LIVE_REFRESH=false and REFRESH_ON_VISIT=true: it starts from the daily job's
+results, re-scores the watchlist whenever a dashboard opens and the results
+are older than STALE_MINUTES, and answers Company Search. Nobody on the
+internet can change files or start other re-runs. Without FinBERT it reuses
+the daily run's FinBERT scores for headlines it already saw.
 """
 
 import json
@@ -44,12 +46,13 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from config import (API_HOST, API_PORT, LATEST_FILE, LIVE_REFRESH, MAX_SEARCHES, PROJECT_DIR, READ_ONLY,
-                    REFRESH_MINUTES)
+                    REFRESH_MINUTES, REFRESH_ON_VISIT, SENTIMENT_CACHE_FILE, STALE_MINUTES)
 from engine import backtest as backtest_mod
 from engine import evaluation
+from engine.refresh import check_refresh
 from market.symbols import load_watchlist, resolve, save_watchlist, suggest
 from nlp.crisis_classifier import CATEGORIES, classify, regulators_mentioned
-from nlp.sentiment import SentimentEngine
+from nlp.sentiment import CachedSentiment, SentimentEngine, load_score_cache
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)-7s %(message)s")
 logger = logging.getLogger("api")
@@ -66,15 +69,58 @@ for folder in ("css", "js", "docs"):
 # ── shared state ─────────────────────────────────────────────────────────────
 _engines: dict[str, SentimentEngine] = {}
 _run_lock = threading.Lock()
-live = {"running": False, "lastRun": None, "lastError": None, "nextRun": None,
-        "refreshMinutes": REFRESH_MINUTES, "enabled": LIVE_REFRESH}
+live = {"running": False, "lastRun": None, "lastError": None, "nextRun": None, "lastAttempt": None,
+        "refreshMinutes": REFRESH_MINUTES, "enabled": LIVE_REFRESH,
+        "refreshOnVisit": REFRESH_ON_VISIT, "staleMinutes": STALE_MINUTES}
 _search_slots = threading.BoundedSemaphore(MAX_SEARCHES)
+_visit_lock = threading.Lock()
+_file_memo: dict = {}
 
 
 def engine(name: str = SENTIMENT_MODE) -> SentimentEngine:
     if name not in _engines:
         _engines[name] = SentimentEngine(name)
     return _engines[name]
+
+
+def _memo(path, read):
+    """read(path), re-read only when the file changes (status polls must stay cheap on a small server)."""
+    try:
+        mtime = path.stat().st_mtime
+    except FileNotFoundError:
+        return None
+    hit = _file_memo.get(path)
+    if not hit or hit[0] != mtime:
+        try:
+            hit = (mtime, read(path))
+        except Exception as exc:
+            logger.warning("Could not read %s: %s", path.name, exc)
+            hit = (mtime, None)
+        _file_memo[path] = hit
+    return hit[1]
+
+
+def _meta() -> dict:
+    """generatedAt / asOf / sentiment of the stored results."""
+    def read(p):
+        d = json.loads(p.read_text(encoding="utf-8"))
+        return {"generatedAt": d.get("generatedAt"), "asOf": d.get("asOf"),
+                "sentimentEngine": d.get("sentimentEngine"), "sentimentMix": d.get("sentimentMix")}
+    return _memo(LATEST_FILE, read) or {}
+
+
+def _stored_scores() -> dict:
+    return _memo(SENTIMENT_CACHE_FILE, lambda p: load_score_cache(p)) or {}
+
+
+def scorer():
+    """Sentiment for a run or a search. Without FinBERT, headlines the daily FinBERT run
+    already scored keep that score; only newer ones use the word list."""
+    base = engine()
+    if base.name == "finbert":
+        return base
+    stored = _stored_scores()
+    return CachedSentiment(base, stored) if stored else base
 
 
 def _writable():
@@ -98,10 +144,14 @@ def run_pipeline() -> dict:
     try:
         from engine.risk_scorer import BrandRiskPipeline
         pipe = BrandRiskPipeline(sentiment="lexicon")
-        pipe.sentiment = engine()                       # reuse the loaded model
+        pipe.sentiment = scorer()                       # reuse the loaded model (and stored FinBERT scores)
         payload = pipe.run()
+        old = json.loads(LATEST_FILE.read_text(encoding="utf-8")) if LATEST_FILE.exists() else None
+        check_refresh(payload, old, {c["symbol"] for c in load_watchlist()["companies"]})
         pipe.save(export_frontend=True)
         live["lastRun"] = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
+        logger.info("Refresh done: %d companies, sentiment %s %s", len(payload["companies"]),
+                    payload["sentimentEngine"], payload.get("sentimentMix") or "")
         return {"status": "ok", "asOf": payload["asOf"], "companies": len(payload["companies"])}
     except Exception as exc:
         logger.exception("Pipeline run failed")
@@ -110,6 +160,27 @@ def run_pipeline() -> dict:
     finally:
         live["running"] = False
         _run_lock.release()
+
+
+def _refresh_if_stale() -> bool:
+    """Refresh on visit: start a background re-score when the stored results are older than
+    STALE_MINUTES (and no run is going, and the last attempt was not within STALE_MINUTES)."""
+    if not REFRESH_ON_VISIT:
+        return False
+    now = datetime.now(tz=timezone.utc)
+    window = timedelta(minutes=STALE_MINUTES)
+    with _visit_lock:
+        if live["running"]:
+            return False
+        gen = _meta().get("generatedAt")
+        if gen and now - datetime.fromisoformat(gen) < window:
+            return False
+        if live["lastAttempt"] and now - datetime.fromisoformat(live["lastAttempt"]) < window:
+            return False
+        live["lastAttempt"] = now.isoformat(timespec="seconds")
+        live["running"] = True                 # claimed now, so parallel visits don't start a second run
+    threading.Thread(target=run_pipeline, daemon=True, name="visit-refresh").start()
+    return True
 
 
 def _live_loop():
@@ -125,6 +196,9 @@ def _live_loop():
 def _startup():
     if READ_ONLY:
         logger.info("Read-only mode: serving stored results and Company Search (sentiment: %s)", SENTIMENT_MODE)
+    if REFRESH_ON_VISIT:
+        logger.info("Refresh on visit: re-scoring when a dashboard opens and results are older than %.0f min "
+                    "(%d stored FinBERT headline scores)", STALE_MINUTES, len(_stored_scores()))
     if LIVE_REFRESH:
         logger.info("Live mode: re-scoring every %.0f minutes (sentiment: %s)", REFRESH_MINUTES, SENTIMENT_MODE)
         threading.Thread(target=_live_loop, daemon=True, name="live-refresh").start()
@@ -145,19 +219,27 @@ def favicon():
 def health():
     loaded = _engines.get(SENTIMENT_MODE)        # don't load FinBERT just to answer a health check
     return {"status": "ok", "hasData": LATEST_FILE.exists(), "server": True, "readOnly": READ_ONLY,
-            "liveRefresh": LIVE_REFRESH, "sentiment": loaded.name if loaded else SENTIMENT_MODE}
+            "liveRefresh": LIVE_REFRESH, "refreshOnVisit": REFRESH_ON_VISIT, "staleMinutes": STALE_MINUTES,
+            "sentiment": loaded.name if loaded else SENTIMENT_MODE, "storedScores": len(_stored_scores())}
 
 
 @app.get("/api/data", summary="Everything the dashboard shows (same as js/data.js)")
 def data():
-    return _data()
+    if not LATEST_FILE.exists():
+        _data()                                  # raises the 'first run in progress' 503
+    return Response(LATEST_FILE.read_bytes(), media_type="application/json")   # served as stored, no re-encoding
 
 
 @app.get("/api/live/status")
 def live_status():
-    d = json.loads(LATEST_FILE.read_text(encoding="utf-8")) if LATEST_FILE.exists() else {}
-    return {**live, "generatedAt": d.get("generatedAt"), "asOf": d.get("asOf"),
-            "sentimentEngine": d.get("sentimentEngine")}
+    return {**live, **_meta()}
+
+
+@app.post("/api/live/visit", summary="Called when a dashboard opens: re-scores in the background "
+                                      "if the results are older than STALE_MINUTES (refresh on visit)")
+def live_visit():
+    started = _refresh_if_stale()
+    return {**live_status(), "started": started}
 
 
 @app.post("/api/live/refresh", summary="Re-score the watchlist now (runs in the background, ~2 min)")
@@ -222,7 +304,7 @@ def search(q: str = Query(..., min_length=1, description="name, brand or NSE sym
     if not _search_slots.acquire(timeout=90):
         raise HTTPException(503, "The search server is busy with other searches. Try again in a minute.")
     try:
-        return search_company(q, engine(), day)
+        return search_company(q, scorer(), day)
     except LookupError as exc:
         raise HTTPException(404, str(exc))
     except RuntimeError as exc:

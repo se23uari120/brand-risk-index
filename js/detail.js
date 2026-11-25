@@ -145,7 +145,7 @@ function detailHtml(c, ctx, prefix) {
       <div class="card-head"><h3>Headlines, last 2 weeks</h3><span class="hint">${n.neg7d} negative · ${n.pos7d} positive in the last ${D.newsWindowDays} days${n.outlets7d ? ` · ${fmt.plural(n.outlets7d, 'outlet')}` : ''}</span></div>
       ${issue.categories && issue.categories.length ? `<p class="small text-2" style="margin-bottom:8px">Negative coverage by issue: ${issue.categories.map(x => `${issueTag(x.category, true)} ${Math.round(x.share * 100)}%`).join(' &nbsp;')}</p>` : ''}
       ${headlineList(n.articles)}
-      <p class="small muted" style="margin-top:10px">Sentiment engine: ${D.sentimentEngine === 'finbert' ? 'FinBERT' : 'finance word list'}. ${n.fetched} headlines found, ${n.kept} kept as relevant${rejected ? ` (removed: ${esc(rejected)})` : ''}.</p>
+      <p class="small muted" style="margin-top:10px">Sentiment engine: ${D.sentimentEngine === 'finbert' ? 'FinBERT' : D.sentimentEngine === 'finbert+lexicon' ? 'FinBERT, with the finance word list for headlines newer than the daily run' : 'finance word list'}. ${n.fetched} headlines found, ${n.kept} kept as relevant${rejected ? ` (removed: ${esc(rejected)})` : ''}.</p>
     </div>
 
     <div class="card">

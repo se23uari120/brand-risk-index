@@ -34,3 +34,6 @@ backend/output/risk_results_*.json
 
 # Local virtual environment created by setup.bat / setup.sh
 .venv/
+
+# Temporary files from atomic writes (engine/risk_scorer.py)
+*.tmp

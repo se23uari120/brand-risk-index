@@ -27,7 +27,8 @@ from mcdm.sensitivity import indices, run_mcdm_analysis, spearman  # noqa: E402
 from mcdm.topsis import TOPSIS, topsis_score  # noqa: E402
 from nlp.crisis_classifier import classify, regulators_mentioned  # noqa: E402
 from nlp.news import RelevanceFilter, normalise  # noqa: E402
-from nlp.sentiment import SentimentEngine, lexicon_score  # noqa: E402
+from nlp.sentiment import CachedSentiment, SentimentEngine, lexicon_score  # noqa: E402
+from engine.refresh import check_refresh  # noqa: E402
 
 W = np.array(AHP().compute()["weights"])
 NOW = datetime(2026, 11, 19, 12, tzinfo=timezone.utc)
@@ -335,6 +336,40 @@ class TestEvaluation(unittest.TestCase):
         r = report(["negative", "neutral", "positive", "negative"], ["negative", "neutral", "neutral", "positive"])
         self.assertAlmostEqual(r["accuracy"], 0.5)
         self.assertEqual(r["confusion"]["positive"]["neutral"], 1)
+
+
+class TestRefreshOnVisit(unittest.TestCase):
+    """A word-list server reuses stored FinBERT scores, and never publishes an incomplete refresh."""
+
+    def test_stored_scores_reused_and_new_headlines_scored(self):
+        cs = CachedSentiment(SentimentEngine("lexicon"), {"Known headline": -0.8})
+        new = "RBI imposes penalty on XYZ Bank"
+        out = cs.score_batch(["Known headline", new])
+        self.assertEqual(out[0], {"score": -0.8, "label": "negative"})
+        self.assertEqual(out[1]["score"], lexicon_score(new)["score"])
+        self.assertEqual(cs.mix(), {"finbert": 1, "lexicon": 1})
+        self.assertEqual(cs.label(), "finbert+lexicon")
+        self.assertEqual(cs.name, "lexicon")          # engine checks elsewhere still see the word list
+
+    def test_label_names_what_was_actually_used(self):
+        self.assertEqual(CachedSentiment(SentimentEngine("lexicon"), {"a": 0.5}).label(), "lexicon")
+        cs = CachedSentiment(SentimentEngine("lexicon"), {"a": 0.5})
+        cs.score_batch(["a"])
+        self.assertEqual(cs.label(), "finbert")
+
+    def test_incomplete_refresh_is_rejected(self):
+        def co(sym, google=5):
+            return {"symbol": sym, "news": {"providers": {"google": google}}}
+        tracked = set("ABCDE")
+        old = {"asOf": "2026-11-23", "companies": [co(s) for s in "ABCDE"]}
+        check_refresh({"asOf": "2026-11-23", "companies": [co(s) for s in "ABCD"] + [co("E", 0)]}, old, tracked)
+        with self.assertRaises(RuntimeError):     # a company could not be scored
+            check_refresh({"asOf": "2026-11-23", "companies": [co(s) for s in "ABCD"]}, old, tracked)
+        check_refresh({"asOf": "2026-11-23", "companies": [co(s) for s in "ABCD"]}, old, set("ABCD"))  # E was removed
+        with self.assertRaises(RuntimeError):     # Google News did not answer
+            check_refresh({"asOf": "2026-11-23", "companies": [co(s, 0) for s in "ABCDE"]}, old, tracked)
+        with self.assertRaises(RuntimeError):     # prices fell back to an older day
+            check_refresh({"asOf": "2026-11-20", "companies": old["companies"]}, old, tracked)
 
 
 if __name__ == "__main__":

@@ -16,12 +16,19 @@ Two engines, same output format:
       score = (P − N) / (P + N + 1.5)       P, N = summed term weights
 
 A headline is labelled negative if score ≤ −0.15, positive if ≥ +0.15.
+
+CachedSentiment wraps an engine with stored scores: the daily FinBERT run
+saves every headline's score (output/sentiment_cache.json), and a small server
+that cannot load FinBERT reuses those scores and uses its own engine (the word
+list) only for headlines published since.
 """
 
+import json
 import logging
 import re
+import threading
 
-from config import (FINBERT_MODEL, MODELS_DIR, SENTIMENT_NEG_THRESHOLD,
+from config import (FINBERT_MODEL, MODELS_DIR, SENTIMENT_CACHE_FILE, SENTIMENT_NEG_THRESHOLD,
                     SENTIMENT_POS_THRESHOLD)
 
 logger = logging.getLogger(__name__)
@@ -156,3 +163,63 @@ class SentimentEngine:
                 out.append({"score": s, "label": label_for(s), "positive": round(p_pos, 4),
                             "negative": round(p_neg, 4), "neutral": round(p_neu, 4)})
         return out
+
+
+# ── stored scores: the daily FinBERT run → small servers ─────────────────────
+def load_score_cache(path=SENTIMENT_CACHE_FILE) -> dict:
+    """{headline: score} saved by the last FinBERT run, or {} if there is none."""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return {k: float(v) for k, v in data.get("scores", {}).items()}
+    except FileNotFoundError:
+        return {}
+    except Exception as exc:
+        logger.warning("Ignoring unreadable sentiment cache %s: %s", path, exc)
+        return {}
+
+
+def save_score_cache(scores: dict, engine: str, path=SENTIMENT_CACHE_FILE) -> None:
+    """One headline per line (sorted), so the daily commit's diff stays small."""
+    body = {"engine": engine, "scores": {k: round(float(v), 4) for k, v in sorted(scores.items())}}
+    path.write_text(json.dumps(body, indent=0, ensure_ascii=False), encoding="utf-8")
+    logger.info("Saved %d %s headline scores to %s", len(scores), engine, path.name)
+
+
+class CachedSentiment:
+    """
+    Answers from stored scores first (FinBERT's, from the daily run) and asks
+    the wrapped engine only for headlines it has not seen. `name` stays the
+    wrapped engine's; `label()` says what was actually used, e.g.
+    'finbert+lexicon', and `mix()` how many headlines came from each.
+    """
+
+    def __init__(self, engine, stored: dict, stored_name: str = "finbert"):
+        self.engine, self.stored, self.stored_name = engine, stored, stored_name
+        self.name = engine.name
+        self.hits = self.misses = 0
+        self._lock = threading.Lock()
+
+    def score_batch(self, texts: list[str], batch_size: int = 32) -> list[dict]:
+        out: list = [None] * len(texts)
+        todo = []
+        for i, t in enumerate(texts):
+            s = self.stored.get(t)
+            if s is None:
+                todo.append(i)
+            else:
+                out[i] = {"score": s, "label": label_for(s)}
+        if todo:
+            for i, r in zip(todo, self.engine.score_batch([texts[i] for i in todo], batch_size)):
+                out[i] = r
+        with self._lock:
+            self.hits += len(texts) - len(todo)
+            self.misses += len(todo)
+        return out
+
+    def label(self) -> str:
+        if self.engine.name == self.stored_name or not self.hits:
+            return self.engine.name
+        return f"{self.stored_name}+{self.engine.name}" if self.misses else self.stored_name
+
+    def mix(self) -> dict:
+        return {self.stored_name: self.hits, self.engine.name: self.misses}

@@ -206,7 +206,7 @@ These results are from the word-list sentiment engine. Detected incidents: Paytm
 
 **Sentiment check.** With the server running, hand-label headlines in the Validation tab (the model's answer is hidden). Accuracy, macro-F1 and the confusion matrix are reported for the word list and FinBERT. Labels are stored in `backend/data/labels.json`.
 
-**Unit tests (39):**
+**Unit tests (42):**
 
 ```bash
 py -3 -m unittest discover -s backend/tests -v
@@ -222,6 +222,7 @@ They cover:
 - sentiment, the crisis classifier, CRITIC and the sensitivity analysis
 - the shared company scorer and the evaluation metrics
 - rebuilding a price day that Yahoo left empty from its 15-minute bars
+- refresh on visit: reusing stored FinBERT scores, and keeping the old results when a refresh is incomplete
 
 ---
 
@@ -229,7 +230,7 @@ They cover:
 
 * **Daily job.** `.github/workflows/update-risk-data.yml` runs every weekday at **16:45 IST**, after the 15:30 NSE close. It runs the unit tests and the pipeline (with FinBERT on CPU), then commits `js/data.js` and `backend/output/*.json`, so the GitHub Pages site updates itself. Run it by hand from the *Actions* tab, optionally with `backtest: true`. Under **Settings → Actions → General → Workflow permissions**, choose **Read and write permissions** so the job can commit.
 * **Point-in-time.** Each day uses only prices up to that day's close and headlines published up to that day. The first run backfills 30 trading days. Afterwards only the last 5 days are refreshed, and past days stay frozen. Up to 400 trading days are kept in `backend/output/history.json`.
-* **Live server.** `start.bat` / `start.sh` / Docker re-scores every `REFRESH_MINUTES` (default 60). Open dashboards pick up new scores automatically. Environment variables: `SENTIMENT=auto|finbert|lexicon`, `REFRESH_MINUTES`, `LIVE_REFRESH=false`, `DECAY_HALF_LIFE_HOURS`, `HOST`, `PORT`, and for a public server `READ_ONLY=true` (no watchlist edits, labels or re-runs) and `MAX_SEARCHES` (parallel searches, default 2).
+* **Live server.** `start.bat` / `start.sh` / Docker re-scores every `REFRESH_MINUTES` (default 60). Open dashboards pick up new scores automatically. Environment variables: `SENTIMENT=auto|finbert|lexicon`, `REFRESH_MINUTES`, `LIVE_REFRESH=false`, `DECAY_HALF_LIFE_HOURS`, `HOST`, `PORT`, and for a public server `READ_ONLY=true` (no watchlist edits, labels or re-runs), `MAX_SEARCHES` (parallel searches, default 2), `REFRESH_ON_VISIT=true` (re-score when a dashboard opens) and `STALE_MINUTES` (how old the results may be before a visit refreshes them, default 15).
 
 ---
 
@@ -238,22 +239,25 @@ They cover:
 **The ₹0 setup has two parts:**
 
 1. **GitHub Pages** hosts the dashboard at https://se23uari120.github.io/brand-risk-index/, and the daily GitHub Actions job keeps it current. Both are free for a public repository.
-2. **A free Render web service** (optional) adds **Company Search** and the headline scorer to that page. [`render.yaml`](render.yaml) describes it:
+2. **A free Render web service** (optional) **refreshes the scores whenever someone opens the page** and adds **Company Search** and the headline scorer. [`render.yaml`](render.yaml) describes it:
    * the free plan (0.1 CPU, 512 MB RAM) in Render's Singapore region
-   * `READ_ONLY=true`: visitors can search, but cannot change the watchlist or labels, or start re-runs
-   * `SENTIMENT=lexicon`: FinBERT needs about 2 GB of RAM, so searches score headlines with the finance word list
-   * `LIVE_REFRESH=false`: it serves the daily job's results, and every push to `main` (including the daily data commit) redeploys it
-   * it sleeps after 15 minutes without visitors; the next search waits about a minute while it wakes up. The dashboard itself never waits: it loads the stored results from GitHub Pages.
+   * `REFRESH_ON_VISIT=true`, `STALE_MINUTES=15`: when a dashboard opens and the results are more than 15 minutes old, the server downloads fresh prices and headlines for every company and re-scores them (a few minutes on the free plan). The page shows the stored results at once with an *Updating…* badge and swaps in the new scores by itself. Anyone opening it within the next 15 minutes gets the fresh scores straight away, and Yahoo and Google News are asked at most four times an hour.
+   * `SENTIMENT=lexicon`: FinBERT needs about 2 GB of RAM. Headlines the daily FinBERT run already scored keep their FinBERT score (`backend/output/sentiment_cache.json`); only headlines published since are scored with the finance word list, until the next daily run.
+   * a refresh is published only if every company was scored and Google News answered; otherwise the previous results stay up, so a failed download never makes a company look safer
+   * `READ_ONLY=true`: visitors can search, but cannot change the watchlist or labels, or start other re-runs
+   * every push to `main`, including the daily data commit, redeploys it from the latest FinBERT results, which stay the official daily history
+   * it sleeps after 15 minutes without visitors and takes about a minute to wake up; the page never waits for it, because the stored results load from GitHub Pages
+   * the score uses daily closing prices, so during market hours a refresh mainly brings in new headlines; the prices move the score once the day's close is in
 
 **Setting up Render (once):**
 1. Sign up at [render.com](https://render.com) with your GitHub account. **Don't add a payment method.** Without one, going over a free limit pauses the service until the next month instead of billing you. One always-on free service fits in the 750 free instance hours per month.
 2. In the Render dashboard choose **New → Blueprint**, pick the `brand-risk-index` repository and press **Apply**. Render reads `render.yaml` and builds the service (a few minutes).
-3. Copy the service's address, e.g. `https://brand-risk-index.onrender.com`, and open `<address>/api/health`. It should answer with `"readOnly": true`.
+3. Copy the service's address, e.g. `https://brand-risk-index.onrender.com`, and open `<address>/api/health`. It should answer with `"readOnly": true` and `"refreshOnVisit": true`.
 4. Put the address in `js/config.js`:
    ```js
    window.BRI_API_BASE = window.BRI_API_BASE || 'https://brand-risk-index.onrender.com';
    ```
-   Commit and push. GitHub Pages then shows the Search tab and the headline scorer, and wakes the server when someone uses them.
+   Commit and push. From then on every visit to the GitHub Pages site wakes the server, refreshes stale scores and enables the Search tab and the headline scorer.
 
 **Other options** (as of November 2026) for the full app with FinBERT, which needs a host with about **2 GB RAM** for the `Dockerfile`:
 
@@ -365,10 +369,11 @@ brand-risk-index/
     │   ├── assess.py             # Scores one company (shared by pipeline, search, back-test)
     │   ├── risk_scorer.py        # Daily pipeline for the watchlist
     │   ├── search.py             # Company Search
+    │   ├── refresh.py            # Safety check before a server publishes a refresh
     │   ├── backtest.py           # Incident back-test with baselines
     │   └── evaluation.py         # Sentiment accuracy against human labels
-    ├── tests/test_model.py       # 39 unit tests
-    └── output/                   # latest.json, history.json, backtest.json
+    ├── tests/test_model.py       # 42 unit tests
+    └── output/                   # latest.json, history.json, backtest.json, sentiment_cache.json (FinBERT score per headline)
 ```
 
 ---
@@ -381,6 +386,7 @@ Start the server (`start.bat`), then see the interactive docs at http://localhos
 |---|---|
 | `GET /api/data` | Everything the dashboard shows (same as `js/data.js`) |
 | `GET /api/live/status` · `POST /api/live/refresh` | Live-mode status · re-score now |
+| `POST /api/live/visit` | Sent by the dashboard when it opens; re-scores in the background if the results are older than `STALE_MINUTES` |
 | `GET /api/companies?sector=&level=&q=` · `GET /api/companies/{symbol}` | Ranked list · one company in full |
 | `GET /api/search?q=Swiggy&as_of=2024-02-04` | Assessment of any NSE company, now or as of a past day |
 | `GET /api/resolve?q=pay` | Search-box suggestions (NSE only) |

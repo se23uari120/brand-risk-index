@@ -99,12 +99,13 @@ function renderMethod() {
   $('#m-backtest-now').innerHTML = bt && bt.metrics && bt.metrics.pairwiseAccuracy
     ? `Latest run: the index was higher in the incident week for <strong>${Math.round(bt.metrics.pairwiseAccuracy.index * 100)}%</strong> of incidents and flagged ${Math.round(bt.metrics.hitRate.index * 100)}% of them (≥ ${bt.metrics.flagThreshold}), with ${Math.round(bt.metrics.falseAlarmRate.index * 100)}% false alarms on the control days.`
     : 'No back-test has been run on this data yet.';
+  const stale = SERVER.info && SERVER.info.refreshOnVisit ? Math.round(SERVER.info.staleMinutes) : null;
   $('#m-mode-now').innerHTML = canWrite()
     ? '<strong>You are using the live server.</strong>'
     : SERVER.on
-      ? '<strong>You are using the public read-only server.</strong> Search and the headline scorer work; watchlist changes, labelling and re-runs are switched off.'
+      ? `<strong>You are using the public read-only server.</strong> ${stale ? `It re-scores every company when someone opens the page and the data is more than ${stale} minutes old. ` : ''}Search and the headline scorer work; watchlist changes, labelling and manual re-runs are switched off.`
       : SERVER.remote
-        ? '<strong>You are viewing the static version with a hosted search server.</strong> The daily results load instantly; Search and the headline scorer use the free server, which can take about a minute to wake up.'
+        ? '<strong>You are viewing the GitHub Pages copy with a free hosted server.</strong> The stored daily results show at once. The server then refreshes them when they are more than a few minutes old (this page updates by itself) and runs Search and the headline scorer. After a quiet spell it takes about a minute to wake up.'
         : '<strong>You are viewing the static version.</strong> Search and the server features are switched off.';
 
   // ── Levels, tracking, engine ──
@@ -113,8 +114,11 @@ function renderMethod() {
   const days = D.historyDates.length;
   $('#m-tracking-now').innerHTML = `Right now the history holds <strong>${days} trading days</strong> (${fmt.date(D.historyDates[0])} – ${fmt.date(D.historyDates[days - 1])}). ` +
     `This data was generated on ${new Date(D.generatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })} from the NSE close of ${fmt.date(D.asOf)}.`;
+  const mix = D.sentimentMix || {};
   $('#m-engine').innerHTML = D.sentimentEngine === 'finbert'
     ? '<strong>Headline sentiment:</strong> scored with <strong>FinBERT</strong> (ProsusAI/finbert), a language model trained on financial news: score = P(positive) − P(negative), from −1 to +1.'
+    : D.sentimentEngine === 'finbert+lexicon'
+    ? `<strong>Headline sentiment:</strong> these results come from a refresh on the free server, which cannot load FinBERT. Headlines the daily FinBERT run had already scored keep their <strong>FinBERT</strong> score (${mix.finbert ?? '–'} headlines); headlines published since then are scored with the <strong>finance word list</strong> (${mix.lexicon ?? '–'} headlines) until the next daily run.`
     : '<strong>Headline sentiment:</strong> this data was scored with the built-in <strong>finance word list</strong> (terms like "probe", "penalty", "recall", "downgrade" vs. "order win", "upgrade"), because FinBERT was not installed where the pipeline ran. It is transparent but cruder — it can misread headlines. The automated daily job installs and uses FinBERT.';
 }
 

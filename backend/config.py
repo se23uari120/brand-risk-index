@@ -23,6 +23,7 @@ LABELS_FILE      = DATA_DIR / "labels.json"
 LATEST_FILE      = OUTPUT_DIR / "latest.json"
 HISTORY_FILE     = OUTPUT_DIR / "history.json"
 BACKTEST_FILE    = OUTPUT_DIR / "backtest.json"
+SENTIMENT_CACHE_FILE = OUTPUT_DIR / "sentiment_cache.json"   # FinBERT score per headline, from the daily job
 FRONTEND_DATA_JS = PROJECT_DIR / "js" / "data.js"
 
 for _d in (DATA_DIR, OUTPUT_DIR, CACHE_DIR, MODELS_DIR):
@@ -126,3 +127,8 @@ LIVE_REFRESH = os.getenv("LIVE_REFRESH", "true").lower() not in ("0", "false", "
 # MAX_SEARCHES caps parallel Company Searches so a 512 MB instance is not overrun.
 READ_ONLY = os.getenv("READ_ONLY", "false").lower() in ("1", "true", "yes")
 MAX_SEARCHES = max(1, int(os.getenv("MAX_SEARCHES", "2")))
+# Refresh on visit: when a dashboard opens and the results are older than
+# STALE_MINUTES, the server re-scores the watchlist in the background and the
+# page swaps in the new scores when they are ready (allowed in READ_ONLY mode).
+REFRESH_ON_VISIT = os.getenv("REFRESH_ON_VISIT", "false").lower() in ("1", "true", "yes")
+STALE_MINUTES = max(1.0, float(os.getenv("STALE_MINUTES", "15")))

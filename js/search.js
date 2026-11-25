@@ -24,20 +24,21 @@ function renderSearchStatus() {
   if (!SERVER.remote) { el.hidden = true; return; }
   el.hidden = false;
   if (SERVER.search === 'ready') {
-    const wordList = SERVER.info && SERVER.info.sentiment !== 'finbert';
-    el.innerHTML = 'Connected to the free search server.' + (wordList
-      ? ' It scores headlines with the finance word list (FinBERT needs more memory than the free plan has), so a searched score can differ a little from the FinBERT-scored dashboard.'
-      : '');
+    const info = SERVER.info || {};
+    el.innerHTML = 'Connected to the free server.' + (info.sentiment === 'finbert' ? ''
+      : info.storedScores
+        ? ' Headlines the daily FinBERT run already scored keep their FinBERT score; newer ones are scored with the finance word list (FinBERT needs more memory than the free plan has).'
+        : ' It scores headlines with the finance word list (FinBERT needs more memory than the free plan has), so a searched score can differ a little from the FinBERT-scored dashboard.');
   } else if (SERVER.search === 'down') {
-    el.innerHTML = 'The search server did not answer. <button type="button" class="btn small" id="search-retry">Try again</button>';
+    el.innerHTML = 'The server did not answer. <button type="button" class="btn small" id="search-retry">Try again</button>';
   } else {
-    el.innerHTML = '<span class="live-dot busy"></span> Starting the free search server. After a quiet spell this takes about a minute; then searches run normally.';
+    el.innerHTML = '<span class="live-dot busy"></span> Starting the free server. After a quiet spell this takes about a minute; then searches run normally.';
   }
 }
 
 // true once a server can answer: our own, or the hosted one after it wakes up
 async function searchServerReady() {
-  return SERVER.on || (SERVER.remote && await wakeSearchServer());
+  return SERVER.on || (SERVER.remote && await wakeServer());
 }
 
 function renderSearch() {
@@ -45,7 +46,7 @@ function renderSearch() {
   $('#search-static').hidden = offered;
   $('#search-live').hidden = !offered;
   if (!offered) return;
-  if (SERVER.remote) wakeSearchServer();       // start waking it as soon as the tab is opened
+  if (SERVER.remote) wakeServer();       // start waking it as soon as the tab is opened
   renderSearchStatus();
   const rec = recentSearches();
   $('#search-recent').innerHTML = rec.length
@@ -84,7 +85,7 @@ function initSearch() {
   });
   $('#search-go').addEventListener('click', () => runSearch(input.value));
   $('#search-recent').addEventListener('click', e => { const b = e.target.closest('button[data-q]'); if (b) { input.value = b.dataset.q; runSearch(b.dataset.q); } });
-  $('#search-status').addEventListener('click', e => { if (e.target.closest('#search-retry')) wakeSearchServer(); });
+  $('#search-status').addEventListener('click', e => { if (e.target.closest('#search-retry')) wakeServer(); });
   $('#search-result').addEventListener('click', async e => {
     const b = e.target.closest('#search-add');
     if (!b) return;

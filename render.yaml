@@ -1,12 +1,14 @@
-# Render Blueprint: a free public server that adds Company Search to the
-# GitHub Pages dashboard.
+# Render Blueprint: a free public server for the GitHub Pages dashboard.
+# It refreshes the scores when someone opens the page (refresh on visit)
+# and answers Company Search.
 #
 #   Render dashboard → New → Blueprint → connect this GitHub repo → Apply.
 #
 # Free plan: 0.1 CPU and 512 MB RAM. The service sleeps after 15 minutes
-# without visitors and takes about a minute to wake up. Every push to main
-# (including the daily data commit from GitHub Actions) redeploys it, so it
-# always serves the latest daily results.
+# without visitors and takes about a minute to wake up; a full refresh of
+# the 50 companies takes a few minutes. Every push to main (including the
+# daily FinBERT data commit from GitHub Actions) redeploys it from the
+# latest daily results.
 services:
   - type: web
     name: brand-risk-index
@@ -22,10 +24,14 @@ services:
       - key: HOST
         value: 0.0.0.0
       - key: SENTIMENT
-        value: lexicon           # FinBERT needs about 2 GB of RAM; this plan has 512 MB
+        value: lexicon           # FinBERT needs about 2 GB of RAM; headlines the daily FinBERT run scored keep that score
+      - key: REFRESH_ON_VISIT
+        value: "true"            # re-score when a dashboard opens and the results are stale
+      - key: STALE_MINUTES
+        value: "15"              # at most one refresh per 15 minutes (polite to Yahoo and Google News)
       - key: LIVE_REFRESH
-        value: "false"           # results come from the daily GitHub job via redeploys
+        value: "false"           # no hourly loop: the free instance sleeps when nobody visits
       - key: READ_ONLY
-        value: "true"            # visitors can search, but cannot change files or start re-runs
+        value: "true"            # visitors can search, but cannot change files or start other re-runs
       - key: MAX_SEARCHES
         value: "2"               # parallel searches allowed on the small instance
